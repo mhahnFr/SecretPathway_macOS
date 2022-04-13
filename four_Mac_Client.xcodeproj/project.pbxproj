@@ -7,15 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BFE1593C2806D42B006A98D4 /* four_Mac_ClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1593B2806D42B006A98D4 /* four_Mac_ClientApp.swift */; };
+		BFD2C8412806E853005CB25F /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2C8402806E853005CB25F /* main.swift */; };
+		BFD2C8452806FA90005CB25F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2C8442806FA90005CB25F /* AppDelegate.swift */; };
 		BFE1593E2806D42B006A98D4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1593D2806D42B006A98D4 /* ContentView.swift */; };
 		BFE159402806D42C006A98D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFE1593F2806D42C006A98D4 /* Assets.xcassets */; };
 		BFE159432806D42C006A98D4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFE159422806D42C006A98D4 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BFD2C8402806E853005CB25F /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		BFD2C8442806FA90005CB25F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFE159382806D42B006A98D4 /* four_Mac_Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = four_Mac_Client.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BFE1593B2806D42B006A98D4 /* four_Mac_ClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = four_Mac_ClientApp.swift; sourceTree = "<group>"; };
 		BFE1593D2806D42B006A98D4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BFE1593F2806D42C006A98D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFE159422806D42C006A98D4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -53,7 +55,8 @@
 		BFE1593A2806D42B006A98D4 /* four_Mac_Client */ = {
 			isa = PBXGroup;
 			children = (
-				BFE1593B2806D42B006A98D4 /* four_Mac_ClientApp.swift */,
+				BFD2C8402806E853005CB25F /* main.swift */,
+				BFD2C8442806FA90005CB25F /* AppDelegate.swift */,
 				BFE1593D2806D42B006A98D4 /* ContentView.swift */,
 				BFE1593F2806D42C006A98D4 /* Assets.xcassets */,
 				BFE159442806D42C006A98D4 /* Info.plist */,
@@ -140,8 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD2C8452806FA90005CB25F /* AppDelegate.swift in Sources */,
 				BFE1593E2806D42B006A98D4 /* ContentView.swift in Sources */,
-				BFE1593C2806D42B006A98D4 /* four_Mac_ClientApp.swift in Sources */,
+				BFD2C8412806E853005CB25F /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,7 +282,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.mhahnFr.four-Mac-Client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -300,7 +304,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.mhahnFr.four-Mac-Client";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
