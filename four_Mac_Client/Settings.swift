@@ -15,6 +15,6 @@ class Settings {
     private init() {
         // TODO: Read settings from somewhere
         port = 4242
-        host = "localhost"
+        host = "127.0.0.1"
     }
 }
