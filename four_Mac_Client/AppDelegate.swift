@@ -20,11 +20,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Create the window and set the content view.
         window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
+            contentRect: NSRect(x: 0, y: 0, width: Settings.shared.windowWidth, height: Settings.shared.windowHeight),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
-        window.center()
+        if (Settings.shared.windowPositionX == -1 ||
+            Settings.shared.windowPositionY == -1) {
+            window.center()
+        } else {
+            window.setFrameOrigin(NSPoint(x: Settings.shared.windowPositionX, y: Settings.shared.windowPositionY))
+        }
         window.setFrameAutosaveName("Main Window")
         window.contentView = NSHostingView(rootView: contentView)
         window.makeKeyAndOrderFront(nil)
