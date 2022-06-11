@@ -10,9 +10,7 @@ import SwiftUI
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
     var window: NSWindow!
-
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Create the SwiftUI view that provides the window contents.
@@ -20,16 +18,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Create the window and set the content view.
         window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: Settings.shared.windowWidth, height: Settings.shared.windowHeight),
+            contentRect: NSRect(x: 0, y: 0, width: 0, height: 0),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
-        if (Settings.shared.windowPositionX == -1 ||
-            Settings.shared.windowPositionY == -1) {
-            window.center()
-        } else {
-            window.setFrameOrigin(NSPoint(x: Settings.shared.windowPositionX, y: Settings.shared.windowPositionY))
-        }
         window.setFrameAutosaveName("Main Window")
         window.contentView = NSHostingView(rootView: contentView)
         window.makeKeyAndOrderFront(nil)
@@ -38,7 +30,4 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
-
-
 }
-
