@@ -10,14 +10,19 @@ import SwiftUI
 struct ContentView: View {
     @State var userInput: String = ""
     @ObservedObject var connection: ClientConnection
+    let font: Font = .system(size: 12, design: .monospaced)
     
     var body: some View {
         VStack {
-            Text(connection.boundText)
-                .fixedSize(horizontal: false, vertical: false)
-                .frame(minWidth: 300, idealWidth: 750, maxWidth: .infinity, minHeight: 200, idealHeight: 500, maxHeight: .infinity, alignment: .topLeading)
+            ScrollView(content: {
+                Text(connection.boundText)
+                    .fixedSize(horizontal: false, vertical: false)
+                    .frame(minWidth: 300, idealWidth: 750, maxWidth: .infinity, minHeight: 200, idealHeight: 500, maxHeight: .infinity, alignment: .topLeading)
+                    .font(font)
+            })
             HStack(alignment: .center, spacing: nil, content: {
                 Text(connection.boundPrompt)
+                    .font(font)
                 TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: {
                     connection.send(string: userInput)
                     connection.boundText.append("\n")
@@ -25,6 +30,7 @@ struct ContentView: View {
                     connection.boundText.append(userInput)
                     userInput = ""
                 })
+                .font(font)
             })
         }
     }

@@ -13,14 +13,16 @@ class ClientConnection: ObservableObject {
     private var connection: NWConnection
     private var buffer: String
     private var escaped: Bool
+    private var bf: String
     @Published var boundText: String
     @Published var boundPrompt: String
     
     init(_ host: String, port: Int) {
         connection = NWConnection(host: NWEndpoint.Host.init(host), port: NWEndpoint.Port.init(rawValue: UInt16(port))!, using: .tcp)
         // TODO Error handling
-        connection.start(queue: .main)
+        connection.start(queue: .init(label: "Connection"))
         buffer = "";
+        bf = ""
         escaped = false
         boundText = ""
         boundPrompt = ""
@@ -35,7 +37,9 @@ class ClientConnection: ObservableObject {
         connection.receive(minimumIncompleteLength: 1, maximumLength: 10000) { (data, context, completed, error) in
             if let data = data {
                 if let str = String(data: data, encoding: .utf8) {
-                    self.parseData(str)
+                    DispatchQueue.main.async {
+                        self.parseData(str)
+                    }
                 }
             }
             if !completed {
@@ -63,7 +67,6 @@ class ClientConnection: ObservableObject {
     
     func parseData(_ str: String) {
         for c in str {
-            print("Character: \(c.asciiValue!)")
             if c.asciiValue! == 3 {
                 escaped = false
                 parseEscaped(buffer)
@@ -73,9 +76,12 @@ class ClientConnection: ObservableObject {
             } else if escaped {
                 buffer.append(c)
             } else {
-                boundText.append(c)
+                bf.append(c)
+                print(c, separator: "", terminator: "")
             }
         }
+        boundText.append(bf)
+        bf = ""
     }
     
     func send(string data2: String) {
@@ -86,7 +92,6 @@ class ClientConnection: ObservableObject {
                 // TODO Error handling
             }
         }))
-        receive()
     }
     
     func close() {
