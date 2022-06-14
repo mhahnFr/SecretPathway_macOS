@@ -7,13 +7,16 @@
 
 import Network
 import Foundation
+import SwiftUI
 
-class ClientConnection {
+class ClientConnection: ObservableObject {
     private var connection: NWConnection
     private var buffer: String
     private var escapeStart: Character
     private var escapeEnd: Character
     private var escaped: Bool
+    @Published var boundText: String
+    @Published var boundPrompt: String
     
     init(_ host: String, port: Int) {
         connection = NWConnection(host: NWEndpoint.Host.init(host), port: NWEndpoint.Port.init(rawValue: UInt16(port))!, using: .tcp)
@@ -23,6 +26,8 @@ class ClientConnection {
         escapeStart = Character(UnicodeScalar(0x02)!)
         escapeEnd = Character(UnicodeScalar(0x03)!)
         escaped = false
+        boundText = ""
+        boundPrompt = ""
         receive()
     }
     
@@ -56,9 +61,14 @@ class ClientConnection {
             } else if escaped {
                 buffer.append(c)
             } else {
-                print(c) // TODO
+                boundText.append(c)
             }
         }
+    }
+    
+    func send(string data: String) {
+        // TODO
+        print(data)
     }
     
     func close() {
