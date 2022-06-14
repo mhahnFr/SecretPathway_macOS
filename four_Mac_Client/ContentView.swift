@@ -19,18 +19,18 @@ struct ContentView: View {
 //                .disabled(true)
             HStack(alignment: .center, spacing: nil, content: {
                 Text(connection.boundPrompt)
-                TextField("", text: $userInput)
-                Button("Send") {
+                TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: {
                     connection.send(string: userInput)
-                }
+                    userInput = ""
+                })
             })
         }
     }
 }
 
 
-/*struct ContentView_Previews: PreviewProvider {
+struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(connection: ClientConnection())
     }
-}*/
+}
