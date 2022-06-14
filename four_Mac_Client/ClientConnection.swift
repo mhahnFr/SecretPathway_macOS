@@ -12,8 +12,6 @@ import SwiftUI
 class ClientConnection: ObservableObject {
     private var connection: NWConnection
     private var buffer: String
-    private var escapeStart: Character
-    private var escapeEnd: Character
     private var escaped: Bool
     @Published var boundText: String
     @Published var boundPrompt: String
@@ -23,8 +21,6 @@ class ClientConnection: ObservableObject {
         // TODO Error handling
         connection.start(queue: .main)
         buffer = "";
-        escapeStart = Character(UnicodeScalar(0x02)!)
-        escapeEnd = Character(UnicodeScalar(0x03)!)
         escaped = false
         boundText = ""
         boundPrompt = ""
@@ -54,9 +50,12 @@ class ClientConnection: ObservableObject {
     
     func parseData(_ str: String) {
         for c in str {
-            if c == escapeEnd {
+            print("Character: \(c.asciiValue!)")
+            if c.asciiValue! == 3 {
+                escaped = false
                 parseEscaped(buffer)
-            } else if c == escapeStart {
+            } else if c.asciiValue! == 2 {
+                escaped = true
                 buffer = ""
             } else if escaped {
                 buffer.append(c)
