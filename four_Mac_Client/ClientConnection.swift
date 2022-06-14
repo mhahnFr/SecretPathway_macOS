@@ -32,20 +32,33 @@ class ClientConnection: ObservableObject {
     }
     
     func receive() {
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 10000) { (data, context, comleted, error) in
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 10000) { (data, context, completed, error) in
             if let data = data {
                 if let str = String(data: data, encoding: .utf8) {
                     self.parseData(str)
                 }
             }
-            if !comleted {
+            if !completed {
                 self.receive()
             }
         }
     }
     
+    func parsePrompt(_ args: [Substring]) {
+        boundPrompt = String(data: Data(base64Encoded: String(args[0]))!, encoding: .utf8)!
+    }
+    
     func parseEscaped(_ str: String) {
         // TODO
+        var splits = str.split(separator: ":", omittingEmptySubsequences: true)
+        let command = splits[0]
+        splits.removeFirst()
+        switch command {
+        case "prompt/plain":
+            parsePrompt(splits)
+        default:
+            print("Unrecognized escape code!")
+        }
     }
     
     func parseData(_ str: String) {
@@ -65,9 +78,15 @@ class ClientConnection: ObservableObject {
         }
     }
     
-    func send(string data: String) {
-        // TODO
-        print(data)
+    func send(string data2: String) {
+        let data = data2 + "\n"
+        connection.send(content: data.data(using: .utf8), isComplete: true, completion: .contentProcessed({ (error) in
+            if let error = error {
+                print("Terror")
+                // TODO Error handling
+            }
+        }))
+        receive()
     }
     
     func close() {

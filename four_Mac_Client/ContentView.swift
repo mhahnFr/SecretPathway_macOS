@@ -16,11 +16,13 @@ struct ContentView: View {
             Text(connection.boundText)
                 .fixedSize(horizontal: false, vertical: false)
                 .frame(minWidth: 300, idealWidth: 750, maxWidth: .infinity, minHeight: 200, idealHeight: 500, maxHeight: .infinity, alignment: .topLeading)
-//                .disabled(true)
             HStack(alignment: .center, spacing: nil, content: {
                 Text(connection.boundPrompt)
                 TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: {
                     connection.send(string: userInput)
+                    connection.boundText.append("\n")
+                    connection.boundText.append(connection.boundPrompt)
+                    connection.boundText.append(userInput)
                     userInput = ""
                 })
             })
