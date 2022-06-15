@@ -24,9 +24,9 @@ struct ContentView: View {
                     .font(font)
                 TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: {
                     connection.send(string: userInput)
-                    connection.boundText.append("\n")
                     connection.boundText.append(connection.boundPrompt)
                     connection.boundText.append(userInput)
+                    connection.boundText.append("\n")
                     userInput = ""
                 })
                 .font(font)

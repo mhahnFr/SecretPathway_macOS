@@ -48,6 +48,20 @@ class ClientConnection: ObservableObject {
         }
     }
     
+    func parsePromptPwd(_ args: [Substring]) {
+        parsePrompt(args)
+        // TODO Switch the textfield
+    }
+    
+    func parseSmalltalk(_ args: [Substring]) {
+        parsePrompt(args)
+        // TODO switch the textfield
+        if (args.count > 1) {
+            // TODO
+            // boundField = String(data: Data(base64Encoded: String(args[1]))!, encoding: .utf8)!
+        }
+    }
+    
     func parsePrompt(_ args: [Substring]) {
         boundPrompt = String(data: Data(base64Encoded: String(args[0]))!, encoding: .utf8)!
     }
@@ -58,8 +72,9 @@ class ClientConnection: ObservableObject {
         let command = splits[0]
         splits.removeFirst()
         switch command {
-        case "prompt/plain":
-            parsePrompt(splits)
+        case "prompt/plain":     parsePrompt(splits);    break
+        case "prompt/smalltalk": parseSmalltalk(splits); break
+        case "prompt/password":  parsePromptPwd(splits); break
         default:
             print("Unrecognized escape code!")
         }
