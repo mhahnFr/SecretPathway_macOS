@@ -15,10 +15,9 @@ struct ContentView: View {
     var body: some View {
         VStack {
             ScrollView(content: {
-                Text(connection.boundText)
-                    .fixedSize(horizontal: false, vertical: false)
-                    .frame(minWidth: 300, idealWidth: 750, maxWidth: .infinity, minHeight: 200, idealHeight: 500, maxHeight: .infinity, alignment: .topLeading)
+                TextField("", text: $connection.boundText)
                     .font(font)
+                    .disabled(true)
             })
             HStack(alignment: .center, spacing: nil, content: {
                 Text(connection.boundPrompt)
@@ -32,7 +31,7 @@ struct ContentView: View {
                 })
                 .font(font)
             })
-        }
+        }.frame(minWidth: 300, idealWidth: 750, maxWidth: .infinity, minHeight: 200, idealHeight: 500, maxHeight: .infinity, alignment: .center)
     }
 }
 
