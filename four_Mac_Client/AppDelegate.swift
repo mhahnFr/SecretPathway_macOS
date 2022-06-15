@@ -18,9 +18,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         connection = ClientConnection()
         let contentView = ContentView(connection: connection)
 
-//        let connectionObserver = ConnectionObserver()
-//        connection.addObserver(connectionObserver)
-//        connection.establishConnection()
         // Create the window and set the content view.
         window = NSWindow(
             contentRect: NSRect(x: 500, y: 500, width: 750, height: 500),

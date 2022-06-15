@@ -88,10 +88,14 @@ class ClientConnection: ObservableObject {
         let data = data2 + "\n"
         connection.send(content: data.data(using: .utf8), isComplete: true, completion: .contentProcessed({ (error) in
             if let error = error {
-                print("Terror")
-                // TODO Error handling
+                self.showError(error.debugDescription)
             }
         }))
+    }
+    
+    func showError(_ text: String) {
+        // TODO highlight
+        boundText.append(text)
     }
     
     func close() {
