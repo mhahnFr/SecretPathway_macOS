@@ -43,7 +43,7 @@
 		BFDDA0D528119FEC00C3E84A = {
 			isa = PBXGroup;
 			children = (
-				BFDDA0E028119FEC00C3E84A /* four_Mac_Client */,
+				BFDDA0E028119FEC00C3E84A /* src */,
 				BFDDA0DF28119FEC00C3E84A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,7 +56,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BFDDA0E028119FEC00C3E84A /* four_Mac_Client */ = {
+		BFDDA0E028119FEC00C3E84A /* src */ = {
 			isa = PBXGroup;
 			children = (
 				BF1129832854FA0400EACD21 /* ClientConnection.swift */,
@@ -69,7 +69,7 @@
 				BFDDA0EE28119FEE00C3E84A /* four_Mac_Client.entitlements */,
 				BFDDA0E728119FEE00C3E84A /* Preview Content */,
 			);
-			path = four_Mac_Client;
+			path = src;
 			sourceTree = "<group>";
 		};
 		BFDDA0E728119FEE00C3E84A /* Preview Content */ = {
