@@ -1,12 +1,11 @@
-#  Welcome to four_Mac_Client!
-This repository contains a client for *[four]*, written in Swift for macOS.
-
-## Purpose
-The purpose of this client is to provide a fully integrated client for macOS. The default client of [four],
-which is written Java, supports multiple platforms, but does not provide the full Look&Feel of a native
-Mac-App.
+#  Welcome to the SecretPathway_macOS!
+This repository contains the `macOS` version of the *[SecretPathway]*, written in Swift for `macOS`.
 
 ### Final notes
 This version of the client is still work in progress.
 
-[four]: https://www.github.com/nijakow/four
+This repository is licensed under the terms of the GPL 3.0.
+
+© Copyright 2022 [mhahnFr](https://www.github.com/mhahnFr)
+
+[SecretPathway]: https://www.github.com/mhahnFr/SecretPathway
