@@ -14,6 +14,8 @@
 		BFDDA0E628119FEE00C3E84A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E528119FEE00C3E84A /* Assets.xcassets */; };
 		BFDDA0E928119FEE00C3E84A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E828119FEE00C3E84A /* Preview Assets.xcassets */; };
 		BFDDA0EC28119FEE00C3E84A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0EA28119FEE00C3E84A /* Main.storyboard */; };
+		BFEC182C28BD00DB00894639 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = BFEC182A28BD00DB00894639 /* LICENSE */; };
+		BFEC182D28BD00DB00894639 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BFEC182B28BD00DB00894639 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		BFDDA0EB28119FEE00C3E84A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BFDDA0ED28119FEE00C3E84A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFDDA0EE28119FEE00C3E84A /* four_Mac_Client.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = four_Mac_Client.entitlements; sourceTree = "<group>"; };
+		BFEC182A28BD00DB00894639 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		BFEC182B28BD00DB00894639 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +47,8 @@
 		BFDDA0D528119FEC00C3E84A = {
 			isa = PBXGroup;
 			children = (
+				BFEC182A28BD00DB00894639 /* LICENSE */,
+				BFEC182B28BD00DB00894639 /* README.md */,
 				BFDDA0E028119FEC00C3E84A /* src */,
 				BFDDA0DF28119FEC00C3E84A /* Products */,
 			);
@@ -139,6 +145,8 @@
 			files = (
 				BFDDA0EC28119FEE00C3E84A /* Main.storyboard in Resources */,
 				BFDDA0E928119FEE00C3E84A /* Preview Assets.xcassets in Resources */,
+				BFEC182D28BD00DB00894639 /* README.md in Resources */,
+				BFEC182C28BD00DB00894639 /* LICENSE in Resources */,
 				BFDDA0E628119FEE00C3E84A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
