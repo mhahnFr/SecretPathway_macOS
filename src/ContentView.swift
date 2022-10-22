@@ -29,16 +29,15 @@ struct ContentView: View {
     var body: some View {
         VStack {
             ScrollView(content: {
-                TextField("", text: $connection.boundText)
+                Text(connection.boundText)
                     .font(font)
-                    .disabled(true)
             })
             HStack(alignment: .center, spacing: nil, content: {
                 Spacer()
                 Text(connection.boundPrompt)
                     .font(font)
                 TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: { sendMessage() })
-                .font(font)
+                    .font(font)
                 Button("Send", action: {
                     if !userInput.isEmpty {
                         sendMessage()
