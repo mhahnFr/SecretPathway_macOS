@@ -20,15 +20,8 @@
  */
 
 import Foundation
+import AppKit
 
-class Settings: ObservableObject {
-    static let shared = Settings()
-    var port: Int
-    var host: String
+class SettingsViewDelegate: NSObject, NSWindowDelegate {
     
-    private init() {
-        // TODO: Read settings from somewhere
-        port = 4242
-        host = "127.0.0.1"
-    }
 }

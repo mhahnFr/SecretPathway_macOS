@@ -14,6 +14,8 @@
 		BFDDA0E628119FEE00C3E84A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E528119FEE00C3E84A /* Assets.xcassets */; };
 		BFDDA0E928119FEE00C3E84A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E828119FEE00C3E84A /* Preview Assets.xcassets */; };
 		BFDDA0EC28119FEE00C3E84A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0EA28119FEE00C3E84A /* Main.storyboard */; };
+		BFEA07B729043DB500294822 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEA07B629043DB500294822 /* SettingsView.swift */; };
+		BFEA07B929043DCC00294822 /* SettingsViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEA07B829043DCC00294822 /* SettingsViewDelegate.swift */; };
 		BFEC182C28BD00DB00894639 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = BFEC182A28BD00DB00894639 /* LICENSE */; };
 		BFEC182D28BD00DB00894639 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BFEC182B28BD00DB00894639 /* README.md */; };
 /* End PBXBuildFile section */
@@ -29,6 +31,8 @@
 		BFDDA0EB28119FEE00C3E84A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BFDDA0ED28119FEE00C3E84A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BFDDA0EE28119FEE00C3E84A /* SecretPathway_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SecretPathway_macOS.entitlements; sourceTree = "<group>"; };
+		BFEA07B629043DB500294822 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BFEA07B829043DCC00294822 /* SettingsViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewDelegate.swift; sourceTree = "<group>"; };
 		BFEC182A28BD00DB00894639 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BFEC182B28BD00DB00894639 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,6 +78,8 @@
 				BFDDA0ED28119FEE00C3E84A /* Info.plist */,
 				BFDDA0EE28119FEE00C3E84A /* SecretPathway_macOS.entitlements */,
 				BFDDA0E728119FEE00C3E84A /* Preview Content */,
+				BFEA07B629043DB500294822 /* SettingsView.swift */,
+				BFEA07B829043DCC00294822 /* SettingsViewDelegate.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -158,7 +164,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BF1129842854FA0400EACD21 /* ClientConnection.swift in Sources */,
+				BFEA07B929043DCC00294822 /* SettingsViewDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
 				BFDDA0E428119FEC00C3E84A /* ContentView.swift in Sources */,
 				BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */,
@@ -313,7 +321,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.mhahnFr.SecretPathway-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -337,7 +345,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "de.mhahnFr.SecretPathway-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
