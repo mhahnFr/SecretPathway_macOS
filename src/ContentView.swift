@@ -29,7 +29,8 @@ struct ContentView: View {
     var body: some View {
         VStack {
             ScrollView(content: {
-                Text(connection.boundText)
+                // TODO: Maybe use UITextView instead
+                TextEditor(text: .constant(connection.boundText))
                     .font(font)
             })
             HStack(alignment: .center, spacing: nil, content: {
