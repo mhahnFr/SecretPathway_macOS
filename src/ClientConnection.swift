@@ -54,10 +54,16 @@ class ClientConnection: ObservableObject {
                     DispatchQueue.main.async {
                         self.parseData(str)
                     }
+                } else {
+                    print("No string")
                 }
+            } else {
+                print("No data")
             }
             if !completed {
                 self.receive()
+            } else {
+                print("Connection closed")
             }
         }
     }
@@ -116,7 +122,7 @@ class ClientConnection: ObservableObject {
     func send(string data2: String) {
         let data = data2 + "\n"
         connection.send(content: data.data(using: .utf8), isComplete: true, completion: .contentProcessed({ (error) in
-            if let error = error {
+            if let error {
                 self.showError(error.debugDescription)
             }
         }))
