@@ -43,18 +43,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Create the SwiftUI view that provides the window contents.
         connection = ClientConnection()
         let contentView = ContentView(connection: connection)
 
-        // Create the window and set the content view.
         window = NSWindow(
             contentRect: NSRect(x: 500, y: 500, width: 750, height: 500),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
+        window.setFrameAutosaveName("SecretPathway")
         window.isReleasedWhenClosed = false
-        window.setFrameAutosaveName("Main Window")
-        window.contentView = NSHostingView(rootView: contentView)
+        window.contentView          = NSHostingView(rootView: contentView)
+        window.title                = "SecretPathway"
         window.makeKeyAndOrderFront(nil)
     }
 

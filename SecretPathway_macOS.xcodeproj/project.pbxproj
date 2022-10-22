@@ -23,7 +23,7 @@
 /* Begin PBXFileReference section */
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		BF1129832854FA0400EACD21 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
-		BFDDA0DE28119FEC00C3E84A /* SecretPathway_macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecretPathway_macOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFDDA0DE28119FEC00C3E84A /* SecretPathway.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecretPathway.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFDDA0E328119FEC00C3E84A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BFDDA0E528119FEE00C3E84A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -61,7 +61,7 @@
 		BFDDA0DF28119FEC00C3E84A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BFDDA0DE28119FEC00C3E84A /* SecretPathway_macOS.app */,
+				BFDDA0DE28119FEC00C3E84A /* SecretPathway.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BFDDA0DD28119FEC00C3E84A /* SecretPathway_macOS */ = {
+		BFDDA0DD28119FEC00C3E84A /* SecretPathway */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BFDDA0F128119FEE00C3E84A /* Build configuration list for PBXNativeTarget "SecretPathway_macOS" */;
+			buildConfigurationList = BFDDA0F128119FEE00C3E84A /* Build configuration list for PBXNativeTarget "SecretPathway" */;
 			buildPhases = (
 				BFDDA0DA28119FEC00C3E84A /* Sources */,
 				BFDDA0DB28119FEC00C3E84A /* Frameworks */,
@@ -107,9 +107,9 @@
 			);
 			dependencies = (
 			);
-			name = SecretPathway_macOS;
+			name = SecretPathway;
 			productName = four_Mac_Client;
-			productReference = BFDDA0DE28119FEC00C3E84A /* SecretPathway_macOS.app */;
+			productReference = BFDDA0DE28119FEC00C3E84A /* SecretPathway.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -139,7 +139,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BFDDA0DD28119FEC00C3E84A /* SecretPathway_macOS */,
+				BFDDA0DD28119FEC00C3E84A /* SecretPathway */,
 			);
 		};
 /* End PBXProject section */
@@ -239,7 +239,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -295,7 +295,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -364,7 +364,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BFDDA0F128119FEE00C3E84A /* Build configuration list for PBXNativeTarget "SecretPathway_macOS" */ = {
+		BFDDA0F128119FEE00C3E84A /* Build configuration list for PBXNativeTarget "SecretPathway" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BFDDA0F228119FEE00C3E84A /* Debug */,
