@@ -33,7 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let window           = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 50), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
         
         window.setFrameAutosaveName("Settings")
-        window.isReleasedWhenClosed = true
+        window.isReleasedWhenClosed = false
         window.title                = "Settings"
         window.contentView          = NSHostingView(rootView: contentView)
         window.delegate             = settingsDelegate
