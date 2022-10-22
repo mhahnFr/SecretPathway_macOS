@@ -28,7 +28,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var connection: ClientConnection!
     
     @IBAction func settingsAction(_ sender: NSMenuItem) {
-        print("TODO: Open settings window")
+        let contentView      = SettingsView()
+        let settingsDelegate = SettingsViewDelegate()
+        let window           = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 50), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+        
+        window.setFrameAutosaveName("Settings")
+        window.isReleasedWhenClosed = true
+        window.title                = "Settings"
+        window.contentView          = NSHostingView(rootView: contentView)
+        window.delegate             = settingsDelegate
+        
+        window.center()
+        NSApp.runModal(for: window)
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {

@@ -23,5 +23,8 @@ import Foundation
 import AppKit
 
 class SettingsViewDelegate: NSObject, NSWindowDelegate {
-    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        NSApp.stopModal()
+        return true
+    }
 }
