@@ -34,18 +34,28 @@ struct ContentView: View {
                     .disabled(true)
             })
             HStack(alignment: .center, spacing: nil, content: {
+                Spacer()
                 Text(connection.boundPrompt)
                     .font(font)
-                TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: {
-                    connection.send(string: userInput)
-                    connection.boundText.append(connection.boundPrompt)
-                    connection.boundText.append(userInput)
-                    connection.boundText.append("\n")
-                    userInput = ""
-                })
+                TextField("", text: $userInput, onEditingChanged: { _ in return }, onCommit: { sendMessage() })
                 .font(font)
+                Button("Send", action: {
+                    if !userInput.isEmpty {
+                        sendMessage()
+                    }
+                })
+                Spacer()
             })
+            Spacer()
         }.frame(minWidth: 300, idealWidth: 750, maxWidth: .infinity, minHeight: 200, idealHeight: 500, maxHeight: .infinity, alignment: .center)
+    }
+    
+    func sendMessage() {
+        connection.send(string: userInput)
+        connection.boundText.append(connection.boundPrompt)
+        connection.boundText.append(userInput)
+        connection.boundText.append("\n")
+        userInput = ""
     }
 }
 
