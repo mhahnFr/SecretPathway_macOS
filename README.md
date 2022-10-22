@@ -2,7 +2,7 @@
 This repository contains the `macOS` version of the *[SecretPathway]*, a [MUD] client. This
 version is written in Swift for `macOS`.
 
-_macOS 11.0 or newer is reqired to build and run this app._
+_macOS 11.0 or newer is required to build and run this app._
 
 ### Final notes
 This version of the client is still work in progress.
