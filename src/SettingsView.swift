@@ -26,10 +26,10 @@ struct SettingsView: View {
     @ObservedObject var settings = Settings.shared
     @State          var portNo   = String(Settings.shared.port)
     
-    let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    let columns = [GridItem(.fixed(160)), GridItem(.flexible(minimum: 160))]
     
     var body: some View {
-        LazyVGrid(columns: columns, content: {
+        LazyVGrid(columns: columns, spacing: 20, content: {
             Text("Hostname or IP-address: ")
             TextField("Hostname or Ip-address", text: $settings.host)
             Text("Port: ")
