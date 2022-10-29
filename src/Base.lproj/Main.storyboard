@@ -18,13 +18,13 @@
                                         <menuItem title="About SecretPathway_macOS" id="5kV-Vb-QxS">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
-                                                <action selector="orderFrontStandardAboutPanel:" target="Ady-hI-5gd" id="Exp-CZ-Vem"/>
+                                                <action selector="aboutAction:" target="Voe-Tx-rLC" id="UDM-xb-MuC"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
                                         <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
                                             <connections>
-                                                <action selector="settingsAction:" target="Voe-Tx-rLC" id="57f-gq-8OD"/>
+                                                <action selector="settingsAction:" target="Voe-Tx-rLC" id="QWU-cl-1c4"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>

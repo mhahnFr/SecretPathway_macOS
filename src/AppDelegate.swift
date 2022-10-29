@@ -27,6 +27,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     var connection: ClientConnection!
     
+    @IBAction func aboutAction(_ sender: NSMenuItem) {
+        let contentView   = AboutView();
+        let window        = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 500, height: 150), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        
+        window.setFrameAutosaveName("About")
+        window.isReleasedWhenClosed = false;
+        window.title                = "About SecretPathway"
+        window.contentView          = NSHostingView(rootView: contentView)
+        
+        window.center()
+        window.makeKeyAndOrderFront(sender)
+    }
+    
     @IBAction func settingsAction(_ sender: NSMenuItem) {
         let contentView      = SettingsView()
         let settingsDelegate = SettingsViewDelegate()

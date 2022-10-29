@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BF1129802854EBDC00EACD21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11297F2854EBDC00EACD21 /* Settings.swift */; };
 		BF1129842854FA0400EACD21 /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1129832854FA0400EACD21 /* ClientConnection.swift */; };
+		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
 		BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */; };
 		BFDDA0E428119FEC00C3E84A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDDA0E328119FEC00C3E84A /* ContentView.swift */; };
 		BFDDA0E628119FEE00C3E84A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E528119FEE00C3E84A /* Assets.xcassets */; };
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		BF1129832854FA0400EACD21 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
+		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		BFDDA0DE28119FEC00C3E84A /* SecretPathway.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecretPathway.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFDDA0E328119FEC00C3E84A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				BF1129832854FA0400EACD21 /* ClientConnection.swift */,
 				BF11297F2854EBDC00EACD21 /* Settings.swift */,
 				BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */,
+				BF54F64C290D6F410093037F /* AboutView.swift */,
 				BFDDA0E328119FEC00C3E84A /* ContentView.swift */,
 				BFDDA0E528119FEE00C3E84A /* Assets.xcassets */,
 				BFDDA0EA28119FEE00C3E84A /* Main.storyboard */,
@@ -165,6 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
+				BF54F64D290D6F410093037F /* AboutView.swift in Sources */,
 				BF1129842854FA0400EACD21 /* ClientConnection.swift in Sources */,
 				BFEA07B929043DCC00294822 /* SettingsViewDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
