@@ -63,7 +63,11 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <menu key="submenu" title="Connection" id="F65-72-Qy4">
                                     <items>
-                                        <menuItem title="New..." keyEquivalent="n" id="PdM-sc-0Im"/>
+                                        <menuItem title="New..." keyEquivalent="n" id="PdM-sc-0Im">
+                                            <connections>
+                                                <action selector="newConnectionAction:" target="Voe-Tx-rLC" id="KGI-NK-Leb"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Recents" id="1l0-78-8n6">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <menu key="submenu" title="Recents" id="rcB-AK-xKS">
@@ -610,6 +614,9 @@
                                         <menuItem isSeparatorItem="YES" id="MVs-PB-w4a"/>
                                         <menuItem title="New Window..." id="qq8-zG-HyW">
                                             <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="newWindowAction:" target="Voe-Tx-rLC" id="fao-Ci-Gvk"/>
+                                            </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VMA-1q-qVV"/>
                                         <menuItem title="Bring All to Front" id="LE2-aR-0XJ">

@@ -24,15 +24,14 @@ import SwiftUI
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-    var window: NSWindow!
-    var connection: ClientConnection!
+    var delegates: [ConnectionDelegate] = []
     
     @IBAction func aboutAction(_ sender: NSMenuItem) {
         let contentView   = AboutView();
         let window        = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 500, height: 150), styleMask: [.titled, .closable], backing: .buffered, defer: false)
         
         window.setFrameAutosaveName("About")
-        window.isReleasedWhenClosed = false;
+        window.isReleasedWhenClosed = false
         window.title                = "About SecretPathway"
         window.contentView          = NSHostingView(rootView: contentView)
         
@@ -54,23 +53,71 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         NSApp.runModal(for: window)
     }
+    
+    @IBAction func newConnectionAction(_ sender: NSMenuItem) {
+        guard let connection = promptConnection() else { return }
+        
+        let delegate = ConnectionDelegate(for: connection)
+        delegates.append(delegate)
+        
+        let contentView = ConnectionView(for: connection)
+        
+        let window = createConnectionWindow()
+        
+        window.title       = connection.getName()
+        window.contentView = NSHostingView(rootView: contentView)
+        window.delegate    = delegate
+        
+        window.center()
+        window.makeKeyAndOrderFront(sender)
+    }
+    
+    @IBAction func newWindowAction(_ sender: NSMenuItem) {
+        let window      = createConnectionWindow()
+        let contentView = ConnectionView(for: nil)
+        
+        window.title       = "New connection..."
+        window.contentView = NSHostingView(rootView: contentView)
+        
+        window.center()
+        window.makeKeyAndOrderFront(sender)
+        
+        if let connection = promptConnection(in: window) {
+            let delegate = ConnectionDelegate(for: connection)
+            delegates.append(delegate)
+            window.delegate = delegate
+        } else {
+            window.close()
+        }
+    }
+    
+    /// Prompts the user to enter the informations needed to establish a MUD connection.
+    /// If the user aborts the process or the Connection could not be created, nil is returned.
+    ///
+    /// - Parameter window: The window in which the dialog should be embedded.
+    /// - Returns: A connection that is technically able to connect to a MUD or nil.
+    private func promptConnection(in window: NSWindow? = nil) -> Connection? {
+        // TODO: Implement
+        return nil
+    }
+    
+    /// Creates and returns a window suitable as UI for a MUD connection.
+    ///
+    /// - Returns: A new window.
+    private func createConnectionWindow() -> NSWindow {
+        let toReturn = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 750, height: 500), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
+        
+        toReturn.setFrameAutosaveName("Window #\(delegates.count)")
+        toReturn.isReleasedWhenClosed = false
+        
+        return toReturn
+    }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        connection = ClientConnection()
-        let contentView = ContentView(connection: connection)
-
-        window = NSWindow(
-            contentRect: NSRect(x: 500, y: 500, width: 750, height: 500),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-            backing: .buffered, defer: false)
-        window.setFrameAutosaveName("SecretPathway")
-        window.isReleasedWhenClosed = false
-        window.contentView          = NSHostingView(rootView: contentView)
-        window.title                = "SecretPathway"
-        window.makeKeyAndOrderFront(nil)
+        // TODO: Load previous state, trigger openWindowAction by default
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        connection.close()
+        // TODO: Notify all open connections
     }
 }
