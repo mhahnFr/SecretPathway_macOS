@@ -97,8 +97,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// - Parameter window: The window in which the dialog should be embedded.
     /// - Returns: A connection that is technically able to connect to a MUD or nil.
     private func promptConnection(in window: NSWindow? = nil) -> Connection? {
-        // TODO: Implement
-        return nil
+        let alert = NSAlert()
+        
+        let contentView = ConnectionPromptView()
+        
+        alert.alertStyle    = .informational
+        alert.messageText   = "Enter the host name or the IP address and the port:"
+        alert.accessoryView = NSHostingView(rootView: contentView) // FIXME: SwiftUI not displayed
+        
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Cancel")
+        
+        alert.window.initialFirstResponder = alert.accessoryView
+        
+        var toReturn: Connection?
+        
+        func alertHandler(with response: NSApplication.ModalResponse) {
+            if response == .alertFirstButtonReturn {
+                // TODO: Get the data
+            }
+        }
+        
+        if let window {
+            alert.beginSheetModal(for: window, completionHandler: alertHandler(with:))
+        } else {
+            alertHandler(with: alert.runModal())
+        }
+        return toReturn
     }
     
     /// Creates and returns a window suitable as UI for a MUD connection.
