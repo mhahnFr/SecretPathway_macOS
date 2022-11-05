@@ -97,31 +97,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// - Parameter window: The window in which the dialog should be embedded.
     /// - Returns: A connection that is technically able to connect to a MUD or nil.
     private func promptConnection(in window: NSWindow? = nil) -> Connection? {
-        let alert = NSAlert()
+        let dialog = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+
+        let delegate    = ConnectionPromptDelegate()
+        let contentView = ConnectionPromptView(delegate: delegate)
         
-        let contentView = ConnectionPromptView()
-        
-        alert.alertStyle    = .informational
-        alert.messageText   = "Enter the host name or the IP address and the port:"
-        alert.accessoryView = NSHostingView(rootView: contentView) // FIXME: SwiftUI not displayed
-        
-        alert.addButton(withTitle: "OK")
-        alert.addButton(withTitle: "Cancel")
-        
-        alert.window.initialFirstResponder = alert.accessoryView
+        dialog.contentView          = NSHostingView(rootView: contentView);
+        dialog.delegate             = delegate
+        dialog.title                = "SecretPathway: New connection"
+        dialog.isReleasedWhenClosed = false
         
         var toReturn: Connection?
         
-        func alertHandler(with response: NSApplication.ModalResponse) {
-            if response == .alertFirstButtonReturn {
-                // TODO: Get the data
-            }
+        func dialogHandler(with response: NSApplication.ModalResponse) {
+            // TODO: Get the data
         }
         
         if let window {
-            alert.beginSheetModal(for: window, completionHandler: alertHandler(with:))
+            window.beginSheet(window, completionHandler: dialogHandler(with:))
         } else {
-            alertHandler(with: alert.runModal())
+            dialogHandler(with: NSApp.runModal(for: dialog))
         }
         return toReturn
     }
