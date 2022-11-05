@@ -114,7 +114,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         
         if let window {
-            window.beginSheet(window, completionHandler: dialogHandler(with:))
+            dialog.beginSheet(window, completionHandler: dialogHandler(with:))
         } else {
             dialogHandler(with: NSApp.runModal(for: dialog))
         }
