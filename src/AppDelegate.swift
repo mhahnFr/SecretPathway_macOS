@@ -99,7 +99,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func promptConnection(in window: NSWindow? = nil) -> Connection? {
         let dialog = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable], backing: .buffered, defer: false)
 
-        let delegate    = ConnectionPromptDelegate()
+        let delegate    = ConnectionPromptDelegate(with: dialog)
         let contentView = ConnectionPromptView(delegate: delegate)
         
         dialog.contentView          = NSHostingView(rootView: contentView);

@@ -26,6 +26,24 @@ class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
     @Published var hostname = ""
     @Published var port     = ""
     
+    var accepted = false
+    
+    private weak var window: NSWindow?
+    
+    init(with window: NSWindow?) {
+        self.window = window
+    }
+    
+    func accept() {
+        accepted = true
+        window?.close()
+    }
+    
+    func dismiss() {
+        accepted = false
+        window?.close()
+    }
+    
     func windowWillClose(_ notification: Notification) {
         NSApp.stopModal()
     }
