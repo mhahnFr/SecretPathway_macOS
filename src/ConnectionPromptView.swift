@@ -28,18 +28,27 @@ struct ConnectionPromptView: View {
         VStack {
             VStack(alignment: .leading) {
                 Text("Enter the hostname or the IP address:")
-                TextField("", text: $delegate.hostname)
+                TextField("hostname or IP address, ex: localhost", text: $delegate.hostname)
             }.border(.separator)
             VStack(alignment: .leading) {
                 Text("Enter the port number:")
-                TextField("", text: $delegate.port)
+                TextField("port number, ex: 4242", text: $delegate.port)
             }.border(.separator)
-        }
+            HStack {
+                Spacer()
+                Button("Cancel") {
+                    delegate.dismiss()
+                }.keyboardShortcut(.cancelAction)
+                Button("OK") {
+                    delegate.accept()
+                }.keyboardShortcut(.defaultAction)
+            }
+        }.padding()
     }
 }
 
 struct ConnectionPromptView_Previews: PreviewProvider {
     static var previews: some View {
-        ConnectionPromptView(delegate: ConnectionPromptDelegate())
+        ConnectionPromptView(delegate: ConnectionPromptDelegate(with: nil))
     }
 }
