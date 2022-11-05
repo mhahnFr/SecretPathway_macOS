@@ -28,11 +28,23 @@ struct ConnectionPromptView: View {
         VStack {
             VStack(alignment: .leading) {
                 Text("Enter the hostname or the IP address:")
-                TextField("hostname or IP address, ex: localhost", text: $delegate.hostname)
+                if #available(macOS 12.0, *) {
+                    TextField("hostname or IP address, ex: localhost", text: $delegate.hostname).onSubmit {
+                        delegate.accept()
+                    }
+                } else {
+                    TextField("hostname or IP address, ex: localhost", text: $delegate.hostname)
+                }
             }.border(.separator)
             VStack(alignment: .leading) {
                 Text("Enter the port number:")
-                TextField("port number, ex: 4242", text: $delegate.port)
+                if #available(macOS 12.0, *) {
+                    TextField("port number, ex: 4242", text: $delegate.port).onSubmit {
+                        delegate.accept()
+                    }
+                } else {
+                    TextField("port number, ex: 4242", text: $delegate.port)
+                }
             }.border(.separator)
             HStack {
                 Spacer()
