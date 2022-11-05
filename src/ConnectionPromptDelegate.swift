@@ -19,27 +19,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import AppKit
 import SwiftUI
 
-struct ConnectionPromptView: View {
-    @ObservedObject var delegate: ConnectionPromptDelegate
+class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
+    @Published var hostname = ""
+    @Published var port     = ""
     
-    var body: some View {
-        VStack {
-            VStack(alignment: .leading) {
-                Text("Enter the hostname or the IP address:")
-                TextField("", text: $delegate.hostname)
-            }.border(.separator)
-            VStack(alignment: .leading) {
-                Text("Enter the port number:")
-                TextField("", text: $delegate.port)
-            }.border(.separator)
-        }
-    }
-}
-
-struct ConnectionPromptView_Previews: PreviewProvider {
-    static var previews: some View {
-        ConnectionPromptView(delegate: ConnectionPromptDelegate())
+    func windowWillClose(_ notification: Notification) {
+        NSApp.stopModal()
     }
 }
