@@ -71,32 +71,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.makeKeyAndOrderFront(sender)
     }
-    
-    @IBAction func newWindowAction(_ sender: NSMenuItem) {
-        let window      = createConnectionWindow()
-        let contentView = ConnectionView(for: nil)
         
-        window.title       = "New connection..."
-        window.contentView = NSHostingView(rootView: contentView)
-        
-        window.center()
-        window.makeKeyAndOrderFront(sender)
-        
-        if let connection = promptConnection(in: window) {
-            let delegate = ConnectionDelegate(for: connection)
-            delegates.append(delegate)
-            window.delegate = delegate
-        } else {
-            window.close()
-        }
-    }
-    
     /// Prompts the user to enter the informations needed to establish a MUD connection.
     /// If the user aborts the process or the Connection could not be created, nil is returned.
     ///
-    /// - Parameter window: The window in which the dialog should be embedded.
     /// - Returns: A connection that is technically able to connect to a MUD or nil.
-    private func promptConnection(in window: NSWindow? = nil) -> Connection? {
+    private func promptConnection() -> Connection? {
         let dialog = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable], backing: .buffered, defer: false)
 
         let delegate    = ConnectionPromptDelegate(with: dialog)
@@ -107,18 +87,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         dialog.title                = "SecretPathway: New connection"
         dialog.isReleasedWhenClosed = false
         
-        var toReturn: Connection?
-        
-        func dialogHandler(with response: NSApplication.ModalResponse) {
-            // TODO: Get the data
-        }
-        
-        if let window {
-            dialog.beginSheet(window, completionHandler: dialogHandler(with:))
-        } else {
-            dialogHandler(with: NSApp.runModal(for: dialog))
-        }
-        return toReturn
+        NSApp.runModal(for: dialog)
+        return Connection(hostname: delegate.hostname, port: delegate.port)
     }
     
     /// Creates and returns a window suitable as UI for a MUD connection.
