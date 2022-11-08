@@ -25,6 +25,8 @@ import AppKit
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// The content that was received on the connection.
     @Published private(set) var content = ""
+    /// The prompt text.
+    @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
     @Published private(set) var message: String?
     
@@ -40,6 +42,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     ///
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
+        if let prompt {
+            content.append(contentsOf: prompt)
+            if prompt.last != " " { content.append(" ") }
+        }
         content.append(contentsOf: text)
         content.append("\n")
     }

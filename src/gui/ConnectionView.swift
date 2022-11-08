@@ -33,7 +33,9 @@ struct ConnectionView: View {
             }
             TextEditor(text: .constant(delegate.content)) // TODO: Needs to be provided
             HStack {
-                Text("Prompt >")
+                if let prompt = delegate.prompt {
+                    Text(prompt)
+                }
                 if #available(macOS 12.0, *) {
                     TextField("Enter something...", text: $enteredText).onSubmit {
                         sendMessage()
