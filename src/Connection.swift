@@ -20,6 +20,22 @@
  */
 
 class Connection {
+    let hostname: String
+    let port: Int
+    
+    init?(hostname: String, port: Int) {
+        if hostname.isEmpty || port < 0 { return nil }
+        
+        self.hostname = hostname
+        self.port     = port
+    }
+    
+    convenience init?(hostname: String, port: String) {
+        guard let port = Int(port) else { return nil }
+        
+        self.init(hostname: hostname, port: port)
+    }
+    
     func getName() -> String {
         return "no name"
     }
