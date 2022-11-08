@@ -45,7 +45,9 @@ struct ConnectionView: View {
                     sendMessage()
                 }.keyboardShortcut(.defaultAction)
             }
-        }.padding(5)
+        }
+        .frame(minWidth: 300, idealWidth: 750, minHeight: 200, idealHeight: 500)
+        .padding(5)
     }
     
     private func sendMessage() {
