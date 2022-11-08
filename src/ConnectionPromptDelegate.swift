@@ -36,11 +36,15 @@ class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
     
     func accept() {
         accepted = true
-        window?.close()
+        close()
     }
     
     func dismiss() {
         accepted = false
+        close()
+    }
+    
+    func close() {
         window?.close()
     }
     
