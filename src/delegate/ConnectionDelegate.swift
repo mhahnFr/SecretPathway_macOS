@@ -24,9 +24,9 @@ import AppKit
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// The content that was received on the connection.
-    @Published var content = ""
+    @Published private(set) var content = ""
     /// A string that can hold a message displayed for the user.
-    @Published var message: String?
+    @Published private(set) var message: String?
     
     /// The connection that is managed by this delegate instance.
     private let connection: Connection
@@ -34,5 +34,13 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// Initializes this instance using the given connection.
     init(for connection: Connection) {
         self.connection = connection
+    }
+    
+    /// Attempts to send the given string.
+    ///
+    /// - Parameter text: The text that should be sent.
+    func send(_ text: String) {
+        content.append(contentsOf: text)
+        content.append("\n")
     }
 }

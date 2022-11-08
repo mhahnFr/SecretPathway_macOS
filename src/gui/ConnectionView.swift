@@ -51,8 +51,8 @@ struct ConnectionView: View {
     }
     
     private func sendMessage() {
-        delegate.message = enteredText
-        if enteredText.isEmpty { delegate.message = nil }
+        delegate.send(enteredText)
+        enteredText = ""
     }
 }
 
