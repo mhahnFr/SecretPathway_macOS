@@ -21,8 +21,18 @@
 
 import AppKit
 
-class ConnectionDelegate: NSObject, NSWindowDelegate {
+/// This class controls a view that acts as  user interface for a MUD connection.
+class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
+    /// The content that was received on the connection.
+    @Published var content = ""
+    /// A string that can hold a message displayed for the user.
+    @Published var message: String?
+    
+    /// The connection that is managed by this delegate instance.
+    private let connection: Connection
+    
+    /// Initializes this instance using the given connection.
     init(for connection: Connection) {
-        let _ = connection
+        self.connection = connection
     }
 }

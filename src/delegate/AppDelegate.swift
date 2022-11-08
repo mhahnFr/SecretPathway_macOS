@@ -71,7 +71,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         recentsMenu.addItem(item)
         recents[item] = connection
         
-        let contentView = ConnectionView(for: connection)
+        let contentView = ConnectionView(delegate: delegate)
         
         let window = createConnectionWindow()
         

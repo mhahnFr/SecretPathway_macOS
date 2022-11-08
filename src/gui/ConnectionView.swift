@@ -22,17 +22,40 @@
 import SwiftUI
 
 struct ConnectionView: View {
-    init(for connection: Connection?) {
-        let _ = connection
-    }
+    @ObservedObject var delegate: ConnectionDelegate
+
+    @State var enteredText = ""
     
     var body: some View {
-        Text("Hello, World!")
+        VStack {
+            if let message = delegate.message {
+                Text(message)
+            }
+            TextEditor(text: .constant(delegate.content)) // TODO: Needs to be provided
+            HStack {
+                Text("Prompt >")
+                if #available(macOS 12.0, *) {
+                    TextField("Enter something...", text: $enteredText).onSubmit {
+                        sendMessage()
+                    }
+                } else {
+                    TextField("Enter something...", text: $enteredText)
+                }
+                Button("Send") {
+                    sendMessage()
+                }.keyboardShortcut(.defaultAction)
+            }
+        }.padding(5)
+    }
+    
+    private func sendMessage() {
+        delegate.message = enteredText
+        if enteredText.isEmpty { delegate.message = nil }
     }
 }
 
 struct ConnectionView_Previews: PreviewProvider {
     static var previews: some View {
-        ConnectionView(for: nil)
+        ConnectionView(delegate: ConnectionDelegate(for: Connection(hostname: "localhost", port: 4242)!))
     }
 }
