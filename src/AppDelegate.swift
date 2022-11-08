@@ -24,6 +24,7 @@ import SwiftUI
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+    /// An array consisting of active MUD connection delegates.
     var delegates: [ConnectionDelegate] = []
     
     @IBAction func aboutAction(_ sender: NSMenuItem) {

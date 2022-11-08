@@ -19,10 +19,19 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// Represents a MUD connection.
 class Connection {
+    /// The hostname or the IP address to connect to.
     let hostname: String
+    /// The port to be used.
     let port: Int
     
+    /// Creates a connection instance using the given inforamtion.
+    ///
+    /// Returns nil if the hostname is nil or the port is negative.
+    ///
+    /// - Parameter hostname: The hostname or the IP address to connect to.
+    /// - Parameter port: The port to be used to connect to the given endpoint.
     init?(hostname: String, port: Int) {
         if hostname.isEmpty || port < 0 { return nil }
         
@@ -30,6 +39,12 @@ class Connection {
         self.port     = port
     }
     
+    /// Creates a connection instance using the given information.
+    ///
+    /// Returns nil if the hostname or the port is nil.
+    ///
+    /// - Parameter hostname: The hostname or the IP address to connect to.
+    /// - Parameter port: The port to be used to connect to the given endpoint.
     convenience init?(hostname: String, port: String) {
         guard let port = Int(port) else { return nil }
         
