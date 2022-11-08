@@ -22,28 +22,40 @@
 import AppKit
 import SwiftUI
 
+/// This class is a delegate for the windows prompting for the information
+/// needed to construct a Connection instance from.
 class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
+    /// The hostname, filled by the associated view.
     @Published var hostname = ""
+    /// The port, filled by the associated view.
     @Published var port     = ""
     
-    var accepted = false
+    /// Indicates whether the dialog has been accepted or dismissed.
+    private(set) var accepted = false
     
+    /// The reference to the associated NSWindow.
     private weak var window: NSWindow?
     
+    /// Initializes a new instance with the given window to take the control of.
+    ///
+    /// - Parameter window: The window to be controlled by this delegate.
     init(with window: NSWindow?) {
         self.window = window
     }
     
+    /// Marks this instance as accepted and closes the associated window if it is set.
     func accept() {
         accepted = true
         close()
     }
     
+    /// Marks this instance as dismissed and closes the associated window if it is set.
     func dismiss() {
         accepted = false
         close()
     }
     
+    /// Closes the associated window.
     func close() {
         window?.close()
     }
