@@ -26,6 +26,10 @@ import SwiftUI
 class AppDelegate: NSObject, NSApplicationDelegate {
     /// An array consisting of active MUD connection delegates.
     var delegates: [ConnectionDelegate] = []
+    /// An array containing the recent connections mapped to their menu items in the recents menu.
+    var recents: [NSMenuItem: Connection] = [:]
+    /// The menu with recent connections.
+    @IBOutlet weak var recentsMenu: NSMenu!
     
     @IBAction func aboutAction(_ sender: NSMenuItem) {
         let contentView   = AboutView();
@@ -61,6 +65,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let delegate = ConnectionDelegate(for: connection)
         delegates.append(delegate)
         
+        let item = NSMenuItem(title: connection.getName(), action: nil, keyEquivalent: "")
+        item.action = #selector(openRecentConnection)
+        
+        recentsMenu.addItem(item)
+        recents[item] = connection
+        
         let contentView = ConnectionView(for: connection)
         
         let window = createConnectionWindow()
@@ -72,7 +82,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.makeKeyAndOrderFront(sender)
     }
-        
+    
+    /// Opens the connection associated with the sender.
+    ///
+    /// - Parameter sender: The sender of the action.
+    @objc private func openRecentConnection(_ sender: NSMenuItem) {
+        // TODO: Implement
+        print(sender.title)
+    }
+
     /// Prompts the user to enter the informations needed to establish a MUD connection.
     /// If the user aborts the process or the Connection could not be created, nil is returned.
     ///

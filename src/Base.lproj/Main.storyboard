@@ -70,13 +70,7 @@
                                         </menuItem>
                                         <menuItem title="Recents" id="1l0-78-8n6">
                                             <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Recents" id="rcB-AK-xKS">
-                                                <items>
-                                                    <menuItem title="Item" id="jsf-Cc-l8s">
-                                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                                    </menuItem>
-                                                </items>
-                                            </menu>
+                                            <menu key="submenu" title="Recents" id="rcB-AK-xKS"/>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="7gx-jR-dTE"/>
                                         <menuItem title="Close" keyEquivalent="." id="Pga-E3-diG"/>
@@ -639,7 +633,11 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="SecretPathway" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="SecretPathway" customModuleProvider="target">
+                    <connections>
+                        <outlet property="recentsMenu" destination="rcB-AK-xKS" id="Llx-vE-h3o"/>
+                    </connections>
+                </customObject>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
