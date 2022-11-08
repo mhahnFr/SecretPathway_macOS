@@ -60,6 +60,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BFD5AB26291AABA300890CE6 /* gui */ = {
+			isa = PBXGroup;
+			children = (
+				BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */,
+				BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */,
+				BF54F64C290D6F410093037F /* AboutView.swift */,
+				BFDDA0E328119FEC00C3E84A /* ContentView.swift */,
+				BFEA07B629043DB500294822 /* SettingsView.swift */,
+			);
+			path = gui;
+			sourceTree = "<group>";
+		};
+		BFD5AB27291AABF200890CE6 /* delegate */ = {
+			isa = PBXGroup;
+			children = (
+				BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */,
+				BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */,
+				BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */,
+				BFEA07B829043DCC00294822 /* SettingsViewDelegate.swift */,
+			);
+			path = delegate;
+			sourceTree = "<group>";
+		};
+		BFD5AB28291AAC1500890CE6 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				BF1129832854FA0400EACD21 /* ClientConnection.swift */,
+				BF11297F2854EBDC00EACD21 /* Settings.swift */,
+				BFA5CF33290D7E4300010BD6 /* Connection.swift */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
 		BFDDA0D528119FEC00C3E84A = {
 			isa = PBXGroup;
 			children = (
@@ -81,23 +114,14 @@
 		BFDDA0E028119FEC00C3E84A /* src */ = {
 			isa = PBXGroup;
 			children = (
-				BF1129832854FA0400EACD21 /* ClientConnection.swift */,
-				BF11297F2854EBDC00EACD21 /* Settings.swift */,
-				BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */,
-				BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */,
-				BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */,
-				BFA5CF33290D7E4300010BD6 /* Connection.swift */,
-				BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */,
-				BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */,
-				BF54F64C290D6F410093037F /* AboutView.swift */,
-				BFDDA0E328119FEC00C3E84A /* ContentView.swift */,
+				BFD5AB28291AAC1500890CE6 /* core */,
+				BFD5AB27291AABF200890CE6 /* delegate */,
+				BFD5AB26291AABA300890CE6 /* gui */,
 				BFDDA0E528119FEE00C3E84A /* Assets.xcassets */,
 				BFDDA0EA28119FEE00C3E84A /* Main.storyboard */,
 				BFDDA0ED28119FEE00C3E84A /* Info.plist */,
 				BFDDA0EE28119FEE00C3E84A /* SecretPathway_macOS.entitlements */,
 				BFDDA0E728119FEE00C3E84A /* Preview Content */,
-				BFEA07B629043DB500294822 /* SettingsView.swift */,
-				BFEA07B829043DCC00294822 /* SettingsViewDelegate.swift */,
 			);
 			path = src;
 			sourceTree = "<group>";
