@@ -19,6 +19,7 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import Foundation
 import Network
 
 /// Represents a MUD connection.
@@ -73,5 +74,24 @@ class Connection {
         guard let port = Int(port) else { return nil }
         
         self.init(hostname: hostname, port: port)
+    }
+    
+    /// Opens the connection.
+    func start() {
+        // TODO: Implement
+        print("Starting the connection...")
+    }
+    
+    /// Attempts to send the given data.
+    ///
+    /// - Parameter data: The data that should be sent.
+    func send(data: Data) {
+        // TODO: Implement
+        print(data)
+    }
+    
+    /// Closes the underlying connection gracefully.
+    func close() {
+        // TODO: Implement
     }
 }
