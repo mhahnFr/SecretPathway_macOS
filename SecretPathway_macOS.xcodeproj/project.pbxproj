@@ -16,7 +16,6 @@
 		BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */; };
 		BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */; };
 		BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */; };
-		BFDDA0E428119FEC00C3E84A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDDA0E328119FEC00C3E84A /* ContentView.swift */; };
 		BFDDA0E628119FEE00C3E84A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E528119FEE00C3E84A /* Assets.xcassets */; };
 		BFDDA0E928119FEE00C3E84A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0E828119FEE00C3E84A /* Preview Assets.xcassets */; };
 		BFDDA0EC28119FEE00C3E84A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFDDA0EA28119FEE00C3E84A /* Main.storyboard */; };
@@ -37,7 +36,6 @@
 		BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptDelegate.swift; sourceTree = "<group>"; };
 		BFDDA0DE28119FEC00C3E84A /* SecretPathway.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SecretPathway.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BFDDA0E328119FEC00C3E84A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BFDDA0E528119FEE00C3E84A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFDDA0E828119FEE00C3E84A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BFDDA0EB28119FEE00C3E84A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -66,7 +64,6 @@
 				BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */,
 				BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */,
 				BF54F64C290D6F410093037F /* AboutView.swift */,
-				BFDDA0E328119FEC00C3E84A /* ContentView.swift */,
 				BFEA07B629043DB500294822 /* SettingsView.swift */,
 			);
 			path = gui;
@@ -215,7 +212,6 @@
 				BFEA07B929043DCC00294822 /* SettingsViewDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
 				BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */,
-				BFDDA0E428119FEC00C3E84A /* ContentView.swift in Sources */,
 				BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */,
 				BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */,
 			);
