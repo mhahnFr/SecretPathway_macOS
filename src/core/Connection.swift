@@ -33,7 +33,7 @@ class Connection {
     /// - Parameter hostname: The hostname or the IP address to connect to.
     /// - Parameter port: The port to be used to connect to the given endpoint.
     init?(hostname: String, port: Int) {
-        if hostname.isEmpty || port < 0 { return nil }
+        guard !hostname.isEmpty && port >= 0 else { return nil }
         
         self.hostname = hostname
         self.port     = port

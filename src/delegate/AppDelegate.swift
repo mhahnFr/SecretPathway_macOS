@@ -32,7 +32,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var recentsMenu: NSMenu!
     
     @IBAction func aboutAction(_ sender: NSMenuItem) {
-        let contentView   = AboutView();
+        let contentView   = AboutView()
         let window        = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 500, height: 150), styleMask: [.titled, .closable], backing: .buffered, defer: false)
         
         window.setFrameAutosaveName("About")
