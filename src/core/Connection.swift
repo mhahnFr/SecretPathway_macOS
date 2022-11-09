@@ -19,6 +19,8 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import Network
+
 /// Represents a MUD connection.
 class Connection {
     /// The hostname or the IP address to connect to.
@@ -30,6 +32,9 @@ class Connection {
     ///
     /// Defaults to the hostname or the IP address and the port.
     private(set) var name: String
+    
+    /// The underlying network connection.
+    private let connection: NWConnection
     
     /// Creates a connection instance using the given inforamtion.
     ///
@@ -43,6 +48,19 @@ class Connection {
         self.hostname = hostname
         self.port     = port
         self.name     = "\(self.hostname):\(self.port)"
+        
+        guard let portNo = NWEndpoint.Port(rawValue: UInt16(port)) else { return nil }
+        
+        let host: NWEndpoint.Host
+        
+        if let address = IPv6Address(hostname) {
+            host = .ipv6(address)
+        } else if let address = IPv4Address(hostname) {
+            host = .ipv4(address)
+        } else {
+            host = .name(hostname, nil)
+        }
+        connection = NWConnection(host: host, port: portNo, using: .tcp)
     }
     
     /// Creates a connection instance using the given information.
