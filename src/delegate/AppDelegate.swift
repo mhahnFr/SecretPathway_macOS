@@ -77,7 +77,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func newConnectionAction(_ sender: NSMenuItem) {
         guard let connection = promptConnection() else { return }
         
-        let item = NSMenuItem(title: connection.getName(), action: nil, keyEquivalent: "")
+        let item = NSMenuItem(title: connection.name, action: nil, keyEquivalent: "")
         item.action = #selector(openRecentConnection)
         
         recentsMenu.items.insert(item, at: 0)
@@ -103,7 +103,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         delegates.append(delegate)
         
-        window.title       = "\(Constants.APP_NAME): \(connection.getName())"
+        window.title       = "\(Constants.APP_NAME): \(connection.name)"
         window.contentView = NSHostingView(rootView: contentView)
         window.delegate    = delegate
         

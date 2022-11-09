@@ -26,6 +26,11 @@ class Connection {
     /// The port to be used.
     let port: Int
     
+    /// The name of the connection.
+    ///
+    /// Defaults to the hostname or the IP address and the port.
+    private(set) var name: String
+    
     /// Creates a connection instance using the given inforamtion.
     ///
     /// Returns nil if the hostname is nil or the port is negative.
@@ -37,6 +42,7 @@ class Connection {
         
         self.hostname = hostname
         self.port     = port
+        self.name     = "\(self.hostname):\(self.port)"
     }
     
     /// Creates a connection instance using the given information.
@@ -49,9 +55,5 @@ class Connection {
         guard let port = Int(port) else { return nil }
         
         self.init(hostname: hostname, port: port)
-    }
-    
-    func getName() -> String {
-        return "no name"
     }
 }
