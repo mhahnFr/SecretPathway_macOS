@@ -29,6 +29,8 @@ class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
     @Published var hostname = ""
     /// The port, filled by the associated view.
     @Published var port     = ""
+    /// A optional message to be displayed as error message.
+    @Published var userInfo: String?
     
     /// Indicates whether the dialog has been accepted or dismissed.
     private(set) var accepted = false

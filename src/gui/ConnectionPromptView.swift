@@ -26,6 +26,10 @@ struct ConnectionPromptView: View {
     
     var body: some View {
         VStack {
+            if let userInfo = delegate.userInfo {
+                Text(userInfo).foregroundColor(.red)
+                Spacer()
+            }
             VStack(alignment: .leading) {
                 Text("Enter the hostname or the IP address:")
                 if #available(macOS 12.0, *) {
@@ -35,7 +39,7 @@ struct ConnectionPromptView: View {
                 } else {
                     TextField("hostname or IP address, ex: localhost", text: $delegate.hostname)
                 }
-            }.border(.separator)
+            }
             VStack(alignment: .leading) {
                 Text("Enter the port number:")
                 if #available(macOS 12.0, *) {
@@ -45,7 +49,7 @@ struct ConnectionPromptView: View {
                 } else {
                     TextField("port number, ex: 4242", text: $delegate.port)
                 }
-            }.border(.separator)
+            }
             HStack {
                 Spacer()
                 Button("Cancel") {

@@ -116,18 +116,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     ///
     /// - Returns: A connection that is technically able to connect to a MUD or nil.
     private func promptConnection() -> Connection? {
-        let dialog = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable], backing: .buffered, defer: false)
-
-        let delegate    = ConnectionPromptDelegate(with: dialog)
-        let contentView = ConnectionPromptView(delegate: delegate)
+        var toReturn: Connection?
+        var userInfo: String?
+        var delegate: ConnectionPromptDelegate
         
-        dialog.contentView          = NSHostingView(rootView: contentView);
-        dialog.delegate             = delegate
-        dialog.title                = "\(Constants.APP_NAME): New connection"
-        dialog.isReleasedWhenClosed = false
+        repeat {
+            let dialog = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable], backing: .buffered, defer: false)
+            
+            delegate = ConnectionPromptDelegate(with: dialog)
+            delegate.userInfo = userInfo
+            
+            let contentView = ConnectionPromptView(delegate: delegate)
+            
+            dialog.contentView          = NSHostingView(rootView: contentView);
+            dialog.delegate             = delegate
+            dialog.title                = "\(Constants.APP_NAME): New connection"
+            dialog.isReleasedWhenClosed = false
+            
+            NSApp.runModal(for: dialog)
+            toReturn = Connection(hostname: delegate.hostname, port: delegate.port)
+            if toReturn == nil { userInfo = "Invalid hostname or port!" }
+        } while delegate.accepted && toReturn == nil
         
-        NSApp.runModal(for: dialog)
-        return Connection(hostname: delegate.hostname, port: delegate.port)
+        return toReturn
     }
     
     /// Creates and returns a window suitable as UI for a MUD connection.
