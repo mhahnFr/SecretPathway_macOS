@@ -49,4 +49,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
         content.append(contentsOf: text)
         content.append("\n")
     }
+    
+    /// Closes the connection controlled by this delegate.
+    func closeConnection() {
+        // TODO: Close the connection
+    }
 }

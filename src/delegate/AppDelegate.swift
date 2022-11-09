@@ -32,11 +32,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var recentsMenu: NSMenu!
     
     @IBAction func windowCloseAction(_ sender: NSMenuItem) {
-        // TODO: Close active window
+        NSApp.keyWindow?.close()
     }
     
     @IBAction func connectionCloseAction(_ sender: NSMenuItem) {
-        // TODO: Close active connection
+        if let current = NSApp.keyWindow?.delegate as? ConnectionDelegate {
+            current.closeConnection()
+        }
     }
     
     @IBAction func aboutAction(_ sender: NSMenuItem) {
