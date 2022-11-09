@@ -37,7 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         window.setFrameAutosaveName("About")
         window.isReleasedWhenClosed = false
-        window.title                = "About SecretPathway"
+        window.title                = "About \(Constants.APP_NAME)"
         window.contentView          = NSHostingView(rootView: contentView)
         
         window.center()
@@ -51,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         window.setFrameAutosaveName("Settings")
         window.isReleasedWhenClosed = false
-        window.title                = "Settings"
+        window.title                = "\(Constants.APP_NAME): Settings"
         window.contentView          = NSHostingView(rootView: contentView)
         window.delegate             = settingsDelegate
         
@@ -103,7 +103,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         dialog.contentView          = NSHostingView(rootView: contentView);
         dialog.delegate             = delegate
-        dialog.title                = "SecretPathway: New connection"
+        dialog.title                = "\(Constants.APP_NAME): New connection"
         dialog.isReleasedWhenClosed = false
         
         NSApp.runModal(for: dialog)

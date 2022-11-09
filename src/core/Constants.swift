@@ -19,23 +19,10 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SwiftUI
-
-struct AboutView: View {
-    var body: some View {
-        VStack(content: {
-            Text("The \(Constants.APP_NAME)").bold()
-            Text("Version \(Constants.VERSION_STRING)")
-            Spacer()
-            Text("© Copyright 2022 mhahnFr (https://www.github.com/mhahnFr)")
-            Text("Licensed under the terms of the **GPL 3.0**.")
-            Text("More information: https://www.github.com/mhahnFr/SecretPathway_macOS")
-        }).padding()
-    }
-}
-
-struct AboutView_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutView()
-    }
+/// This class holds some constants used in the whole project.
+class Constants {
+    /// The name of the app that should be used when displayed.
+    static let APP_NAME       = "SecretPathway"
+    /// The version as string.
+    static let VERSION_STRING = "1.0"
 }
