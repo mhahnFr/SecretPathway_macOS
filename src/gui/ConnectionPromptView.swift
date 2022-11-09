@@ -59,7 +59,7 @@ struct ConnectionPromptView: View {
                     delegate.accept()
                 }.keyboardShortcut(.defaultAction)
             }
-        }.padding()
+        }.padding(5)
     }
 }
 
