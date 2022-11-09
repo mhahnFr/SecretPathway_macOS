@@ -32,10 +32,16 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     
     /// The connection that is managed by this delegate instance.
     private let connection: Connection
+    /// The window that is controlled by this delegate instance.
+    private weak var window: NSWindow?
     
     /// Initializes this instance using the given connection.
-    init(for connection: Connection) {
+    ///
+    /// - Parameter connection: The connection to be controlled by this instance.
+    /// - Parameter window: The window optionally controlled by this instance.
+    init(for connection: Connection, window: NSWindow? = nil) {
         self.connection = connection
+        self.window     = window
     }
     
     /// Attempts to send the given string.

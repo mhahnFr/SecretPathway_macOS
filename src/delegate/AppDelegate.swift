@@ -97,12 +97,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     ///
     /// - Parameter connection: The connection that will be displayed.
     private func openConnection(_ connection: Connection) {
-        let delegate = ConnectionDelegate(for: connection)
-        delegates.append(delegate)
-        
+        let window      = createConnectionWindow()
+        let delegate    = ConnectionDelegate(for: connection, window: window)
         let contentView = ConnectionView(delegate: delegate)
-        
-        let window = createConnectionWindow()
+
+        delegates.append(delegate)
         
         window.title       = "\(Constants.APP_NAME): \(connection.getName())"
         window.contentView = NSHostingView(rootView: contentView)
