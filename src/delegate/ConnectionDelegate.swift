@@ -54,10 +54,13 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
         }
         content.append(contentsOf: text)
         content.append("\n")
+        
+        guard let data = text.data(using: .utf8) else { return } // TODO: Error handling
+        connection.send(data: data)
     }
     
     /// Closes the connection controlled by this delegate.
     func closeConnection() {
-        // TODO: Close the connection
+        connection.close()
     }
 }
