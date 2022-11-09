@@ -31,6 +31,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// The menu with recent connections.
     @IBOutlet weak var recentsMenu: NSMenu!
     
+    @IBAction func connectionClearRecentsAction(_ sender: NSMenuItem) {
+        recentsMenu.items.removeSubrange(0 ..< recentsMenu.numberOfItems - 2)
+        recents = [:]
+    }
+    
     @IBAction func windowCloseAction(_ sender: NSMenuItem) {
         NSApp.keyWindow?.close()
     }
@@ -75,7 +80,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let item = NSMenuItem(title: connection.getName(), action: nil, keyEquivalent: "")
         item.action = #selector(openRecentConnection)
         
-        recentsMenu.addItem(item)
+        recentsMenu.items.insert(item, at: 0)
         recents[item] = connection
         
         openConnection(connection)

@@ -70,7 +70,17 @@
                                         </menuItem>
                                         <menuItem title="Recents" id="1l0-78-8n6">
                                             <modifierMask key="keyEquivalentModifierMask"/>
-                                            <menu key="submenu" title="Recents" id="rcB-AK-xKS"/>
+                                            <menu key="submenu" title="Recents" id="rcB-AK-xKS">
+                                                <items>
+                                                    <menuItem isSeparatorItem="YES" id="HUC-PH-48u"/>
+                                                    <menuItem title="Clear menu" id="ble-kz-mbV">
+                                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                                        <connections>
+                                                            <action selector="connectionClearRecentsAction:" target="Voe-Tx-rLC" id="LaI-EA-N9d"/>
+                                                        </connections>
+                                                    </menuItem>
+                                                </items>
+                                            </menu>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="7gx-jR-dTE"/>
                                         <menuItem title="Close" keyEquivalent="." id="Pga-E3-diG">
