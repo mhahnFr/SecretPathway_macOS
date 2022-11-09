@@ -31,6 +31,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// The menu with recent connections.
     @IBOutlet weak var recentsMenu: NSMenu!
     
+    @IBAction func windowCloseAction(_ sender: NSMenuItem) {
+        // TODO: Close active window
+    }
+    
+    @IBAction func connectionCloseAction(_ sender: NSMenuItem) {
+        // TODO: Close active connection
+    }
+    
     @IBAction func aboutAction(_ sender: NSMenuItem) {
         let contentView   = AboutView()
         let window        = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 500, height: 150), styleMask: [.titled, .closable], backing: .buffered, defer: false)
@@ -75,7 +83,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let window = createConnectionWindow()
         
-        window.title       = connection.getName()
+        window.title       = "\(Constants.APP_NAME): \(connection.getName())"
         window.contentView = NSHostingView(rootView: contentView)
         window.delegate    = delegate
         
