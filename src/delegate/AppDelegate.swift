@@ -72,14 +72,28 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func newConnectionAction(_ sender: NSMenuItem) {
         guard let connection = promptConnection() else { return }
         
-        let delegate = ConnectionDelegate(for: connection)
-        delegates.append(delegate)
-        
         let item = NSMenuItem(title: connection.getName(), action: nil, keyEquivalent: "")
         item.action = #selector(openRecentConnection)
         
         recentsMenu.addItem(item)
         recents[item] = connection
+        
+        openConnection(connection)
+    }
+    
+    /// Opens the connection associated with the sender.
+    ///
+    /// - Parameter sender: The sender of the action.
+    @objc private func openRecentConnection(_ sender: NSMenuItem) {
+        openConnection(recents[sender]!)
+    }
+
+    /// Opens the given connection in a new window. The necessary delegate is saved.
+    ///
+    /// - Parameter connection: The connection that will be displayed.
+    private func openConnection(_ connection: Connection) {
+        let delegate = ConnectionDelegate(for: connection)
+        delegates.append(delegate)
         
         let contentView = ConnectionView(delegate: delegate)
         
@@ -90,17 +104,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.delegate    = delegate
         
         window.center()
-        window.makeKeyAndOrderFront(sender)
+        window.makeKeyAndOrderFront(self)
     }
     
-    /// Opens the connection associated with the sender.
-    ///
-    /// - Parameter sender: The sender of the action.
-    @objc private func openRecentConnection(_ sender: NSMenuItem) {
-        // TODO: Implement
-        print(sender.title)
-    }
-
     /// Prompts the user to enter the informations needed to establish a MUD connection.
     /// If the user aborts the process or the Connection could not be created, nil is returned.
     ///
