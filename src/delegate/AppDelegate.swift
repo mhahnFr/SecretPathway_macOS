@@ -107,6 +107,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentView = NSHostingView(rootView: contentView)
         window.delegate    = delegate
         
+        window.setFrameAutosaveName(window.title)
+        
         window.center()
         window.makeKeyAndOrderFront(self)
     }
@@ -147,7 +149,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func createConnectionWindow() -> NSWindow {
         let toReturn = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 750, height: 500), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
         
-        toReturn.setFrameAutosaveName("Window #\(delegates.count)")
         toReturn.isReleasedWhenClosed = false
         
         return toReturn
