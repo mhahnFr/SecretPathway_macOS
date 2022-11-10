@@ -23,14 +23,14 @@ import SwiftUI
 
 struct AboutView: View {
     var body: some View {
-        VStack(content: {
-            Text("The \(Constants.APP_NAME)").bold()
-            Text("Version \(Constants.VERSION_STRING)")
+        VStack {
+            Text("The **\(Constants.APP_NAME)**")
+            Text("Version **\(Constants.VERSION_STRING)**")
             Spacer()
             Text("© Copyright 2022 mhahnFr (https://www.github.com/mhahnFr)")
             Text("Licensed under the terms of the **GPL 3.0**.")
             Text("More information: https://www.github.com/mhahnFr/SecretPathway_macOS")
-        }).padding()
+        }.padding()
     }
 }
 
