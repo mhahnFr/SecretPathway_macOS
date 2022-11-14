@@ -134,8 +134,9 @@ class Connection {
     ///
     /// - Parameter data: The data that should be sent.
     func send(data: Data) {
-        // TODO: Implement
-        print(data)
+        connection.send(content: data, completion: .contentProcessed({ error in
+            // TODO: Implement
+        }))
     }
     
     /// Closes the underlying connection gracefully.
