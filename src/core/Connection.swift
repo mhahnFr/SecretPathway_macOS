@@ -29,6 +29,16 @@ class Connection {
     /// The port to be used.
     let port: Int
     
+    /// The state update handler connected to the underlying connection.
+    var stateListener: ((NWConnection.State) -> Void)? {
+        get {
+            connection.stateUpdateHandler
+        }
+        set {
+            connection.stateUpdateHandler = newValue
+        }
+    }
+    
     /// The name of the connection.
     ///
     /// Defaults to the hostname or the IP address and the port.
@@ -76,10 +86,9 @@ class Connection {
         self.init(hostname: hostname, port: port)
     }
     
-    /// Opens the connection.
+    /// Opens the connection using a new queue, named with the name of this instance.
     func start() {
-        // TODO: Implement
-        print("Starting the connection...")
+        connection.start(queue: .init(label: name))
     }
     
     /// Attempts to send the given data.

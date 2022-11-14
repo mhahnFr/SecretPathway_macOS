@@ -20,6 +20,7 @@
  */
 
 import AppKit
+import Network
 
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
@@ -42,6 +43,35 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     init(for connection: Connection, window: NSWindow? = nil) {
         self.connection = connection
         self.window     = window
+        
+        super.init()
+        
+        self.connection.stateListener = stateListener(_:)
+        self.connection.start()
+    }
+    
+    /// Displays a message according to the given state.
+    ///
+    /// - Parameter state: The state of the connection.
+    private func stateListener(_ state: NWConnection.State) {
+        let tmpMessage: String
+        
+        switch state {
+        case .setup, .preparing:
+            tmpMessage = "Connecting..."
+        case .ready:
+            tmpMessage = "Connected."
+        case .cancelled:
+            tmpMessage = "Disconnected!"
+        case .waiting(let error), .failed(let error):
+            tmpMessage = "Error! See console for more details."
+            print(error)
+        default:
+            fatalError()
+        }
+        DispatchQueue.main.async {
+            self.message = tmpMessage
+        }
     }
     
     /// Attempts to send the given string.
