@@ -32,6 +32,7 @@ struct ConnectionView: View {
                 Text(message)
             }
             TextEditor(text: .constant(delegate.content)) // TODO: Needs to be provided
+                .font(.system(size: 12, design: .monospaced))
             HStack {
                 if let prompt = delegate.prompt {
                     Text(prompt)
