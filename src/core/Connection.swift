@@ -30,14 +30,7 @@ class Connection {
     let port: Int
     
     /// The state update handler connected to the underlying connection.
-    var stateListener: ((NWConnection.State) -> Void)? {
-        get {
-            connection.stateUpdateHandler
-        }
-        set {
-            connection.stateUpdateHandler = newValue
-        }
-    }
+    var stateListener: ((NWConnection.State) -> Void)?
     
     /// The name of the connection.
     ///
@@ -72,6 +65,7 @@ class Connection {
             host = .name(hostname, nil)
         }
         connection = NWConnection(host: host, port: portNo, using: .tcp)
+        connection.stateUpdateHandler = stateUpdateHandler
     }
     
     /// Creates a connection instance using the given information.
@@ -84,6 +78,15 @@ class Connection {
         guard let port = Int(port) else { return nil }
         
         self.init(hostname: hostname, port: port)
+    }
+    
+    /// Handles state updates of the underlying connection.
+    ///
+    /// Calls the state listener if set.
+    ///
+    /// - Parameter state: The new state of the connection.
+    private func stateUpdateHandler(_ state: NWConnection.State) {
+        if let stateListener { stateListener(state) }
     }
     
     /// Opens the connection using a new queue, named with the name of this instance.
