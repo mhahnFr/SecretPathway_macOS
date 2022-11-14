@@ -51,6 +51,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
         self.connection.start()
     }
     
+    /// Handles incoming data.
+    ///
+    /// - Parameter data: The new block of bytes
     private func dataListener(_ data: Data) {
         guard let text = String(data: data, encoding: .utf8) else { return } // TODO: Decoding errors
         
