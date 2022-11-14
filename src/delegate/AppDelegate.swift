@@ -25,7 +25,7 @@ import SwiftUI
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     /// An array consisting of active MUD connection delegates.
-    var delegates: [ConnectionDelegate] = []
+    var delegates: Set<ConnectionDelegate> = []
     /// An array containing the recent connections mapped to their menu items in the recents menu.
     var recents: [NSMenuItem: Connection] = [:]
     /// The menu with recent connections.
@@ -101,7 +101,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let delegate    = ConnectionDelegate(for: connection, window: window)
         let contentView = ConnectionView(delegate: delegate)
 
-        delegates.append(delegate)
+        delegates.insert(delegate)
+        delegate.onClose = { self.delegates.remove($0) }
         
         window.title       = "\(Constants.APP_NAME): \(connection.name)"
         window.contentView = NSHostingView(rootView: contentView)

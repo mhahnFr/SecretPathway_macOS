@@ -31,6 +31,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// A string that can hold a message displayed for the user.
     @Published private(set) var message: String?
     
+    /// Callback to be called when the window this instance is controlling is definitively closing.
+    var onClose: ((ConnectionDelegate) -> Void)?
+    
     /// The connection that is managed by this delegate instance.
     private let connection: Connection
     /// The window that is controlled by this delegate instance.
@@ -104,5 +107,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// Closes the connection controlled by this delegate.
     func closeConnection() {
         connection.close()
+    }
+    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        // TODO: Prompt the user for connection closing
+        return true
+    }
+    
+    func windowWillClose(_ notification: Notification) {
+        if let onClose { onClose(self) }
     }
 }
