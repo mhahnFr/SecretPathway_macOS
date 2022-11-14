@@ -91,10 +91,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
             content.append(contentsOf: prompt)
             if prompt.last != " " { content.append(" ") }
         }
-        content.append(contentsOf: text)
-        content.append("\n")
+        let tmpText = text + "\n"
+        content.append(contentsOf: tmpText)
         
-        guard let data = text.data(using: .utf8) else { return } // TODO: Error handling
+        guard let data = tmpText.data(using: .utf8) else { return } // TODO: Error handling
         connection.send(data: data)
     }
     
