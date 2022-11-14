@@ -159,6 +159,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        // TODO: Notify all open connections
+        for delegate in delegates {
+            delegate.closeConnection()
+        }
     }
 }

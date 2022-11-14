@@ -101,6 +101,6 @@ class Connection {
     
     /// Closes the underlying connection gracefully.
     func close() {
-        // TODO: Implement
+        connection.cancel()
     }
 }
