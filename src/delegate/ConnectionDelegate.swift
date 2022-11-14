@@ -47,7 +47,16 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
         super.init()
         
         self.connection.stateListener = stateListener(_:)
+        self.connection.dataListener  = dataListener(_:)
         self.connection.start()
+    }
+    
+    private func dataListener(_ data: Data) {
+        guard let text = String(data: data, encoding: .utf8) else { return } // TODO: Decoding errors
+        
+        DispatchQueue.main.async {
+            self.content.append(text)
+        }
     }
     
     /// Displays a message according to the given state.

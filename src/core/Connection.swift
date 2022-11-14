@@ -31,6 +31,20 @@ class Connection {
     
     /// The state update handler connected to the underlying connection.
     var stateListener: ((NWConnection.State) -> Void)?
+    /// The listener function that is called once a block of bytes is received.
+    ///
+    /// If data has been received before this variable has been set to something else
+    /// than nil, the buffered data is passed immediately to the newly set listener.
+    var dataListener:  ((Data) -> Void)? {
+        didSet {
+            guard let dataListener else { return }
+            
+            if !buffer.isEmpty {
+                dataListener(buffer)
+                buffer = Data()
+            }
+        }
+    }
     
     /// The name of the connection.
     ///
@@ -39,6 +53,9 @@ class Connection {
     
     /// The underlying network connection.
     private let connection: NWConnection
+    
+    /// A buffer that is filled as long as data is received but no content listener is set.
+    private var buffer = Data()
     
     /// Creates a connection instance using the given inforamtion.
     ///
@@ -86,7 +103,26 @@ class Connection {
     ///
     /// - Parameter state: The new state of the connection.
     private func stateUpdateHandler(_ state: NWConnection.State) {
+        if state == .ready   { receive()            }
         if let stateListener { stateListener(state) }
+    }
+    
+    /// Receives a block of bytes.
+    ///
+    /// Upon receiption, if the content listener is set, it is called with the newly received
+    /// block of bytes. Otherwise, the received bytes are buffered.
+    private func receive() {
+        connection.receive(minimumIncompleteLength: 1, maximumLength: .max) { data, context, complete, error in
+            if let data {
+                if let dataListener = self.dataListener {
+                    dataListener(data)
+                } else {
+                    self.buffer.append(data)
+                }
+            }
+            // TODO: Error management
+            self.receive()
+        }
     }
     
     /// Opens the connection using a new queue, named with the name of this instance.
