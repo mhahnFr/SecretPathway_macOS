@@ -43,6 +43,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The connection that is managed by this delegate instance.
     private let connection: Connection
     
+    /// The last timer used to remove the user message. Nil if none is active.
+    private var previousTimer: Timer?
+    
     /// Initializes this instance using the given connection.
     ///
     /// - Parameter connection: The connection to be controlled by this instance.
@@ -77,6 +80,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var tmpColor: Color?
         var timeout:  Int?
         
+        previousTimer?.invalidate()
+        
         switch state {
         case .setup, .preparing:
             tmpMessage = "Connecting..."
@@ -94,14 +99,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         default:
             fatalError()
         }
-                
+        
         DispatchQueue.main.async {
             self.message      = tmpMessage
             self.messageColor = tmpColor
             if let timeout {
-                Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
-                    self.message      = nil
-                    self.messageColor = nil
+                self.previousTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
+                    self.message       = nil
+                    self.messageColor  = nil
+                    self.previousTimer = nil
                 }
             }
         }
