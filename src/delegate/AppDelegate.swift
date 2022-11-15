@@ -93,7 +93,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let window = recent.delegate?.window {
             window.makeKeyAndOrderFront(self)
         } else {
-            openConnection(Connection(from: recent)!)
+            recents[sender] = openConnection(Connection(from: recent)!)
         }
     }
 
@@ -101,7 +101,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     ///
     /// - Parameter connection: The connection that will be displayed.
     /// - Returns: A connection record containing the relevant information about the created connection view.
-    @discardableResult private func openConnection(_ connection: Connection) -> ConnectionRecord {
+    private func openConnection(_ connection: Connection) -> ConnectionRecord {
         let window      = createConnectionWindow()
         let delegate    = ConnectionDelegate(for: connection, window: window)
         let contentView = ConnectionView(delegate: delegate)
