@@ -97,6 +97,13 @@ class Connection {
         self.init(hostname: hostname, port: port)
     }
     
+    /// Creates a connection instance using the given record.
+    ///
+    /// - Parameter record: The record to take the necessary information from.
+    convenience init?(from record: ConnectionRecord) {
+        self.init(hostname: record.hostname, port: record.port)
+    }
+
     /// Creates a new connection instance from the given one.
     ///
     /// - Parameter connection: The connection whose information to use.

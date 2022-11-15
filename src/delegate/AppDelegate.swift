@@ -27,7 +27,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// An array consisting of active MUD connection delegates.
     var delegates: Set<ConnectionDelegate> = []
     /// An array containing the recent connections mapped to their menu items in the recents menu.
-    var recents: [NSMenuItem: Connection] = [:]
+    var recents: [NSMenuItem: ConnectionRecord] = [:]
     /// The menu with recent connections.
     @IBOutlet weak var recentsMenu: NSMenu!
     
@@ -81,22 +81,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         item.action = #selector(openRecentConnection)
         
         recentsMenu.items.insert(item, at: 0)
-        recents[item] = connection
-        
-        openConnection(connection)
+        recents[item] = openConnection(connection)
     }
     
     /// Opens the connection associated with the sender.
     ///
     /// - Parameter sender: The sender of the action.
     @objc private func openRecentConnection(_ sender: NSMenuItem) {
-        openConnection(Connection(from: recents[sender]!))
+        let recent = recents[sender]!
+        
+        if let window = recent.delegate?.window {
+            window.makeKeyAndOrderFront(self)
+        } else {
+            openConnection(Connection(from: recent)!)
+        }
     }
 
     /// Opens the given connection in a new window. The necessary delegate is saved.
     ///
     /// - Parameter connection: The connection that will be displayed.
-    private func openConnection(_ connection: Connection) {
+    /// - Returns: A connection record containing the relevant information about the created connection view.
+    @discardableResult private func openConnection(_ connection: Connection) -> ConnectionRecord {
         let window      = createConnectionWindow()
         let delegate    = ConnectionDelegate(for: connection, window: window)
         let contentView = ConnectionView(delegate: delegate)
@@ -112,6 +117,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         window.center()
         window.makeKeyAndOrderFront(self)
+        
+        return ConnectionRecord(from: connection, delegate: delegate)
     }
     
     /// Prompts the user to enter the informations needed to establish a MUD connection.

@@ -34,10 +34,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
     
+    /// The window that is controlled by this delegate instance.
+    private(set) weak var window: NSWindow?
+    
     /// The connection that is managed by this delegate instance.
     private let connection: Connection
-    /// The window that is controlled by this delegate instance.
-    private weak var window: NSWindow?
     
     /// Initializes this instance using the given connection.
     ///
