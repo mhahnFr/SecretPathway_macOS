@@ -48,6 +48,8 @@ class Connection {
     ///
     /// Defaults to the hostname or the IP address and the port.
     private(set) var name: String
+    /// Indicates whether this connection has been closed.
+    private(set) var isClosed = false
     
     /// The underlying network connection.
     private let connection: NWConnection
@@ -116,6 +118,8 @@ class Connection {
     /// - Parameter state: The new state of the connection.
     private func stateUpdateHandler(_ state: NWConnection.State) {
         if state == .ready { receive() }
+        
+        isClosed = state == .cancelled
         
         connectionListener?.stateChanged(to: state)
     }
