@@ -29,7 +29,7 @@ struct ConnectionView: View {
     var body: some View {
         VStack {
             if let message = delegate.message {
-                Text(message)
+                Text(message).foregroundColor(delegate.messageColor)
             }
             ScrollView {
                 TextEditor(text: .constant(delegate.content)) // TODO: Needs to be provided

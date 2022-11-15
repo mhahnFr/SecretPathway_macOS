@@ -21,6 +21,7 @@
 
 import AppKit
 import Network
+import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener {
@@ -30,6 +31,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
     @Published private(set) var message: String?
+    
+    @Published private(set) var messageColor: Color?
     
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
@@ -70,22 +73,28 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Parameter state: The state of the connection.
     internal func stateChanged(to state: NWConnection.State) {
         let tmpMessage: String
+        let tmpColor:   Color?
         
         switch state {
         case .setup, .preparing:
             tmpMessage = "Connecting..."
+            tmpColor = nil
         case .ready:
             tmpMessage = "Connected."
+            tmpColor = .green
         case .cancelled:
             tmpMessage = "Disconnected!"
+            tmpColor = .yellow
         case .waiting(let error), .failed(let error):
             tmpMessage = "Error! See console for more details."
+            tmpColor = .red
             print(error)
         default:
             fatalError()
         }
         DispatchQueue.main.async {
-            self.message = tmpMessage
+            self.message      = tmpMessage
+            self.messageColor = tmpColor
         }
     }
     
