@@ -128,8 +128,17 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        // TODO: Prompt the user for connection closing
-        return true
+        var result = true
+        
+        if !connection.isClosed {
+            result = Dialog(title: "\(Constants.APP_NAME): Active connection",
+                             text: "The connection \"\(connection.name)\" is active.",
+                         addition: "Do you want to close it?",
+                     cancelButton: "Cancel")
+                    .show()
+            if result { connection.close() }
+        }
+        return result
     }
     
     func windowWillClose(_ notification: Notification) {
