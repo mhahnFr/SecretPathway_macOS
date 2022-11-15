@@ -73,28 +73,37 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Parameter state: The state of the connection.
     internal func stateChanged(to state: NWConnection.State) {
         let tmpMessage: String
-        let tmpColor:   Color?
+        
+        var tmpColor: Color?
+        var timeout:  Int?
         
         switch state {
         case .setup, .preparing:
             tmpMessage = "Connecting..."
-            tmpColor = nil
         case .ready:
             tmpMessage = "Connected."
-            tmpColor = .green
+            tmpColor   = .green
+            timeout    = 5
         case .cancelled:
             tmpMessage = "Disconnected!"
-            tmpColor = .yellow
+            tmpColor   = .yellow
         case .waiting(let error), .failed(let error):
             tmpMessage = "Error! See console for more details."
-            tmpColor = .red
+            tmpColor   = .red
             print(error)
         default:
             fatalError()
         }
+                
         DispatchQueue.main.async {
             self.message      = tmpMessage
             self.messageColor = tmpColor
+            if let timeout {
+                Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
+                    self.message      = nil
+                    self.messageColor = nil
+                }
+            }
         }
     }
     
