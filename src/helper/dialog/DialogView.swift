@@ -30,6 +30,7 @@ struct DialogView: View {
             Text(delegate.addition)
             
             HStack {
+                Spacer()
                 if let dismissText = delegate.dismissButton {
                     Button(dismissText) { delegate.dismiss() }
                         .keyboardShortcut(.cancelAction)
