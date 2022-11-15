@@ -31,7 +31,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
     @Published private(set) var message: String?
-    
+    /// The color to be used for the user message.
     @Published private(set) var messageColor: Color?
     
     /// Callback to be called when the window this instance is controlling is definitively closing.
