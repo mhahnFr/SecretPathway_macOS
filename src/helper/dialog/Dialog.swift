@@ -40,7 +40,7 @@ class Dialog {
     /// - Parameter cancelButton: The text of the cancel button
     /// - Parameter otherButtons: Using this variadic parameter, additional buttons can be added.
     init(title: String = Constants.APP_NAME, text: String = "", addition: String = "", acceptButton: String? = "OK", cancelButton: String? = nil, otherButtons: String...) {
-        window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+        window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable], backing: .buffered, defer: false)
         delegate = DialogDelegate(for: window)
         
         delegate.message       = text
