@@ -97,6 +97,13 @@ class Connection {
         self.init(hostname: hostname, port: port)
     }
     
+    /// Creates a new connection instance from the given one.
+    ///
+    /// - Parameter connection: The connection whose information to use.
+    convenience init(from connection: Connection) {
+        self.init(hostname: connection.hostname, port: connection.port)!
+    }
+    
     /// Handles state updates of the underlying connection.
     ///
     /// Calls the state listener if set.

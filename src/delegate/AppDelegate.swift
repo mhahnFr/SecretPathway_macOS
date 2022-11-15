@@ -90,7 +90,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     ///
     /// - Parameter sender: The sender of the action.
     @objc private func openRecentConnection(_ sender: NSMenuItem) {
-        openConnection(recents[sender]!)
+        openConnection(Connection(from: recents[sender]!))
     }
 
     /// Opens the given connection in a new window. The necessary delegate is saved.
