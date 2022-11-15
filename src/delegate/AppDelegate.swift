@@ -37,7 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction func windowCloseAction(_ sender: NSMenuItem) {
-        NSApp.keyWindow?.close()
+        NSApp.keyWindow?.performClose(self)
     }
     
     @IBAction func connectionCloseAction(_ sender: NSMenuItem) {
