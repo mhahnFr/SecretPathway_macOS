@@ -22,12 +22,24 @@
 import AppKit
 import SwiftUI
 
+/// Represents a modal dialog that allows the user to click on one of multiple buttons.
 class Dialog {
+    /// The associated delegate.
     let delegate: DialogDelegate
+    /// The modal window of this dialog.
     let window: NSWindow
+    /// The SwiftUI view of this dialog.
     let view: DialogView
     
-    init(text: String = "", addition: String = "", acceptButton: String? = "OK", cancelButton: String? = nil, otherButtons: String...) {
+    /// Initilializes this instance using the provided parameters.
+    ///
+    /// - Parameter title: The title to be used for the dialog.
+    /// - Parameter text: The main text to be displayed.
+    /// - Parameter addition: The text to be displayed additionally, in a seperate line.
+    /// - Parameter acceptButton: The text for the accept button, defaults to "OK"
+    /// - Parameter cancelButton: The text of the cancel button
+    /// - Parameter otherButtons: Using this variadic parameter, additional buttons can be added.
+    init(title: String = Constants.APP_NAME, text: String = "", addition: String = "", acceptButton: String? = "OK", cancelButton: String? = nil, otherButtons: String...) {
         window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
         delegate = DialogDelegate(for: window)
         
@@ -42,9 +54,12 @@ class Dialog {
         window.isReleasedWhenClosed = false
         window.delegate             = delegate
         window.contentView          = NSHostingView(rootView: view)
-        
+        window.title                = title
     }
     
+    /// Displays this dialog modally and returns whether the accept button was pressed.
+    ///
+    /// - Returns: Whether the dedicated accept button was pressed.
     func show() -> Bool {
         NSApp.runModal(for: window)
         return delegate.accepted
