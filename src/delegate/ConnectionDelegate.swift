@@ -23,7 +23,7 @@ import AppKit
 import Network
 
 /// This class controls a view that acts as  user interface for a MUD connection.
-class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
+class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener {
     /// The content that was received on the connection.
     @Published private(set) var content = ""
     /// The prompt text.
@@ -50,15 +50,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
         
         super.init()
         
-        self.connection.stateListener = stateListener(_:)
-        self.connection.dataListener  = dataListener(_:)
+        self.connection.connectionListener = self
         self.connection.start()
     }
     
     /// Handles incoming data.
     ///
     /// - Parameter data: The new block of bytes
-    private func dataListener(_ data: Data) {
+    internal func receive(data: Data) {
         guard let text = String(data: data, encoding: .utf8) else { return } // TODO: Decoding errors
         
         DispatchQueue.main.async {
@@ -69,7 +68,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject {
     /// Displays a message according to the given state.
     ///
     /// - Parameter state: The state of the connection.
-    private func stateListener(_ state: NWConnection.State) {
+    internal func stateChanged(to state: NWConnection.State) {
         let tmpMessage: String
         
         switch state {

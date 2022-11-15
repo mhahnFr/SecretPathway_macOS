@@ -29,18 +29,16 @@ class Connection {
     /// The port to be used.
     let port: Int
     
-    /// The state update handler connected to the underlying connection.
-    var stateListener: ((NWConnection.State) -> Void)?
-    /// The listener function that is called once a block of bytes is received.
+    /// The listener handling connection state updates and receiving data.
     ///
     /// If data has been received before this variable has been set to something else
     /// than nil, the buffered data is passed immediately to the newly set listener.
-    var dataListener:  ((Data) -> Void)? {
+    weak var connectionListener: ConnectionListener? {
         didSet {
-            guard let dataListener else { return }
+            guard let connectionListener else { return }
             
             if !buffer.isEmpty {
-                dataListener(buffer)
+                connectionListener.receive(data: buffer)
                 buffer = Data()
             }
         }
@@ -117,8 +115,9 @@ class Connection {
     ///
     /// - Parameter state: The new state of the connection.
     private func stateUpdateHandler(_ state: NWConnection.State) {
-        if state == .ready   { receive()            }
-        if let stateListener { stateListener(state) }
+        if state == .ready { receive() }
+        
+        connectionListener?.stateChanged(to: state)
     }
     
     /// Receives a block of bytes.
@@ -128,8 +127,8 @@ class Connection {
     private func receive() {
         connection.receive(minimumIncompleteLength: 1, maximumLength: .max) { data, context, complete, error in
             if let data {
-                if let dataListener = self.dataListener {
-                    dataListener(data)
+                if let listener = self.connectionListener {
+                    listener.receive(data: data)
                 } else {
                     self.buffer.append(data)
                 }
