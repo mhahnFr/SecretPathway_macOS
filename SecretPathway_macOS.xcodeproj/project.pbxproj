@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		BF1129802854EBDC00EACD21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11297F2854EBDC00EACD21 /* Settings.swift */; };
-		BF1129842854FA0400EACD21 /* ClientConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1129832854FA0400EACD21 /* ClientConnection.swift */; };
 		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
 		BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF577EAC291BDF1900E7A897 /* Constants.swift */; };
 		BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */; };
@@ -30,7 +29,6 @@
 
 /* Begin PBXFileReference section */
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		BF1129832854FA0400EACD21 /* ClientConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientConnection.swift; sourceTree = "<group>"; };
 		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		BF577EAC291BDF1900E7A897 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionDelegate.swift; sourceTree = "<group>"; };
@@ -91,7 +89,6 @@
 			isa = PBXGroup;
 			children = (
 				BFD9B0CD2923DE6000E59D00 /* net */,
-				BF1129832854FA0400EACD21 /* ClientConnection.swift */,
 				BF11297F2854EBDC00EACD21 /* Settings.swift */,
 				BF577EAC291BDF1900E7A897 /* Constants.swift */,
 			);
@@ -226,7 +223,6 @@
 				BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */,
 				BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */,
 				BF54F64D290D6F410093037F /* AboutView.swift in Sources */,
-				BF1129842854FA0400EACD21 /* ClientConnection.swift in Sources */,
 				BFEA07B929043DCC00294822 /* SettingsViewDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
 				BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */,
