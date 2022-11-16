@@ -44,7 +44,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private let connection: Connection
     
     /// The last timer used to remove the user message. Nil if none is active.
-    private weak var previousTimer: Timer?
+    private weak var messageTimer: Timer?
+    /// The last timer to used to retry to connect. Nil if none is active.
+    private weak var retryTimer:   Timer?
     
     /// Initializes this instance using the given connection.
     ///
@@ -80,7 +82,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var tmpColor: Color?
         var timeout:  Int?
         
-        previousTimer?.invalidate()
+        var retry = false
+        
+        messageTimer?.invalidate()
         
         switch state {
         case .setup, .preparing:
@@ -95,6 +99,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         case .waiting(let error), .failed(let error):
             tmpMessage = "Error! See console for more details."
             tmpColor   = .red
+            retry = true
             print(error)
         default:
             fatalError()
@@ -104,10 +109,18 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             self.message      = tmpMessage
             self.messageColor = tmpColor
             if let timeout {
-                self.previousTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
+                self.messageTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
                     self.message       = nil
                     self.messageColor  = nil
-                    self.previousTimer = nil
+                    self.messageTimer = nil
+                }
+            }
+            if let retryTimer = self.retryTimer, !retry {
+                retryTimer.invalidate()
+                self.retryTimer = nil
+            } else if retry {
+                self.retryTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(2.5), repeats: true) { _ in
+                    self.connection.retry()
                 }
             }
         }

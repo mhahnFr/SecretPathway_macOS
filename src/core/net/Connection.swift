@@ -147,6 +147,11 @@ class Connection {
         connection.start(queue: .init(label: name))
     }
     
+    /// Restarts the underlying connection.
+    func retry() {
+        connection.restart()
+    }
+    
     /// Attempts to send the given data.
     ///
     /// - Parameter data: The data that should be sent.
