@@ -83,6 +83,11 @@
                                             </menu>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="7gx-jR-dTE"/>
+                                        <menuItem title="Reconnect" keyEquivalent="r" id="Nnw-wW-Rbv">
+                                            <connections>
+                                                <action selector="reconnectConnectionAction:" target="Voe-Tx-rLC" id="lHP-eX-TY6"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Close" keyEquivalent="." id="Pga-E3-diG">
                                             <connections>
                                                 <action selector="connectionCloseAction:" target="Voe-Tx-rLC" id="WUA-CS-Hkr"/>

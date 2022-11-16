@@ -140,7 +140,7 @@ class Connection {
             if let error, let connectionListener = self.connectionListener {
                 connectionListener.handleError(.receiving(error: error))
             }
-            if !complete { self.receive() }
+            if !complete && self.connection.state == .ready { self.receive() }
         }
     }
     

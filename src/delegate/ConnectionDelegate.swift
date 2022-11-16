@@ -41,7 +41,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private(set) weak var window: NSWindow?
     
     /// The connection that is managed by this delegate instance.
-    private let connection: Connection
+    private var connection: Connection
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -127,7 +127,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             fallthrough
         case .failed(let error):
             message = false
-            timeout = 5
             handleError(.generic(error: error))
             
         default:
@@ -177,7 +176,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         connection.close()
     }
     
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
+    /// Asks the user if he whishes to close the connection if it is active.
+    ///
+    /// Returns true if the connection has been or was already closed.
+    ///
+    /// - Returns: Whether the connection is closed.
+    func maybeCloseConnection() -> Bool {
         var result = true
         
         if !connection.isClosed {
@@ -189,6 +193,23 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             if result { connection.close() }
         }
         return result
+    }
+    
+    /// Attempts to reestablish the current connection.
+    ///
+    /// If a connection is active, the user is prompted whether he wishes to
+    /// close the active connection.
+    /// Does nothing if the user cancels the action.
+    func maybeReconnect() {
+        if maybeCloseConnection() {
+            connection = Connection(from: connection)
+            connection.connectionListener = self
+            connection.start()
+        }
+    }
+    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        return maybeCloseConnection()
     }
     
     func windowWillClose(_ notification: Notification) {
