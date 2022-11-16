@@ -44,7 +44,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private let connection: Connection
     
     /// The last timer used to remove the user message. Nil if none is active.
-    private var previousTimer: Timer?
+    private weak var previousTimer: Timer?
     
     /// Initializes this instance using the given connection.
     ///
