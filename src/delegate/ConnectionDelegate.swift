@@ -111,10 +111,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         #endif
         }
         
-        DispatchQueue.main.async {
-            self.message      = tmpMessage
-            self.messageColor = .red
-        }
+        DispatchQueue.main.async { self.updateMessage(tmpMessage, color: .red) }
     }
     
     /// Displays a message according to the given state.
@@ -155,14 +152,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         
         DispatchQueue.main.async {
-            if message {
-                self.message      = tmpMessage
-                self.messageColor = tmpColor
-            }
+            if message { self.updateMessage(tmpMessage, color: tmpColor) }
             if let timeout {
                 self.messageTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
-                    self.message      = nil
-                    self.messageColor = nil
+                    self.updateMessage(nil)
                     self.messageTimer = nil
                 }
             }
@@ -174,6 +167,19 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     self.connection.retry()
                 }
             }
+        }
+    }
+    
+    /// Updates the displayed message.
+    ///
+    /// This function has to be called in the mein DispatchQueue.
+    ///
+    /// - Parameter message: The new message to be displayed.
+    /// - Parameter color: The color to be used to display the message.
+    private func updateMessage(_ message: String?, color: Color? = nil) {
+        withAnimation {
+            self.message      = message
+            self.messageColor = color
         }
     }
     
