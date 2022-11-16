@@ -79,17 +79,30 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func handleError(_ error: ConnectionError) {
         guard !connection.isClosed else { return }
         
+        #if DEBUG
+        var tmpMessage: String
+        #else
         let tmpMessage: String
+        #endif
         
         switch error {
         case .generic(let error):
-            tmpMessage = "Generic error: \(error.localizedDescription)."
+            tmpMessage = "General error!"
+        #if DEBUG
+            tmpMessage += " (\(error.localizedDescription))"
+        #endif
             
         case .receiving(let error):
-            tmpMessage = "Error while receiving: \(error.localizedDescription)."
+            tmpMessage = "Error while receiving data!"
+        #if DEBUG
+            tmpMessage += " (\(error.localizedDescription))"
+        #endif
             
         case .sending(let error):
-            tmpMessage = "Error while sending: \(error.localizedDescription)."
+            tmpMessage = "Error while sending data!"
+        #if DEBUG
+            tmpMessage += " (\(error.localizedDescription))"
+        #endif
         }
         
         DispatchQueue.main.async {
