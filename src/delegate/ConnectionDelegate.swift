@@ -77,6 +77,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter error: The raised error.
     internal func handleError(_ error: ConnectionError) {
+        guard !connection.isClosed else { return }
+        
         let tmpMessage: String
         
         switch error {

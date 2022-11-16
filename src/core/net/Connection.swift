@@ -167,6 +167,6 @@ class Connection {
     
     /// Closes the underlying connection gracefully.
     func close() {
-        connection.cancel()
+        if !isClosed { connection.cancel() }
     }
 }
