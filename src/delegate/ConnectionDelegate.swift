@@ -89,18 +89,24 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         switch state {
         case .setup, .preparing:
             tmpMessage = "Connecting..."
+            
         case .ready:
             tmpMessage = "Connected."
             tmpColor   = .green
             timeout    = 5
+            
         case .cancelled:
             tmpMessage = "Disconnected!"
             tmpColor   = .yellow
-        case .waiting(let error), .failed(let error):
+            
+        case .waiting(let error):
+            retry = true
+            fallthrough
+        case .failed(let error):
             tmpMessage = "Error! See console for more details."
             tmpColor   = .red
-            retry = true
             print(error)
+            
         default:
             fatalError()
         }

@@ -138,7 +138,7 @@ class Connection {
                 }
             }
             // TODO: Error management
-            self.receive()
+            if !complete { self.receive() }
         }
     }
     
