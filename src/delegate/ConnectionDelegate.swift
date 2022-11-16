@@ -110,8 +110,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             self.messageColor = tmpColor
             if let timeout {
                 self.messageTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
-                    self.message       = nil
-                    self.messageColor  = nil
+                    self.message      = nil
+                    self.messageColor = nil
                     self.messageTimer = nil
                 }
             }
