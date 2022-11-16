@@ -19,24 +19,23 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Foundation
 import Network
 
-/// This protocol defines a listener responsible for handling state updates and
-/// for receiving data.
-protocol ConnectionListener: AnyObject {
-    /// Called once a new block of data has been received.
+/// Cases of this enumeration contain the underlying NWError. The enumeration case
+/// itself indicates where the error happened.
+enum ConnectionError {
+    /// Indicates that the error happened in the receiving process.
     ///
-    /// - Parameter data: The received block of data.
-    func receive(data: Data)
+    /// - Parameter error: The underlying NWError.
+    case receiving(error: NWError)
     
-    /// Called when the state of the underlying connection changes.
+    /// Indiciates that the error happened in the sending process.
     ///
-    /// - Parameter state: The new state of the underlying connection.
-    func stateChanged(to state: NWConnection.State)
+    /// - Parameter error: The underlying NWError.
+    case sending(error: NWError)
     
-    /// Called when an error happens.
+    /// Indicates that the error happened at an unspecified place.
     ///
-    /// - Parameter error: The error that happened.
-    func handleError(_ error: ConnectionError)
+    /// - Parameter error: The underlying NWError.
+    case generic(error: NWError)
 }

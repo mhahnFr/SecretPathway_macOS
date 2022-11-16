@@ -15,6 +15,7 @@
 		BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */; };
 		BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */; };
 		BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */; };
+		BFD9049D29252289006B728B /* ConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9049C29252289006B728B /* ConnectionError.swift */; };
 		BFD9B0CC2923CFF500E59D00 /* ConnectionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */; };
 		BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0CE2923DE7500E59D00 /* ConnectionListener.swift */; };
 		BFD9B0D32923F58900E59D00 /* DialogDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0D22923F58900E59D00 /* DialogDelegate.swift */; };
@@ -39,6 +40,7 @@
 		BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptView.swift; sourceTree = "<group>"; };
 		BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptDelegate.swift; sourceTree = "<group>"; };
+		BFD9049C29252289006B728B /* ConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionError.swift; sourceTree = "<group>"; };
 		BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionRecord.swift; sourceTree = "<group>"; };
 		BFD9B0CE2923DE7500E59D00 /* ConnectionListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListener.swift; sourceTree = "<group>"; };
 		BFD9B0D22923F58900E59D00 /* DialogDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 			children = (
 				BFA5CF33290D7E4300010BD6 /* Connection.swift */,
 				BFD9B0CE2923DE7500E59D00 /* ConnectionListener.swift */,
+				BFD9049C29252289006B728B /* ConnectionError.swift */,
 			);
 			path = net;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
 				BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */,
 				BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */,
+				BFD9049D29252289006B728B /* ConnectionError.swift in Sources */,
 				BFD9B0CC2923CFF500E59D00 /* ConnectionRecord.swift in Sources */,
 				BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */,
 				BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */,

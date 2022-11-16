@@ -73,6 +73,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    /// Handles connection errors.
+    ///
+    /// - Parameter error: The raised error.
+    internal func handleError(_ error: ConnectionError) {
+        // TODO: Implement
+        print(error)
+    }
+    
     /// Displays a message according to the given state.
     ///
     /// - Parameter state: The state of the connection.
@@ -105,7 +113,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         case .failed(let error):
             tmpMessage = "Error! See console for more details."
             tmpColor   = .red
-            print(error)
+            handleError(.generic(error: error))
             
         default:
             fatalError()

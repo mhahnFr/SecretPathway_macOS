@@ -129,7 +129,7 @@ class Connection {
     /// Upon receiption, if the content listener is set, it is called with the newly received
     /// block of bytes. Otherwise, the received bytes are buffered.
     private func receive() {
-        connection.receive(minimumIncompleteLength: 1, maximumLength: .max) { data, context, complete, error in
+        connection.receive(minimumIncompleteLength: 1, maximumLength: .max) { data, _, complete, error in
             if let data {
                 if let listener = self.connectionListener {
                     listener.receive(data: data)
@@ -137,7 +137,9 @@ class Connection {
                     self.buffer.append(data)
                 }
             }
-            // TODO: Error management
+            if let error, let connectionListener = self.connectionListener {
+                connectionListener.handleError(.receiving(error: error))
+            }
             if !complete { self.receive() }
         }
     }
@@ -156,9 +158,11 @@ class Connection {
     ///
     /// - Parameter data: The data that should be sent.
     func send(data: Data) {
-        connection.send(content: data, completion: .contentProcessed({ error in
-            // TODO: Implement
-        }))
+        connection.send(content: data, completion: .contentProcessed { error in
+            if let error, let connectionListener = self.connectionListener {
+                connectionListener.handleError(.sending(error: error))
+            }
+        })
     }
     
     /// Closes the underlying connection gracefully.
