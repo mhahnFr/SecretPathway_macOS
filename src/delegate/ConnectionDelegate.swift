@@ -77,20 +77,35 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter error: The raised error.
     internal func handleError(_ error: ConnectionError) {
-        // TODO: Implement
-        print(error)
+        let tmpMessage: String
+        
+        switch error {
+        case .generic(let error):
+            tmpMessage = "Generic error: \(error.localizedDescription)."
+            
+        case .receiving(let error):
+            tmpMessage = "Error while receiving: \(error.localizedDescription)."
+            
+        case .sending(let error):
+            tmpMessage = "Error while sending: \(error.localizedDescription)."
+        }
+        
+        DispatchQueue.main.async {
+            self.message      = tmpMessage
+            self.messageColor = .red
+        }
     }
     
     /// Displays a message according to the given state.
     ///
     /// - Parameter state: The state of the connection.
     internal func stateChanged(to state: NWConnection.State) {
-        let tmpMessage: String
-        
         var tmpColor: Color?
         var timeout:  Int?
         
-        var retry = false
+        var retry      = false
+        var message    = true
+        var tmpMessage = ""
         
         messageTimer?.invalidate()
         
@@ -111,8 +126,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             retry = true
             fallthrough
         case .failed(let error):
-            tmpMessage = "Error! See console for more details."
-            tmpColor   = .red
+            message = false
+            timeout = 5
             handleError(.generic(error: error))
             
         default:
@@ -120,8 +135,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         
         DispatchQueue.main.async {
-            self.message      = tmpMessage
-            self.messageColor = tmpColor
+            if message {
+                self.message      = tmpMessage
+                self.messageColor = tmpColor
+            }
             if let timeout {
                 self.messageTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
                     self.message      = nil
