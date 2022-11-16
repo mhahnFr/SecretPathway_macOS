@@ -34,6 +34,11 @@ enum ConnectionError {
     /// - Parameter error: The underlying NWError.
     case sending(error: NWError)
     
+    /// Indicates that the error happened in the connecting process.
+    ///
+    /// - Parameter error: The underlying NWError.
+    case connecting(error: NWError)
+    
     /// Indicates that the error happened at an unspecified place.
     ///
     /// - Parameter error: The underlying NWError.

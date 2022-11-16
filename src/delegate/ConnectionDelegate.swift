@@ -103,6 +103,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         #if DEBUG
             tmpMessage += " (\(error.localizedDescription))"
         #endif
+            
+        case .connecting(let error):
+            tmpMessage = "Could not connect to \"\(connection.name)\"!"
+        #if DEBUG
+            tmpMessage += " (\(error.localizedDescription))"
+        #endif
         }
         
         DispatchQueue.main.async {
@@ -142,7 +148,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             fallthrough
         case .failed(let error):
             message = false
-            handleError(.generic(error: error))
+            handleError(.connecting(error: error))
             
         default:
             fatalError()
