@@ -82,6 +82,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction func newConnectionAction(_ sender: NSMenuItem) {
+        openNewConnection()
+    }
+    
+    /// Prompts the user for the connection details and opens a new connection
+    /// using the user provided information.
+    ///
+    /// Does nothing if the user cancels the prompt.
+    private func openNewConnection() {
         guard let connection = promptConnection() else { return }
         
         let item = NSMenuItem(title: connection.name, action: nil, keyEquivalent: "")
@@ -177,9 +185,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         return toReturn
     }
+    
+    /// Fills the recents menu using the connection records stored in the settings.
+    private func fillRecentsMenu() {
+        for record in Settings.shared.recentConnections {
+            let item      = NSMenuItem(title: "\(record.hostname):\(record.port)", action: #selector(openRecentConnection), keyEquivalent: "")
+            recents[item] = record
+            
+            recentsMenu.items.insert(item, at: 0)
+        }
+    }
+    
+    /// Reopens all connections whose records are passed.
+    ///
+    /// Updates the connection records in the recents menu accordingly.
+    ///
+    /// - Parameter connections: An array containing the connection records to reopen from.
+    private func reopenConnections(_ connections: [ConnectionRecord]) {
+        for record in connections {
+            var recentItem: NSMenuItem?
+            for (item, mappedRecord) in recents {
+                if record == mappedRecord {
+                    recentItem = item
+                    break
+                }
+            }
+            if recentItem == nil {
+                recentItem = NSMenuItem(title: "\(record.hostname):\(record.port)", action: #selector(openRecentConnection), keyEquivalent: "")
+                Settings.shared.recentConnections.append(record)
+            }
+            recents[recentItem!] = openConnection(Connection(from: record)!)
+        }
+    }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // TODO: Load previous state, trigger openWindowAction by default
+        if Settings.shared.openConnections.isEmpty {
+            openNewConnection()
+        } else {
+            let toReopen = Settings.shared.openConnections
+            Settings.shared.openConnections = []
+            reopenConnections(toReopen)
+        }
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
