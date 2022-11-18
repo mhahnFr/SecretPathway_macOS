@@ -20,7 +20,7 @@
  */
 
 /// This class contains the relevant information about a connection and its associated view.
-class ConnectionRecord {
+struct ConnectionRecord {
     /// The used hostname or IP address.
     let hostname: String
     /// The used port.
@@ -44,7 +44,7 @@ class ConnectionRecord {
     ///
     /// - Parameter connection: The connection to take the information from.
     /// - Parameter delegate: The associated delegate.
-    convenience init(from connection: Connection, delegate: ConnectionDelegate?) {
+    init(from connection: Connection, delegate: ConnectionDelegate?) {
         self.init(hostname: connection.hostname, port: connection.port, delegate: delegate)
     }
 }
