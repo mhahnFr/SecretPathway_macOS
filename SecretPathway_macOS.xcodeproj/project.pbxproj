@@ -88,7 +88,6 @@
 				BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */,
 				BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */,
 				BFEA07B829043DCC00294822 /* SettingsViewDelegate.swift */,
-				BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */,
 			);
 			path = delegate;
 			sourceTree = "<group>";
@@ -109,6 +108,7 @@
 				BFA5CF33290D7E4300010BD6 /* Connection.swift */,
 				BFD9B0CE2923DE7500E59D00 /* ConnectionListener.swift */,
 				BFD9049C29252289006B728B /* ConnectionError.swift */,
+				BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */,
 			);
 			path = net;
 			sourceTree = "<group>";

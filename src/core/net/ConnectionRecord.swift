@@ -20,7 +20,7 @@
  */
 
 /// This class contains the relevant information about a connection and its associated view.
-struct ConnectionRecord {
+struct ConnectionRecord: Equatable {
     /// The used hostname or IP address.
     let hostname: String
     /// The used port.
@@ -46,5 +46,13 @@ struct ConnectionRecord {
     /// - Parameter delegate: The associated delegate.
     init(from connection: Connection, delegate: ConnectionDelegate?) {
         self.init(hostname: connection.hostname, port: connection.port, delegate: delegate)
+    }
+    
+    static func == (lhs: ConnectionRecord, rhs: ConnectionRecord) -> Bool {
+        lhs.hostname == rhs.hostname && lhs.port == rhs.port
+    }
+    
+    static func != (lhs: ConnectionRecord, rhs: ConnectionRecord) -> Bool {
+        !(lhs == rhs)
     }
 }
