@@ -19,9 +19,9 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Foundation
 import AppKit
 
+/// The delegate for the settings window.
 class SettingsViewDelegate: NSObject, NSWindowDelegate {
     func windowShouldClose(_ sender: NSWindow) -> Bool {
         NSApp.stopModal()

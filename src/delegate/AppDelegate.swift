@@ -68,7 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func settingsAction(_ sender: NSMenuItem) {
         let contentView      = SettingsView()
         let settingsDelegate = SettingsViewDelegate()
-        let window           = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 50), styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+        let window           = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 200, height: 50), styleMask: [.titled, .closable], backing: .buffered, defer: false)
         
         window.setFrameAutosaveName("Settings")
         window.isReleasedWhenClosed = false
