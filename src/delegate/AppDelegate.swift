@@ -34,6 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBAction func connectionClearRecentsAction(_ sender: NSMenuItem) {
         recentsMenu.items.removeSubrange(0 ..< recentsMenu.numberOfItems - 2)
         recents = [:]
+        Settings.shared.recentConnections = []
     }
     
     @IBAction func windowCloseAction(_ sender: NSMenuItem) {
@@ -87,7 +88,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         item.action = #selector(openRecentConnection)
         
         recentsMenu.items.insert(item, at: 0)
-        recents[item] = openConnection(connection)
+        
+        let record    = openConnection(connection)
+        recents[item] = record
+        Settings.shared.recentConnections.append(record)
     }
     
     /// Opens the connection associated with the sender.
@@ -111,9 +115,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let window      = createConnectionWindow()
         let delegate    = ConnectionDelegate(for: connection, window: window)
         let contentView = ConnectionView(delegate: delegate)
-
+        let record      = ConnectionRecord(from: connection, delegate: delegate)
+        
         delegates.insert(delegate)
-        delegate.onClose = { self.delegates.remove($0) }
+        Settings.shared.openConnections.append(record)
+        
+        delegate.onClose = {
+            self.delegates.remove($0)
+            Settings.shared.openConnections.removeAll { $0 == record }
+        }
         
         window.title       = "\(Constants.APP_NAME): \(connection.name)"
         window.contentView = NSHostingView(rootView: contentView)
@@ -124,7 +134,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.center()
         window.makeKeyAndOrderFront(self)
         
-        return ConnectionRecord(from: connection, delegate: delegate)
+        return record
     }
     
     /// Prompts the user to enter the informations needed to establish a MUD connection.
