@@ -28,12 +28,16 @@ class Settings: ObservableObject {
     /// The single object of this class.
     static let shared = Settings()
     
+    /// An array consisting of all currently opened connections.
+    /// It is automatically retained by the underlying app storage.
     var openConnections: [ConnectionRecord] {
         didSet {
             // TODO: Save
         }
     }
     
+    /// An array consisting of the recently opened connections.
+    /// It is automatically retained by the underlying app storage.
     var recentConnections: [ConnectionRecord] {
         didSet {
             // TODO: Save
@@ -41,6 +45,7 @@ class Settings: ObservableObject {
     }
     
     /// The font size to be used globally.
+    /// Automatically retained by the underlying app storage.
     @AppStorage(Constants.Storage.FONT_SIZE)
     var fontSize: Double = 12
     
