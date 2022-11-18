@@ -25,4 +25,14 @@ class Constants {
     static let APP_NAME       = "SecretPathway"
     /// The version as string.
     static let VERSION_STRING = "1.0"
+    
+    /// Constants to be used for stored settings.
+    class Storage {
+        /// The used font.
+        static let FONT               = "\(APP_NAME).font"
+        /// The currently open connections.
+        static let OPEN_CONNECTIONS   = "\(APP_NAME).openConnections"
+        /// The recently opened connections.
+        static let RECENT_CONNECTIONS = "\(APP_NAME).recentConnections"
+    }
 }

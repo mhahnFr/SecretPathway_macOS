@@ -20,6 +20,7 @@
  */
 
 import Foundation
+import SwiftUI
 
 /// This class contains all settings and is responsible for storing the
 /// application state.
@@ -27,10 +28,41 @@ class Settings: ObservableObject {
     /// The single object of this class.
     static let shared = Settings()
     
+    var openConnections: [ConnectionRecord] {
+        didSet {
+            // TODO: Save
+        }
+    }
+    
+    var recentConnections: [ConnectionRecord] {
+        didSet {
+            // TODO: Save
+        }
+    }
+    
+    @Published var font: Font {
+        didSet {
+            // TODO: Save
+        }
+    }
+    
+    /// The raw data of the currently used font.
+    @AppStorage(Constants.Storage.FONT)
+    private var fontRaw: Data = Data()
+    /// The raw data of the currently opened connections.
+    @AppStorage(Constants.Storage.OPEN_CONNECTIONS)
+    private var openConnectionsRaw: Data = Data()
+    /// The raw data of the recently opened connections.
+    @AppStorage(Constants.Storage.RECENT_CONNECTIONS)
+    private var recentConnectionsRaw: Data = Data()
+    
     /// Private initializer to prevent instancing this class from outside.
     ///
     /// Reads the settings from the storing location.
     private init() {
-        // TODO: Read settings from somewhere
+        // TODO: Parse the raw data
+        openConnections   = []
+        recentConnections = []
+        font = .system(size: 12, design: .monospaced)
     }
 }
