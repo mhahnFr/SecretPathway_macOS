@@ -137,8 +137,8 @@ class Connection {
                     self.buffer.append(data)
                 }
             }
-            if let error, let connectionListener = self.connectionListener {
-                connectionListener.handleError(.receiving(error: error))
+            if let error {
+                self.connectionListener?.handleError(.receiving(error: error))
             }
             if !complete && self.connection.state == .ready { self.receive() }
         }
@@ -159,8 +159,8 @@ class Connection {
     /// - Parameter data: The data that should be sent.
     func send(data: Data) {
         connection.send(content: data, completion: .contentProcessed { error in
-            if let error, let connectionListener = self.connectionListener {
-                connectionListener.handleError(.sending(error: error))
+            if let error {
+                self.connectionListener?.handleError(.sending(error: error))
             }
         })
     }

@@ -159,10 +159,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     self.messageTimer = nil
                 }
             }
-            if let retryTimer = self.retryTimer, !retry {
-                retryTimer.invalidate()
+            if !retry {
+                self.retryTimer?.invalidate()
                 self.retryTimer = nil
-            } else if retry {
+            } else {
                 self.retryTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(2.5), repeats: true) { _ in
                     self.connection.retry()
                 }
