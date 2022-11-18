@@ -23,6 +23,7 @@ import SwiftUI
 
 struct ConnectionView: View {
     @ObservedObject var delegate: ConnectionDelegate
+    @ObservedObject var settings = Settings.shared
 
     @State var enteredText = ""
     
@@ -35,7 +36,7 @@ struct ConnectionView: View {
             }
             ScrollView {
                 TextEditor(text: .constant(delegate.content)) // TODO: Needs to be provided
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(.system(size: settings.fontSize, design: .monospaced))
             }
             HStack {
                 if let prompt = delegate.prompt {
