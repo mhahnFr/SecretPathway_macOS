@@ -40,15 +40,10 @@ class Settings: ObservableObject {
         }
     }
     
-    @Published var font: Font {
-        didSet {
-            // TODO: Save
-        }
-    }
+    /// The font size to be used globally.
+    @AppStorage(Constants.Storage.FONT_SIZE)
+    var fontSize: Double = 12
     
-    /// The raw data of the currently used font.
-    @AppStorage(Constants.Storage.FONT)
-    private var fontRaw: Data = Data()
     /// The raw data of the currently opened connections.
     @AppStorage(Constants.Storage.OPEN_CONNECTIONS)
     private var openConnectionsRaw: Data = Data()
@@ -63,6 +58,5 @@ class Settings: ObservableObject {
         // TODO: Parse the raw data
         openConnections   = []
         recentConnections = []
-        font = .system(size: 12, design: .monospaced)
     }
 }

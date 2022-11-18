@@ -22,15 +22,20 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject var settings = Settings.shared
+    @ObservedObject private var settings = Settings.shared
     
     var body: some View {
-        Text("Settings")
+        HStack {
+            Text("The font size:")
+            Stepper(value: settings.$fontSize) {
+                Text("\(settings.fontSize)").bold()
+            }
+        }.padding(5)
     }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(settings: Settings.shared)
+        SettingsView()
     }
 }

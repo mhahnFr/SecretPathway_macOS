@@ -28,8 +28,8 @@ class Constants {
     
     /// Constants to be used for stored settings.
     class Storage {
-        /// The used font.
-        static let FONT               = "\(APP_NAME).font"
+        /// The size of the font.
+        static let FONT_SIZE          = "\(APP_NAME).fontSize"
         /// The currently open connections.
         static let OPEN_CONNECTIONS   = "\(APP_NAME).openConnections"
         /// The recently opened connections.
