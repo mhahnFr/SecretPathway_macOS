@@ -30,17 +30,17 @@ class Settings: ObservableObject {
     
     /// An array consisting of all currently opened connections.
     /// It is automatically retained by the underlying app storage.
-    var openConnections: [ConnectionRecord] {
+    var openConnections: [ConnectionRecord] = [] {
         didSet {
-            // TODO: Save
+            openConnectionsRaw = Settings.dumpConnectionRecords(openConnections)
         }
     }
     
     /// An array consisting of the recently opened connections.
     /// It is automatically retained by the underlying app storage.
-    var recentConnections: [ConnectionRecord] {
+    var recentConnections: [ConnectionRecord] = [] {
         didSet {
-            // TODO: Save
+            recentConnectionsRaw = Settings.dumpConnectionRecords(recentConnections)
         }
     }
     
@@ -60,8 +60,42 @@ class Settings: ObservableObject {
     ///
     /// Reads the settings from the storing location.
     private init() {
-        // TODO: Parse the raw data
-        openConnections   = []
-        recentConnections = []
+        openConnections   = Settings.readConnectionRecords(from: openConnectionsRaw)
+        recentConnections = Settings.readConnectionRecords(from: recentConnectionsRaw)
+    }
+    
+    static func dumpConnectionRecords(_ records: [ConnectionRecord]) -> Data {
+        var tmpData = Data()
+        
+        tmpData.append(records.count.dump())
+        
+        for record in records {
+            let recordDump = record.dump()
+            tmpData.append(recordDump.count.dump())
+            tmpData.append(recordDump)
+        }
+        return tmpData
+    }
+    
+    static func readConnectionRecords(from data: Data) -> [ConnectionRecord] {
+        var result: [ConnectionRecord] = []
+        
+        guard let amount = Int(from: data) else { return [] }
+        
+        var advancer = 4
+        
+        for _ in 0 ..< amount {
+            guard data.count > advancer + 4 else { return [] }
+            guard let size = Int(from: data.advanced(by: advancer)) else { return [] }
+            advancer += 4
+            
+            guard data.count >= advancer + size else { return [] }
+            
+            guard let tmpRecord = ConnectionRecord(from: data.advanced(by: advancer)) else { return [] }
+            advancer += size
+            result.append(tmpRecord)
+        }
+        
+        return result
     }
 }

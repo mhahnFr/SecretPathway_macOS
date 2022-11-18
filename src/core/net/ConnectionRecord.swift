@@ -19,6 +19,8 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import Foundation
+
 /// This class contains the relevant information about a connection and its associated view.
 struct ConnectionRecord: Equatable {
     /// The used hostname or IP address.
@@ -46,6 +48,49 @@ struct ConnectionRecord: Equatable {
     /// - Parameter delegate: The associated delegate.
     init(from connection: Connection, delegate: ConnectionDelegate?) {
         self.init(hostname: connection.hostname, port: connection.port, delegate: delegate)
+    }
+    
+    /// Reads the record information from the given data.
+    ///
+    /// Returns nil if the data could not be parsed.
+    ///
+    /// - Parameter data: The data to read the information from.
+    init?(from data: Data) {
+        var advancer = 0
+        
+        let port = Int(from: data)
+        guard let port else { return nil }
+        advancer += 4
+        
+        guard data.count >= advancer + 4 else { return nil }
+        let stringSize = Int(from: data.advanced(by: advancer))
+        guard let stringSize else { return nil }
+        advancer += 4
+        
+        guard data.count >= advancer + stringSize else { return nil }
+        let hostname = String(data: data.subdata(in: advancer..<stringSize), encoding: .unicode)
+        guard let hostname else { return nil }
+        
+        self.init(hostname: hostname, port: port, delegate: nil)
+    }
+    
+    /// Dumps itself into a piece of data.
+    ///
+    /// The format is as follows: Int for the port, followed by a Int for
+    /// the length of the hostname and then as many bytes for the hostname,
+    /// encoded as unicode.
+    ///
+    /// - Returns: The dumped data.
+    func dump() -> Data {
+        var tmpData = Data()
+        
+        tmpData.append(port.dump())
+        
+        let stringData = hostname.data(using: .unicode)!
+        tmpData.append(stringData.count.dump())
+        tmpData.append(stringData)
+        
+        return tmpData
     }
     
     static func == (lhs: ConnectionRecord, rhs: ConnectionRecord) -> Bool {
