@@ -20,28 +20,12 @@
  */
 
 import SwiftUI
-import Combine
 
 struct SettingsView: View {
     @ObservedObject var settings = Settings.shared
-    @State          var portNo   = String(Settings.shared.port)
-    
-    let columns = [GridItem(.fixed(160)), GridItem(.flexible(minimum: 160))]
     
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 20, content: {
-            Text("Hostname or IP-address: ")
-            TextField("Hostname or Ip-address", text: $settings.host)
-            Text("Port: ")
-            TextField("Port: ", text: $portNo)
-                .onReceive(Just(portNo), perform: { newValue in
-                    let filtered = newValue.filter { character in "0123456789".contains(character) }
-                    if filtered != newValue {
-                        portNo = filtered
-                        settings.port = Int(filtered)!
-                    }
-                })
-        })
+        Text("Settings")
     }
 }
 

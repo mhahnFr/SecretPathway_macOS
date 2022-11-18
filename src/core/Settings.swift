@@ -21,14 +21,16 @@
 
 import Foundation
 
+/// This class contains all settings and is responsible for storing the
+/// application state.
 class Settings: ObservableObject {
+    /// The single object of this class.
     static let shared = Settings()
-    var port: Int
-    var host: String
     
+    /// Private initializer to prevent instancing this class from outside.
+    ///
+    /// Reads the settings from the storing location.
     private init() {
         // TODO: Read settings from somewhere
-        port = 4242
-        host = "127.0.0.1"
     }
 }
