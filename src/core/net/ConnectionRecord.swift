@@ -58,18 +58,17 @@ struct ConnectionRecord: Equatable {
     init?(from data: Data) {
         var advancer = 0
         
-        let port = Int(from: data)
-        guard let port else { return nil }
+        guard let port = Int(from: data) else { return nil }
         advancer += 4
         
         guard data.count >= advancer + 4 else { return nil }
-        let stringSize = Int(from: data.advanced(by: advancer))
-        guard let stringSize else { return nil }
+        
+        guard let stringSize = Int(from: data.advanced(by: advancer)) else { return nil }
         advancer += 4
         
         guard data.count >= advancer + stringSize else { return nil }
-        let hostname = String(data: data.subdata(in: advancer ..< (advancer + stringSize)), encoding: .unicode)
-        guard let hostname else { return nil }
+        
+        guard let hostname = String(data: data.subdata(in: advancer ..< (advancer + stringSize)), encoding: .unicode) else { return nil }
         
         self.init(hostname: hostname, port: port, delegate: nil)
     }
