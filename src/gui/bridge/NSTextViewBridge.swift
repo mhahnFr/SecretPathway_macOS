@@ -27,16 +27,18 @@ struct NSTextViewBridge: NSViewRepresentable {
     var fontSize: Double
     
     func makeNSView(context: Context) -> some NSView {
-        let textView = NSTextView()
+        let toReturn = NSTextView.scrollableTextView()
+        let textView = toReturn.documentView as! NSTextView
         textView.isEditable = false
-        return textView
+        return toReturn
     }
     
     func updateNSView(_ nsView: NSViewType, context: Context) {
-        let textView = nsView as! NSTextView
+        let textView = (nsView as! NSScrollView).documentView as! NSTextView
         
         textView.textStorage?.setAttributedString(NSAttributedString(string: text))
         textView.font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
         textView.textColor = .white
+        textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
     }
 }
