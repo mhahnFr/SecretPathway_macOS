@@ -68,7 +68,7 @@ struct ConnectionRecord: Equatable {
         advancer += 4
         
         guard data.count >= advancer + stringSize else { return nil }
-        let hostname = String(data: data.subdata(in: advancer..<stringSize), encoding: .unicode)
+        let hostname = String(data: data.subdata(in: advancer ..< (advancer + stringSize)), encoding: .unicode)
         guard let hostname else { return nil }
         
         self.init(hostname: hostname, port: port, delegate: nil)

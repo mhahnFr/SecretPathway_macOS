@@ -219,6 +219,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        fillRecentsMenu()
         if Settings.shared.openConnections.isEmpty {
             openNewConnection()
         } else {
