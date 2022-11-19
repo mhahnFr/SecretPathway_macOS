@@ -72,10 +72,25 @@ class Settings: ObservableObject {
         recentConnections = Settings.readConnectionRecords(from: recentConnectionsRaw)
     }
     
+    /// Triggers an update of the underling settings storage.
+    private func updateStorage() {
+        openConnectionsRaw   = Settings.dumpConnectionRecords(openConnections)
+        recentConnectionsRaw = Settings.dumpConnectionRecords(recentConnections)
+    }
+    
     /// When this function is called, all changes made are no longer reflected into
     /// the underlying settings storage.
     func freeze() {
         frozen = true
+    }
+    
+    /// If the settings where frozen before, changes made AFTER this function is
+    /// called are reflected into the underlying settings storage again.
+    ///
+    /// Updates the underlying settings storage.
+    func unfreeze() {
+        frozen = false
+        updateStorage()
     }
     
     static func dumpConnectionRecords(_ records: [ConnectionRecord]) -> Data {

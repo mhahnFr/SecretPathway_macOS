@@ -230,13 +230,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        Settings.shared.freeze()
         for delegate in delegates {
             if !delegate.maybeCloseConnection() {
+                Settings.shared.unfreeze()
                 return .terminateCancel
             }
             delegate.window?.close()
         }
-        Settings.shared.freeze()
         return .terminateNow
     }
 }
