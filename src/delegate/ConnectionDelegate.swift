@@ -202,6 +202,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Closes the connection controlled by this delegate.
     func closeConnection() {
         connection.close()
+        
+        retryTimer?.invalidate()
+        retryTimer = nil
     }
     
     /// Asks the user if he whishes to close the connection if it is active.
@@ -218,7 +221,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                          addition: "Do you want to close it?",
                      cancelButton: "Cancel")
                     .show()
-            if result { connection.close() }
+            if result { closeConnection() }
         }
         return result
     }
