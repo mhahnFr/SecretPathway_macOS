@@ -62,11 +62,42 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         self.connection.start()
     }
     
+    /// Parses the given block of data.
+    ///
+    /// Returns a copy of the given data, filtered from all escape codes.
+    ///
+    /// - Parameter data: The block of data to be parsed.
+    private func parseData(_ data: Data) -> Data {
+        // TODO: Parse escape codes
+        data
+    }
+    
+    /// Creates a string from the given block of data.
+    ///
+    /// All non-ascii characters are removed from a copy of the block of data
+    /// before creating the string from.
+    ///
+    /// - Parameter data: The data to filter and create a string from.
+    /// - Returns: A string containing only ASCII characters built from the given piece of data.
+    private func plainAscii(from data: Data) -> String {
+        var filteredData = data
+        
+        for i in 0 ..< filteredData.endIndex {
+            if filteredData[i] > 127 {
+                filteredData[i] = Character("-").asciiValue!
+            }
+        }
+        
+        return String(data: filteredData, encoding: .ascii)!
+    }
+    
     /// Handles incoming data.
     ///
     /// - Parameter data: The new block of bytes
     internal func receive(data: Data) {
-        guard let text = String(data: data, encoding: .utf8) else { return } // TODO: Decoding errors
+        let filteredData = parseData(data)
+        
+        let text = String(data: filteredData, encoding: .utf8) ?? plainAscii(from: filteredData)
         
         DispatchQueue.main.async {
             self.content.append(text)
