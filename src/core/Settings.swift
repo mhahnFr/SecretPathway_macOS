@@ -93,6 +93,14 @@ class Settings: ObservableObject {
         updateStorage()
     }
     
+    /// Dumps the given array of connection records into a data object.
+    ///
+    /// The format used: Int32    - amount of records
+    ///                  Int32    - length of record
+    ///                  [length] - record
+    ///
+    /// - Parameter records: The records to be dumped.
+    /// - Returns: A block of data.
     static func dumpConnectionRecords(_ records: [ConnectionRecord]) -> Data {
         var tmpData = Data()
         
@@ -106,6 +114,12 @@ class Settings: ObservableObject {
         return tmpData
     }
     
+    /// Creates an array of connection records out of the given block of data.
+    ///
+    /// Returns an empty array if an error occurs while parsing.
+    ///
+    /// - Parameter data: The block of data to be parsed.
+    /// - Returns: An array of connection records out of the block of data.
     static func readConnectionRecords(from data: Data) -> [ConnectionRecord] {
         var result: [ConnectionRecord] = []
         

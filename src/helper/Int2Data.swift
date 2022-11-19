@@ -21,7 +21,13 @@
 
 import Foundation
 
+/// An extension adding dumping possibilites to normal ints.
 extension Int {
+    /// Initializes an int from the given block of data.
+    ///
+    /// Returns nil if the given block of data contains less than 4 bytes.
+    ///
+    /// - Parameter data: The data to read the int from.
     init?(from data: Data) {
         guard data.count >= 4 else { return nil }
         
@@ -33,6 +39,9 @@ extension Int {
              | (Int(data[3]) & 0xff) <<  0
     }
     
+    /// Dumps this integer into a block of data containing four bytes.
+    ///
+    /// - Returns: A block of data representing this integer.
     func dump() -> Data {
         var tmpData = Data()
         
