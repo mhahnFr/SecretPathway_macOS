@@ -194,7 +194,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         let tmpText = text + "\n"
         content.append(contentsOf: tmpText)
         
-        guard let data = tmpText.data(using: .utf8) else { return } // TODO: Error handling
+        let data = tmpText.data(using: .utf8, allowLossyConversion: true)!
+        
         connection.send(data: data)
     }
     
@@ -236,7 +237,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        return maybeCloseConnection()
+        maybeCloseConnection()
     }
     
     func windowWillClose(_ notification: Notification) {
