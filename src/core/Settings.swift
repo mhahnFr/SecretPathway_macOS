@@ -32,6 +32,8 @@ class Settings: ObservableObject {
     /// It is automatically retained by the underlying app storage.
     var openConnections: [ConnectionRecord] = [] {
         didSet {
+            guard !frozen else { return }
+            
             openConnectionsRaw = Settings.dumpConnectionRecords(openConnections)
         }
     }
@@ -40,6 +42,8 @@ class Settings: ObservableObject {
     /// It is automatically retained by the underlying app storage.
     var recentConnections: [ConnectionRecord] = [] {
         didSet {
+            guard !frozen else { return }
+            
             recentConnectionsRaw = Settings.dumpConnectionRecords(recentConnections)
         }
     }
@@ -56,12 +60,22 @@ class Settings: ObservableObject {
     @AppStorage(Constants.Storage.RECENT_CONNECTIONS)
     private var recentConnectionsRaw: Data = Data()
     
+    /// Indicates whether changes made should be reflected into the underlying
+    /// settings storage.
+    private(set) var frozen = false
+    
     /// Private initializer to prevent instancing this class from outside.
     ///
     /// Reads the settings from the storing location.
     private init() {
         openConnections   = Settings.readConnectionRecords(from: openConnectionsRaw)
         recentConnections = Settings.readConnectionRecords(from: recentConnectionsRaw)
+    }
+    
+    /// When this function is called, all changes made are no longer reflected into
+    /// the underlying settings storage.
+    func freeze() {
+        frozen = true
     }
     
     static func dumpConnectionRecords(_ records: [ConnectionRecord]) -> Data {

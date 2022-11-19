@@ -229,9 +229,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func applicationWillTerminate(_ aNotification: Notification) {
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         for delegate in delegates {
-            delegate.closeConnection()
+            if !delegate.maybeCloseConnection() {
+                return .terminateCancel
+            }
+            delegate.window?.close()
         }
+        Settings.shared.freeze()
+        return .terminateNow
     }
 }
