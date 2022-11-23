@@ -92,14 +92,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func openNewConnection() {
         guard let connection = promptConnection() else { return }
         
-        let item = NSMenuItem(title: connection.name, action: nil, keyEquivalent: "")
-        item.action = #selector(openRecentConnection)
-        
-        recentsMenu.items.insert(item, at: 0)
-        
         let record    = openConnection(connection)
+        let item      = findOrCreateRecentMenuItem(record: record)
         recents[item] = record
-        Settings.shared.recentConnections.append(record)
     }
     
     /// Opens the connection associated with the sender.
@@ -195,6 +190,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             recentsMenu.items.insert(item, at: 0)
         }
     }
+
+    /// Returns the menu item mapped to the given connection record.
+    ///
+    /// If no such menu item is found, it is created and appended to the
+    /// recents menu.
+    ///
+    /// - Parameter record: The record whose mapped menu item is searched.
+    /// - Returns: The mapped recent menu item.
+    private func findOrCreateRecentMenuItem(record: ConnectionRecord) -> NSMenuItem {
+        var recentItem: NSMenuItem?
+        
+        for (item, mappedRecord) in recents {
+            if record == mappedRecord {
+                recentItem = item
+                break
+            }
+        }
+        if recentItem == nil {
+            recentItem = NSMenuItem(title: "\(record.hostname):\(record.port)", action: #selector(openRecentConnection), keyEquivalent: "")
+            recentsMenu.items.insert(recentItem!, at: 0)
+            Settings.shared.recentConnections.append(record)
+        }
+        return recentItem!
+    }
     
     /// Reopens all connections whose records are passed.
     ///
@@ -203,18 +222,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// - Parameter connections: An array containing the connection records to reopen from.
     private func reopenConnections(_ connections: [ConnectionRecord]) {
         for record in connections {
-            var recentItem: NSMenuItem?
-            for (item, mappedRecord) in recents {
-                if record == mappedRecord {
-                    recentItem = item
-                    break
-                }
-            }
-            if recentItem == nil {
-                recentItem = NSMenuItem(title: "\(record.hostname):\(record.port)", action: #selector(openRecentConnection), keyEquivalent: "")
-                Settings.shared.recentConnections.append(record)
-            }
-            recents[recentItem!] = openConnection(Connection(from: record)!)
+            let recentItem      = findOrCreateRecentMenuItem(record: record)
+            recents[recentItem] = openConnection(Connection(from: record)!)
         }
     }
 
