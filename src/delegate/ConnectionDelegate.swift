@@ -91,7 +91,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         return String(data: filteredData, encoding: .ascii)!
     }
     
-    internal func initTextView(_ textView: NSTextView) {}
+    internal func initTextView(_ textView: NSTextView) {
+        textView.isEditable = false
+        textView.font       = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
+        textView.textColor  = .textColor
+    }
     
     internal func updateTextView(_ textView: NSTextView) {
         // TODO: Append the text

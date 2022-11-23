@@ -34,10 +34,8 @@ struct NSTextViewBridge: NSViewRepresentable {
     func makeNSView(context: Context) -> some NSView {
         let toReturn = NSTextView.scrollableTextView()
         let textView = toReturn.documentView as! NSTextView
-        
-        textView.isEditable = false
-        textView.font       = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-        textView.textColor  = .textColor
+
+        delegate?.initTextView(textView)
         
         return toReturn
     }
