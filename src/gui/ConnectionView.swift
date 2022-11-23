@@ -34,10 +34,7 @@ struct ConnectionView: View {
                     .foregroundColor(delegate.messageColor)
                     .bold()
             }
-            ScrollView {
-                TextEditor(text: .constant(delegate.content)) // TODO: Needs to be provided
-                    .font(.system(size: settings.fontSize, design: .monospaced))
-            }
+            NSTextViewBridge(text: delegate.content, fontSize: settings.fontSize, delegate: delegate)
             HStack {
                 if let prompt = delegate.prompt {
                     Text(prompt)
