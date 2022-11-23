@@ -103,7 +103,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         textView.textStorage?.setAttributedString(NSAttributedString(string: content))
         textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor = .textColor
-        textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
+        textView.scrollToEndOfDocument(self)
     }
     
     /// Handles incoming data.
