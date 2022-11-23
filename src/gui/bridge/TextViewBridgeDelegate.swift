@@ -21,7 +21,19 @@
 
 import AppKit
 
+/// This class protocol defines the necessary functionality that needs to
+/// be provided.
 protocol TextViewBridgeDelegate: AnyObject {
+    /// Called when the SwiftUI updates the bridged text view.
+    ///
+    /// - Parameter textView: The underlying text view that should be updated.
     func updateTextView(_ textView: NSTextView)
+    
+    /// Called when the SwiftUI initializes the bridged text view.
+    ///
+    /// The given text view is already created and can be customized by this
+    /// method.
+    ///
+    /// - Parameter textView: The underlying text view that should be initialized.
     func initTextView(_ textView: NSTextView)
 }

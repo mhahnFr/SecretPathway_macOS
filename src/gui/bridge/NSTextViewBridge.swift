@@ -22,9 +22,13 @@
 import AppKit
 import SwiftUI
 
+/// This structure bridges a NSTextView from the AppKit into SwiftUI.
 struct NSTextViewBridge: NSViewRepresentable {
+    /// The text that should be displayed by this view.
     var text: String
+    /// The font size that should be used by this view.
     var fontSize: Double
+    /// An optional delegate that can provide additional functionality.
     weak var delegate: TextViewBridgeDelegate?
     
     func makeNSView(context: Context) -> some NSView {
