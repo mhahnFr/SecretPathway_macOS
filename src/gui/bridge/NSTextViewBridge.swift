@@ -38,7 +38,7 @@ struct NSTextViewBridge: NSViewRepresentable {
         
         textView.textStorage?.setAttributedString(NSAttributedString(string: text))
         textView.font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-        textView.textColor = .white
+        textView.textColor = .textColor
         textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
     }
 }
