@@ -25,20 +25,29 @@ import SwiftUI
 struct NSTextViewBridge: NSViewRepresentable {
     var text: String
     var fontSize: Double
+    weak var delegate: TextViewBridgeDelegate?
     
     func makeNSView(context: Context) -> some NSView {
         let toReturn = NSTextView.scrollableTextView()
         let textView = toReturn.documentView as! NSTextView
+        
         textView.isEditable = false
+        textView.font       = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+        textView.textColor  = .textColor
+        
         return toReturn
     }
     
     func updateNSView(_ nsView: NSViewType, context: Context) {
         let textView = (nsView as! NSScrollView).documentView as! NSTextView
         
-        textView.textStorage?.setAttributedString(NSAttributedString(string: text))
-        textView.font = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-        textView.textColor = .textColor
-        textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
+        if let delegate {
+            delegate.updateTextView(textView)
+        } else {
+            textView.textStorage?.setAttributedString(NSAttributedString(string: text))
+            textView.font      = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+            textView.textColor = .textColor
+            textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
+        }
     }
 }

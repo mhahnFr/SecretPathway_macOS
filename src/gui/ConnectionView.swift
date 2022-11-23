@@ -34,7 +34,7 @@ struct ConnectionView: View {
                     .foregroundColor(delegate.messageColor)
                     .bold()
             }
-            NSTextViewBridge(text: delegate.content, fontSize: settings.fontSize)
+            NSTextViewBridge(text: delegate.content, fontSize: settings.fontSize, delegate: delegate)
             HStack {
                 if let prompt = delegate.prompt {
                     Text(prompt)

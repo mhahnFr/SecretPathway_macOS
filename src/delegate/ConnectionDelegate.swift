@@ -24,7 +24,7 @@ import Network
 import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
-class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener {
+class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
     /// The content that was received on the connection.
     @Published private(set) var content = ""
     /// The prompt text.
@@ -89,6 +89,17 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         
         return String(data: filteredData, encoding: .ascii)!
+    }
+    
+    internal func initTextView(_ textView: NSTextView) {}
+    
+    internal func updateTextView(_ textView: NSTextView) {
+        // TODO: Append the text
+        
+        textView.textStorage?.setAttributedString(NSAttributedString(string: content))
+        textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
+        textView.textColor = .textColor
+        textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
     }
     
     /// Handles incoming data.
