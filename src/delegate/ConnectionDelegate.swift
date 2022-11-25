@@ -266,10 +266,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
-        let toAppend = NSMutableAttributedString(string: text + "\n")
+        let toAppend = NSMutableAttributedString(string: text + "\n", attributes: [NSAttributedString.Key.foregroundColor: NSColor.gray])
         
         if let prompt {
-            let tmp = NSMutableAttributedString(string: prompt)
+            let tmp = NSMutableAttributedString(string: prompt, attributes: [NSAttributedString.Key.foregroundColor: NSColor.textColor])
             
             if prompt.last != " " { tmp.append(NSAttributedString(string: " ")) }
             
