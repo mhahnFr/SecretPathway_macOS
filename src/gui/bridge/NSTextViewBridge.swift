@@ -24,9 +24,8 @@ import SwiftUI
 
 /// This structure bridges a NSTextView from the AppKit into SwiftUI.
 struct NSTextViewBridge: NSViewRepresentable {
-    /// The text that should be displayed by this view.
-    var text: String = ""
-    var trigger: Bool
+    /// The length of the content text used as trigger.
+    var length: Int
     /// The font size that should be used by this view.
     var fontSize: Double
     /// An optional delegate that can provide additional functionality.
@@ -44,13 +43,6 @@ struct NSTextViewBridge: NSViewRepresentable {
     func updateNSView(_ nsView: NSViewType, context: Context) {
         let textView = (nsView as! NSScrollView).documentView as! NSTextView
         
-        if let delegate {
-            delegate.updateTextView(textView)
-        } else {
-            textView.textStorage?.setAttributedString(NSAttributedString(string: text))
-            textView.font      = NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
-            textView.textColor = .textColor
-            textView.scrollRangeToVisible(NSMakeRange(textView.string.count, 0))
-        }
+        delegate?.updateTextView(textView)
     }
 }

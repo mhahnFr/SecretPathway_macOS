@@ -25,8 +25,8 @@ import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
-    /// Variable used to trigger a SwiftUI update.
-    @Published private(set) var observed = false
+    /// The length of the content text used as SwiftUI trigger.
+    @Published private(set) var contentLength = 0
     /// The prompt text.
     @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
@@ -103,12 +103,22 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     internal func updateTextView(_ textView: NSTextView) {
-        // TODO: Append the text
-        
         textView.textStorage?.setAttributedString(content)
         textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor = .textColor
         textView.scrollToEndOfDocument(self)
+    }
+    
+    /// Appends the given NSAttributedString to the content and triggers a SwiftUI update.
+    ///
+    /// The triggering of the SwiftUI update is done in the correct thread.
+    ///
+    /// - Parameter newContent: The new String to be appended.
+    private func appendToContent(_ newContent: NSAttributedString) {
+        content.append(newContent)
+        DispatchQueue.main.async {
+            self.contentLength = self.content.length
+        }
     }
     
     /// Handles incoming data.
@@ -137,12 +147,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             }
             i += 1
         }
-        
-        content.append(NSAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text)))
-
-        DispatchQueue.main.async {
-            self.observed = !self.observed
-        }
+        appendToContent(NSAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text)))
     }
     
     /// Handles connection errors.
@@ -259,16 +264,19 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
+        let toAppend = NSMutableAttributedString(string: text + "\n")
+        
         if let prompt {
-            content.append(NSAttributedString(string: prompt))
-            if prompt.last != " " { content.append(NSAttributedString(string: " ")) }
+            let tmp = NSMutableAttributedString(string: prompt)
+            
+            if prompt.last != " " { tmp.append(NSAttributedString(string: " ")) }
+            
+            toAppend.insert(tmp, at: 0)
+            
         }
-        let tmpText = text + "\n"
-        content.append(NSAttributedString(string: tmpText))
+        appendToContent(toAppend)
         
-        observed = !observed
-        
-        let data = tmpText.data(using: .utf8, allowLossyConversion: true)!
+        let data = toAppend.string.data(using: .utf8, allowLossyConversion: true)!
         
         connection.send(data: data)
     }
