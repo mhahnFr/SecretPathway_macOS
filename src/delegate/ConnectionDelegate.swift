@@ -44,9 +44,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var connection: Connection
     /// The attributed string that should be appended the next time the view is updated.
     private var appendix = NSMutableAttributedString()
+    /// Indicates whether incoming data should be treated as ANSI escape code.
     private var wasAnsi = false
+    /// The current escaped buffer.
     private var buffer = Data()
-    private var text = Data()
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -126,7 +127,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter data: The new block of bytes
     internal func receive(data: Data) {
-        text = Data()
+        var text = Data()
         
         var i = 0
         while i < data.count {
