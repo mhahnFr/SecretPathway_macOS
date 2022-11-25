@@ -26,7 +26,7 @@ import SwiftUI
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
     /// The content that was received on the connection.
-    @Published private(set) var content = ""
+    @Published private(set) var content = NSMutableAttributedString(string: "")
     /// The prompt text.
     @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
@@ -100,7 +100,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func updateTextView(_ textView: NSTextView) {
         // TODO: Append the text
         
-        textView.textStorage?.setAttributedString(NSAttributedString(string: content))
+        textView.textStorage?.setAttributedString(content)
         textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor = .textColor
         textView.scrollToEndOfDocument(self)
@@ -115,7 +115,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         let text = String(data: filteredData, encoding: .utf8) ?? plainAscii(from: filteredData)
         
         DispatchQueue.main.async {
-            self.content.append(text)
+            self.content.append(NSAttributedString(string: text))
         }
     }
     
@@ -234,11 +234,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
         if let prompt {
-            content.append(contentsOf: prompt)
-            if prompt.last != " " { content.append(" ") }
+            content.append(NSAttributedString(string: prompt))
+            if prompt.last != " " { content.append(NSAttributedString(string: " ")) }
         }
         let tmpText = text + "\n"
-        content.append(contentsOf: tmpText)
+        content.append(NSAttributedString(string: tmpText))
         
         let data = tmpText.data(using: .utf8, allowLossyConversion: true)!
         
