@@ -25,8 +25,8 @@ import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
-    /// The content that was received on the connection.
-    @Published private(set) var content = NSMutableAttributedString(string: "")
+    /// Variable used to trigger a SwiftUI update.
+    @Published private(set) var observed = false
     /// The prompt text.
     @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
@@ -42,6 +42,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     /// The connection that is managed by this delegate instance.
     private var connection: Connection
+    /// The content that was received on the connection.
+    private var content = NSMutableAttributedString(string: "")
+    private var wasAnsi = false
+    private var buffer = Data()
+    private var text = Data()
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -110,12 +115,33 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter data: The new block of bytes
     internal func receive(data: Data) {
-        let filteredData = parseData(data)
+        text = Data()
         
-        let text = String(data: filteredData, encoding: .utf8) ?? plainAscii(from: filteredData)
+        var i = 0
+        while i < data.count {
+            switch data[i] {
+            case 0x1B:
+                wasAnsi = true
+                buffer = Data()
+                
+            case 0x6D where wasAnsi:
+                wasAnsi = false
+                // TODO: parse buffer
+                
+            default:
+                if wasAnsi {
+                    buffer.append(data[i])
+                } else {
+                    text.append(data[i])
+                }
+            }
+            i += 1
+        }
         
+        content.append(NSAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text)))
+
         DispatchQueue.main.async {
-            self.content.append(NSAttributedString(string: text))
+            self.observed = !self.observed
         }
     }
     
@@ -239,6 +265,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         let tmpText = text + "\n"
         content.append(NSAttributedString(string: tmpText))
+        
+        observed = !observed
         
         let data = tmpText.data(using: .utf8, allowLossyConversion: true)!
         
