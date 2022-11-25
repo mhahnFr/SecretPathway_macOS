@@ -48,6 +48,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var wasAnsi = false
     /// The current escaped buffer.
     private var buffer = Data()
+    private var currentAttributes: [NSAttributedString.Key: Any] = [:]
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -107,7 +108,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         textView.textStorage?.append(appendix)
         appendix = NSMutableAttributedString()
         textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
-        textView.textColor = .textColor
+//        textView.textColor = .textColor
         textView.scrollToEndOfDocument(self)
     }
     
@@ -123,11 +124,23 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    private func parseANSIBuffer(_ buffer: Data) -> [NSAttributedString.Key: Any]? {
+        let string = String(data: buffer, encoding: .ascii)!
+        if string.contains("32") {
+            return [.foregroundColor: NSColor.green]
+        } else if string.contains("0") {
+            return nil
+        }
+        return [.foregroundColor: NSColor.textColor]
+    }
+    
     /// Handles incoming data.
     ///
     /// - Parameter data: The new block of bytes
     internal func receive(data: Data) {
         var text = Data()
+        
+        var currentAtribs: [(Int, [NSAttributedString.Key: Any]?)] = []
         
         var i = 0
         while i < data.count {
@@ -138,6 +151,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
+                currentAtribs.append((i, parseANSIBuffer(buffer)))
                 // TODO: parse buffer
                 
             default:
@@ -149,7 +163,27 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             }
             i += 1
         }
-        appendToContent(NSAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text)))
+        let styledString = NSMutableAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text))
+        
+        /*func findNilPair(_ array: [(Int, [NSAttributedString.Key: Any]?)], from: Int) -> Int {
+            var i = from
+            while i < array.count {
+                if array[i].1 == nil {
+                    return array[i].0
+                }
+            }
+            return 0
+        }
+        
+        i = 0
+        for (start, attribs) in currentAtribs {
+            if attribs != nil {
+                styledString.setAttributes(attribs, range: NSMakeRange(start, findNilPair(currentAtribs, from: i) - start))
+            }
+            i += 1
+        }*/
+        
+        appendToContent(styledString)
     }
     
     /// Handles connection errors.
