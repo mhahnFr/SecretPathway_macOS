@@ -42,8 +42,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     /// The connection that is managed by this delegate instance.
     private var connection: Connection
-    /// The content that was received on the connection.
-    private var content = NSMutableAttributedString(string: "")
+    /// The attributed string that should be appended the next time the view is updated.
+    private var appendix = NSMutableAttributedString()
     private var wasAnsi = false
     private var buffer = Data()
     private var text = Data()
@@ -103,7 +103,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     internal func updateTextView(_ textView: NSTextView) {
-        textView.textStorage?.setAttributedString(content)
+        textView.textStorage?.append(appendix)
+        appendix = NSMutableAttributedString()
         textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor = .textColor
         textView.scrollToEndOfDocument(self)
@@ -115,9 +116,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter newContent: The new String to be appended.
     private func appendToContent(_ newContent: NSAttributedString) {
-        content.append(newContent)
         DispatchQueue.main.async {
-            self.contentLength = self.content.length
+            self.appendix.append(newContent)
+            self.contentLength += newContent.length
         }
     }
     
