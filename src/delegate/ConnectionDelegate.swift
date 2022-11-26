@@ -25,7 +25,9 @@ import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
+    /// The default style to be used for user entered text.
     static let inputStyle  = SPStyle(foreground: .gray)
+    /// The default style to be used for the prompt text.
     static let promptStyle = SPStyle()
     /// The length of the content text used as SwiftUI trigger.
     @Published private(set) var contentLength = 0
