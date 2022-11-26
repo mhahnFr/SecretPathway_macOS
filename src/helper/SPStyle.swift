@@ -59,12 +59,19 @@ struct SPStyle {
         return toReturn
     }
     
+    /// Indicates whether to use a bold font.
     var bold: Bool?
+    /// Indicates whether to use an italic font.
     var italic: Bool?
+    /// Indicates whether to use a strike-through font.
     var striken: Bool?
+    /// Indicates whether to use a underlined font.
     var underlined: Bool?
+    /// The foreground color to be used.
     var foreground: NSColor? = .textColor
+    /// The background color to be used.
     var background: NSColor?
+    /// The font the changes are based on.
     var font: NSFont = .monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
     
     /// Initializes this style with default values.
