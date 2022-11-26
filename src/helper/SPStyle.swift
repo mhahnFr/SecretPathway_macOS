@@ -27,6 +27,7 @@ struct SPStyle {
     /// The native representation of this style.
     var native: [NSAttributedString.Key: Any] {
         var toReturn: [NSAttributedString.Key: Any] = [:]
+        var tmpFont = font
         
         if let foreground {
             toReturn[.foregroundColor] = foreground
@@ -36,16 +37,16 @@ struct SPStyle {
         }
         if let italic {
             if italic {
-                NSFontManager.shared.convert(font, toHaveTrait: .italicFontMask)
+                tmpFont = NSFontManager.shared.convert(tmpFont, toHaveTrait: .italicFontMask)
             } else {
-                NSFontManager.shared.convert(font, toNotHaveTrait: .italicFontMask)
+                tmpFont = NSFontManager.shared.convert(tmpFont, toNotHaveTrait: .italicFontMask)
             }
         }
         if let bold {
             if bold {
-                NSFontManager.shared.convert(font, toHaveTrait: .boldFontMask)
+                tmpFont = NSFontManager.shared.convert(tmpFont, toHaveTrait: .boldFontMask)
             } else {
-                NSFontManager.shared.convert(font, toNotHaveTrait: .boldFontMask)
+                tmpFont = NSFontManager.shared.convert(tmpFont, toNotHaveTrait: .boldFontMask)
             }
         }
         if let underlined {
@@ -54,7 +55,7 @@ struct SPStyle {
         if let striken {
             toReturn[.strikethroughStyle] = striken ? NSUnderlineStyle.thick : NSUnderlineStyle.init()
         }
-        toReturn[.font] = font
+        toReturn[.font] = tmpFont
 
         return toReturn
     }
@@ -68,14 +69,24 @@ struct SPStyle {
     /// Indicates whether to use a underlined font.
     var underlined: Bool?
     /// The foreground color to be used.
-    var foreground: NSColor? = .textColor
+    var foreground: NSColor?
     /// The background color to be used.
     var background: NSColor?
     /// The font the changes are based on.
-    var font: NSFont = .monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
+    var font: NSFont
     
     /// Initializes this style with default values.
-    init() {}
+    init(bold: Bool? = nil, italic: Bool? = nil, striken: Bool? = nil, underlined: Bool? = nil,
+         foreground: NSColor? = .textColor, background: NSColor? = nil,
+         font: NSFont = .monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)) {
+        self.bold       = bold
+        self.italic     = italic
+        self.striken    = striken
+        self.underlined = underlined
+        self.foreground = foreground
+        self.background = background
+        self.font       = font
+    }
     
     /// Initializes this style using the two given ones.
     ///
@@ -84,13 +95,14 @@ struct SPStyle {
     /// - Parameter style: The base style.
     /// - Parameter otherStyle: The style used to alter the given attributes.
     init(from style: SPStyle, alteredBy otherStyle: SPStyle) {
-        bold       = otherStyle.bold       ?? style.bold
-        italic     = otherStyle.italic     ?? style.italic
-        striken    = otherStyle.striken    ?? style.striken
-        underlined = otherStyle.underlined ?? style.underlined
-        foreground = otherStyle.foreground ?? style.foreground
-        background = otherStyle.background ?? style.background
+        self.init(
+            bold:       otherStyle.bold       ?? style.bold,
+            italic:     otherStyle.italic     ?? style.italic,
+            striken:    otherStyle.striken    ?? style.striken,
+            underlined: otherStyle.underlined ?? style.underlined,
+            foreground: otherStyle.foreground ?? style.foreground,
+            background: otherStyle.background ?? style.background,
         
-        font = otherStyle.font
+            font: otherStyle.font)
     }
 }
