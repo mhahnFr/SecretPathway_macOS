@@ -25,11 +25,47 @@ import Foundation
 /// Represents a indepent represantation of a text style.
 struct SPStyle {
     /// The native representation of this style.
-    var native: [NSAttributedString.Key: Any]? {
-        return [.foregroundColor: NSColor.textColor]
+    var native: [NSAttributedString.Key: Any] {
+        var toReturn: [NSAttributedString.Key: Any] = [:]
+        
+        if let foreground {
+            toReturn[.foregroundColor] = foreground
+        }
+        if let background {
+            toReturn[.backgroundColor] = background
+        }
+        if let italic {
+            if italic {
+                NSFontManager.shared.convert(font, toHaveTrait: .italicFontMask)
+            } else {
+                NSFontManager.shared.convert(font, toNotHaveTrait: .italicFontMask)
+            }
+        }
+        if let bold {
+            if bold {
+                NSFontManager.shared.convert(font, toHaveTrait: .boldFontMask)
+            } else {
+                NSFontManager.shared.convert(font, toNotHaveTrait: .boldFontMask)
+            }
+        }
+        if let underlined {
+            toReturn[.underlineStyle] = underlined ? NSUnderlineStyle.thick : NSUnderlineStyle.init()
+        }
+        if let striken {
+            toReturn[.strikethroughStyle] = striken ? NSUnderlineStyle.thick : NSUnderlineStyle.init()
+        }
+        toReturn[.font] = font
+
+        return toReturn
     }
     
-    // TODO: Actual attributes
+    var bold: Bool?
+    var italic: Bool?
+    var striken: Bool?
+    var underlined: Bool?
+    var foreground: NSColor? = .textColor
+    var background: NSColor?
+    var font: NSFont = .monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
     
     /// Initializes this style with default values.
     init() {}

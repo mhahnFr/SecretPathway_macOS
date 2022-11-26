@@ -107,7 +107,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func updateTextView(_ textView: NSTextView) {
         textView.textStorage?.append(appendix)
         appendix = NSMutableAttributedString()
-        textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
+        //textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
 //        textView.textColor = .textColor
         textView.scrollToEndOfDocument(self)
     }
@@ -132,8 +132,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Returns: A SPStyle if the buffer xould be decoded, nil otherwise.
     private func parseANSIBuffer(_ buffer: Data) -> SPStyle? {
         guard let string = String(data: buffer, encoding: .ascii) else { return nil }
-        let toReturn = SPStyle()
+        var toReturn = SPStyle()
         
+        if string.contains("3") {
+            toReturn.italic = true
+        }
+        if string.contains("4") {
+            toReturn.underlined = true
+        }
         // TODO: Parse
         
         return toReturn
