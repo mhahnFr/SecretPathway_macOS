@@ -48,7 +48,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var wasAnsi = false
     /// The current escaped buffer.
     private var buffer = Data()
-    private var currentAttributes: [NSAttributedString.Key: Any] = [:]
+    private var currentStyle = SPStyle()
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -124,14 +124,13 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
-    private func parseANSIBuffer(_ buffer: Data) -> [NSAttributedString.Key: Any]? {
-        let string = String(data: buffer, encoding: .ascii)!
-        if string.contains("32") {
-            return [.foregroundColor: NSColor.green]
-        } else if string.contains("0") {
-            return nil
-        }
-        return [.foregroundColor: NSColor.textColor]
+    private func parseANSIBuffer(_ buffer: Data) -> SPStyle? {
+        guard let string = String(data: buffer, encoding: .ascii) else { return nil }
+        let toReturn = SPStyle()
+        
+        // TODO: Parse
+        
+        return toReturn
     }
     
     /// Handles incoming data.
@@ -140,7 +139,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func receive(data: Data) {
         var text = Data()
         
-        var currentAtribs: [(Int, [NSAttributedString.Key: Any]?)] = []
+        var closedStyles: [(begin: Int, style: SPStyle)] = [(begin: 0, style: currentStyle)]
         
         var i = 0
         while i < data.count {
@@ -151,8 +150,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
-                currentAtribs.append((i, parseANSIBuffer(buffer)))
-                // TODO: parse buffer
+                if let newStyle = parseANSIBuffer(buffer) {
+                    currentStyle = SPStyle(from: currentStyle, alteredBy: newStyle)
+                    closedStyles.append((begin: i, style: currentStyle))
+                }
                 
             default:
                 if wasAnsi {
@@ -165,23 +166,17 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         let styledString = NSMutableAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text))
         
-        /*func findNilPair(_ array: [(Int, [NSAttributedString.Key: Any]?)], from: Int) -> Int {
-            var i = from
-            while i < array.count {
-                if array[i].1 == nil {
-                    return array[i].0
-                }
-            }
-            return 0
-        }
-        
+        /*var lastBegin = 0
         i = 0
-        for (start, attribs) in currentAtribs {
-            if attribs != nil {
-                styledString.setAttributes(attribs, range: NSMakeRange(start, findNilPair(currentAtribs, from: i) - start))
-            }
+        while i + 1 < closedStyles.count {
+            
+            // TODO: Recalculate indices!
+            
+            lastBegin = closedStyles[i].begin
+            styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
             i += 1
         }*/
+        styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(/*lastBegin*/0, styledString.length))
         
         appendToContent(styledString)
     }
