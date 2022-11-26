@@ -25,6 +25,8 @@ import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
 class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
+    static let inputStyle  = SPStyle(foreground: .gray)
+    static let promptStyle = SPStyle()
     /// The length of the content text used as SwiftUI trigger.
     @Published private(set) var contentLength = 0
     /// The prompt text.
@@ -149,46 +151,48 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter data: The new block of bytes
     internal func receive(data: Data) {
-        var text = Data()
-        
+        var text      = Data()
+        var ansiBegin = 0
+
         var closedStyles: [(begin: Int, style: SPStyle)] = [(begin: 0, style: currentStyle)]
-        
-        var i = 0
-        while i < data.count {
-            switch data[i] {
+
+        for (i, byte) in data.enumerated() {
+            switch byte {
             case 0x1B:
-                wasAnsi = true
-                buffer = Data()
+                wasAnsi   = true
+                buffer    = Data()
+                ansiBegin = i
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
                 if let newStyle = parseANSIBuffer(buffer) {
                     currentStyle = SPStyle(from: currentStyle, alteredBy: newStyle)
-                    closedStyles.append((begin: i, style: currentStyle))
+                    closedStyles.append((begin: ansiBegin, style: currentStyle))
                 }
                 
             default:
                 if wasAnsi {
-                    buffer.append(data[i])
+                    buffer.append(byte)
                 } else {
-                    text.append(data[i])
+                    text.append(byte)
                 }
             }
-            i += 1
         }
         let styledString = NSMutableAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text))
         
-        /*var lastBegin = 0
-        i = 0
+        var lastBegin = 0
+        var i = 0
         while i + 1 < closedStyles.count {
             
             // TODO: Recalculate indices!
             
             lastBegin = closedStyles[i].begin
-            styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
+            print(NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
+            //styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
             i += 1
-        }*/
-        styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(/*lastBegin*/0, styledString.length))
+        }
+        //styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(/*lastBegin*/0, styledString.length))
+        styledString.setAttributes(SPStyle(bold: true).native, range: NSMakeRange(0, styledString.length))
         
         appendToContent(styledString)
     }
@@ -307,10 +311,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
-        let toAppend = NSMutableAttributedString(string: text + "\n", attributes: [NSAttributedString.Key.foregroundColor: NSColor.gray])
+        let toAppend = NSMutableAttributedString(string: text + "\n", attributes: ConnectionDelegate.inputStyle.native)
         
         if let prompt {
-            let tmp = NSMutableAttributedString(string: prompt, attributes: [NSAttributedString.Key.foregroundColor: NSColor.textColor])
+            let tmp = NSMutableAttributedString(string: prompt, attributes: ConnectionDelegate.promptStyle.native)
             
             if prompt.last != " " { tmp.append(NSAttributedString(string: " ")) }
             
