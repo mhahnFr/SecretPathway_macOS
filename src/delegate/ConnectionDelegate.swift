@@ -124,6 +124,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    /// Parses the given buffer into a SPStyle.
+    ///
+    /// If it is impossible, nil is returned.
+    ///
+    /// - Parameter buffer: The byte buffer to parse.
+    /// - Returns: A SPStyle if the buffer xould be decoded, nil otherwise.
     private func parseANSIBuffer(_ buffer: Data) -> SPStyle? {
         guard let string = String(data: buffer, encoding: .ascii) else { return nil }
         let toReturn = SPStyle()

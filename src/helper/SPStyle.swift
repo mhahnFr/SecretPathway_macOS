@@ -22,15 +22,24 @@
 import AppKit
 import Foundation
 
+/// Represents a indepent represantation of a text style.
 struct SPStyle {
+    /// The native representation of this style.
     var native: [NSAttributedString.Key: Any]? {
         return [.foregroundColor: NSColor.textColor]
     }
     
     // TODO: Actual attributes
     
+    /// Initializes this style with default values.
     init() {}
     
+    /// Initializes this style using the two given ones.
+    ///
+    /// It is based on the first style and altered by the other style.
+    ///
+    /// - Parameter style: The base style.
+    /// - Parameter otherStyle: The style used to alter the given attributes.
     init(from style: SPStyle, alteredBy otherStyle: SPStyle) {
         // TODO: Create altered style
     }
