@@ -77,6 +77,13 @@ struct SPStyle {
     /// - Parameter style: The base style.
     /// - Parameter otherStyle: The style used to alter the given attributes.
     init(from style: SPStyle, alteredBy otherStyle: SPStyle) {
-        // TODO: Create altered style
+        bold       = otherStyle.bold       ?? style.bold
+        italic     = otherStyle.italic     ?? style.italic
+        striken    = otherStyle.striken    ?? style.striken
+        underlined = otherStyle.underlined ?? style.underlined
+        foreground = otherStyle.foreground ?? style.foreground
+        background = otherStyle.background ?? style.background
+        
+        font = otherStyle.font
     }
 }
