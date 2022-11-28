@@ -22,8 +22,23 @@
 import AppKit
 import Foundation
 
-/// Represents a indepent represantation of a text style.
-struct SPStyle {
+/// Represents a indepent representation of a text style.
+struct SPStyle: CustomDebugStringConvertible {
+    var debugDescription: String {
+        var toReturn = "SPStyle: [ "
+        
+        if let bold       { toReturn += "bold: \(bold), "             }
+        if let italic     { toReturn += "italic: \(italic), "         }
+        if let underlined { toReturn += "underlined: \(underlined), " }
+        if let striken    { toReturn += "striken: \(striken), "       }
+        if let foreground { toReturn += "foreground: \(foreground == NSColor.textColor           ? "default" : foreground.debugDescription), " }
+        if let background { toReturn += "background: \(background == NSColor.textBackgroundColor ? "default" : background.debugDescription)"   }
+        
+        toReturn += " ]"
+        
+        return toReturn
+    }
+    
     /// A style clearing all relevant attributes.
     static let clearing = SPStyle(bold: false, italic: false, striken: false, underlined: false)
     
