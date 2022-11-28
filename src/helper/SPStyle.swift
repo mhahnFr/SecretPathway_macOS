@@ -24,6 +24,9 @@ import Foundation
 
 /// Represents a indepent represantation of a text style.
 struct SPStyle {
+    /// A style clearing all relevant attributes.
+    static let clearing = SPStyle(bold: false, italic: false, striken: false, underlined: false)
+    
     /// The native representation of this style.
     var native: [NSAttributedString.Key: Any] {
         var toReturn: [NSAttributedString.Key: Any] = [:]
@@ -77,7 +80,7 @@ struct SPStyle {
     
     /// Initializes this style with default values.
     init(bold: Bool? = nil, italic: Bool? = nil, striken: Bool? = nil, underlined: Bool? = nil,
-         foreground: NSColor? = .textColor, background: NSColor? = nil,
+         foreground: NSColor? = .textColor, background: NSColor? = .textBackgroundColor,
          font: NSFont = .monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)) {
         self.bold       = bold
         self.italic     = italic

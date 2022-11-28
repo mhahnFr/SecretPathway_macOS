@@ -138,8 +138,50 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         guard let string = String(data: buffer, encoding: .ascii) else { return nil }
         var toReturn = SPStyle()
         
-        // TODO: Parse
-        
+        let sub = string[string.index(after: string.startIndex)...]
+        for split in sub.split(separator: "\n", omittingEmptySubsequences: true) {
+            if let decoded = Int(split) {
+                switch decoded {
+                case 0:  toReturn            = SPStyle.clearing
+                case 1:  toReturn.bold       = true
+                case 3:  toReturn.italic     = true
+                case 4:  toReturn.underlined = true
+                case 21: toReturn.bold       = false
+                case 23: toReturn.italic     = false
+                case 24: toReturn.underlined = false
+                    
+                // Foreground
+                case 30: toReturn.foreground = .black
+                case 31: toReturn.foreground = .red
+                case 32: toReturn.foreground = .green
+                case 33: toReturn.foreground = .yellow
+                case 34: toReturn.foreground = .blue
+                case 35: toReturn.foreground = .magenta
+                case 36: toReturn.foreground = .cyan
+                case 37: toReturn.foreground = .lightGray
+                case 39: toReturn.foreground = .textColor
+                case 90: toReturn.foreground = .darkGray
+                case 97: toReturn.foreground = .white
+                    
+                // Background
+                case 40:  toReturn.background = .black
+                case 41:  toReturn.background = .red
+                case 42:  toReturn.background = .green
+                case 43:  toReturn.background = .yellow
+                case 44:  toReturn.background = .blue
+                case 45:  toReturn.background = .magenta
+                case 46:  toReturn.background = .cyan
+                case 47:  toReturn.background = .lightGray
+                case 49:  toReturn.background = nil
+                case 100: toReturn.background = .darkGray
+                case 107: toReturn.background = .white
+                    
+                // TODO: 256 bit colour, RGB colour...
+                    
+                default: print("Code not supported: \(decoded)!")
+                }
+            } // TODO: else error!
+        }
         return toReturn
     }
     
