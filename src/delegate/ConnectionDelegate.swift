@@ -128,14 +128,17 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
-    /// Parses the given buffer into a SPStyle.
+    /// Parses the given buffer into the current style.
     ///
-    /// If it is impossible, nil is returned.
+    /// If it is impossible, false is returned and the current style remains the same as before
+    /// invocation of this function.
     ///
     /// - Parameter buffer: The byte buffer to parse.
-    /// - Returns: A SPStyle if the buffer xould be decoded, nil otherwise.
+    /// - Returns: Whether the ANSI code was successfully parsed.
     private func parseANSIBuffer(_ buffer: Data) -> Bool {
         guard let string = String(data: buffer, encoding: .ascii) else { return false }
+        
+        let before = currentStyle
         
         let sub = string[string.index(after: string.startIndex)...]
         for split in sub.split(separator: "\n", omittingEmptySubsequences: true) {
@@ -179,7 +182,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     
                 default: print("Code not supported: \(decoded)!")
                 }
-            } // TODO: else error!
+            } else {
+                currentStyle = before
+                return false
+            }
         }
         return true
     }
@@ -227,11 +233,13 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             // TODO: Recalculate indices!
             
             lastBegin = closedStyles[i].begin
-            //print("Range: \(NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin)), string length: \(styledString.length)")
+            //print("\"\(styledString.attributedSubstring(from: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin)))\", \(closedStyles[i].style)")
+            //print("Range: \(NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin)), string length: \(styledString.length), \(closedStyles[i].style)")
             styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
             i += 1
         }
-        //print("\(NSMakeRange(lastBegin, styledString.length)) ----")
+        //print("\"\(styledString.attributedSubstring(from: NSMakeRange(lastBegin, styledString.length)))\", \(closedStyles.last!.style)")
+        //print("\(NSMakeRange(lastBegin, styledString.length)), \(closedStyles.last!.style) ----")
         styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(lastBegin, styledString.length - lastBegin))
         
         appendToContent(styledString)
