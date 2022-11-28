@@ -134,47 +134,46 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter buffer: The byte buffer to parse.
     /// - Returns: A SPStyle if the buffer xould be decoded, nil otherwise.
-    private func parseANSIBuffer(_ buffer: Data) -> SPStyle? {
-        guard let string = String(data: buffer, encoding: .ascii) else { return nil }
-        var toReturn = SPStyle()
+    private func parseANSIBuffer(_ buffer: Data) -> Bool {
+        guard let string = String(data: buffer, encoding: .ascii) else { return false }
         
         let sub = string[string.index(after: string.startIndex)...]
         for split in sub.split(separator: "\n", omittingEmptySubsequences: true) {
             if let decoded = Int(split) {
                 switch decoded {
-                case 0:  toReturn            = SPStyle.clearing
-                case 1:  toReturn.bold       = true
-                case 3:  toReturn.italic     = true
-                case 4:  toReturn.underlined = true
-                case 21: toReturn.bold       = false
-                case 23: toReturn.italic     = false
-                case 24: toReturn.underlined = false
+                case 0:  currentStyle            = SPStyle()
+                case 1:  currentStyle.bold       = true
+                case 3:  currentStyle.italic     = true
+                case 4:  currentStyle.underlined = true
+                case 21: currentStyle.bold       = false
+                case 23: currentStyle.italic     = false
+                case 24: currentStyle.underlined = false
                     
                 // Foreground
-                case 30: toReturn.foreground = .black
-                case 31: toReturn.foreground = .red
-                case 32: toReturn.foreground = .green
-                case 33: toReturn.foreground = .yellow
-                case 34: toReturn.foreground = .blue
-                case 35: toReturn.foreground = .magenta
-                case 36: toReturn.foreground = .cyan
-                case 37: toReturn.foreground = .lightGray
-                case 39: toReturn.foreground = .textColor
-                case 90: toReturn.foreground = .darkGray
-                case 97: toReturn.foreground = .white
+                case 30: currentStyle.foreground = .black
+                case 31: currentStyle.foreground = .red
+                case 32: currentStyle.foreground = .green
+                case 33: currentStyle.foreground = .yellow
+                case 34: currentStyle.foreground = .blue
+                case 35: currentStyle.foreground = .magenta
+                case 36: currentStyle.foreground = .cyan
+                case 37: currentStyle.foreground = .lightGray
+                case 39: currentStyle.foreground = .textColor
+                case 90: currentStyle.foreground = .darkGray
+                case 97: currentStyle.foreground = .white
                     
                 // Background
-                case 40:  toReturn.background = .black
-                case 41:  toReturn.background = .red
-                case 42:  toReturn.background = .green
-                case 43:  toReturn.background = .yellow
-                case 44:  toReturn.background = .blue
-                case 45:  toReturn.background = .magenta
-                case 46:  toReturn.background = .cyan
-                case 47:  toReturn.background = .lightGray
-                case 49:  toReturn.background = nil
-                case 100: toReturn.background = .darkGray
-                case 107: toReturn.background = .white
+                case 40:  currentStyle.background = .black
+                case 41:  currentStyle.background = .red
+                case 42:  currentStyle.background = .green
+                case 43:  currentStyle.background = .yellow
+                case 44:  currentStyle.background = .blue
+                case 45:  currentStyle.background = .magenta
+                case 46:  currentStyle.background = .cyan
+                case 47:  currentStyle.background = .lightGray
+                case 49:  currentStyle.background = .textBackgroundColor
+                case 100: currentStyle.background = .darkGray
+                case 107: currentStyle.background = .white
                     
                 // TODO: 256 bit colour, RGB colour...
                     
@@ -182,7 +181,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 }
             } // TODO: else error!
         }
-        return toReturn
+        return true
     }
     
     /// Handles incoming data.
@@ -204,9 +203,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
-                if let newStyle = parseANSIBuffer(buffer) {
-                    currentStyle = SPStyle(from: currentStyle, alteredBy: newStyle)
+                if parseANSIBuffer(buffer) {
                     closedStyles.append((begin: ansiBegin, style: currentStyle))
+                } else {
+                    print("Error while parsing ANSI code!")
                 }
                 
             default:
