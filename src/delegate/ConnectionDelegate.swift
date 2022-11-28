@@ -138,12 +138,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         guard let string = String(data: buffer, encoding: .ascii) else { return nil }
         var toReturn = SPStyle()
         
-        if string.contains("3") {
-            toReturn.italic = true
-        }
-        if string.contains("4") {
-            toReturn.underlined = true
-        }
         // TODO: Parse
         
         return toReturn
@@ -155,15 +149,16 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func receive(data: Data) {
         var text      = Data()
         var ansiBegin = 0
+        var bytes     = 0
 
         var closedStyles: [(begin: Int, style: SPStyle)] = [(begin: 0, style: currentStyle)]
 
-        for (i, byte) in data.enumerated() {
+        for byte in data {
             switch byte {
             case 0x1B:
                 wasAnsi   = true
                 buffer    = Data()
-                ansiBegin = i
+                ansiBegin = bytes
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
@@ -177,6 +172,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     buffer.append(byte)
                 } else {
                     text.append(byte)
+                    bytes += 1
                 }
             }
         }
@@ -189,12 +185,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             // TODO: Recalculate indices!
             
             lastBegin = closedStyles[i].begin
-            print(NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
-            //styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
+            //print("Range: \(NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin)), string length: \(styledString.length)")
+            styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
             i += 1
         }
-        //styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(/*lastBegin*/0, styledString.length))
-        styledString.setAttributes(SPStyle(bold: true).native, range: NSMakeRange(0, styledString.length))
+        //print("\(NSMakeRange(lastBegin, styledString.length)) ----")
+        styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(lastBegin, styledString.length - lastBegin))
         
         appendToContent(styledString)
     }
