@@ -73,16 +73,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         self.connection.start()
     }
     
-    /// Parses the given block of data.
-    ///
-    /// Returns a copy of the given data, filtered from all escape codes.
-    ///
-    /// - Parameter data: The block of data to be parsed.
-    private func parseData(_ data: Data) -> Data {
-        // TODO: Parse escape codes
-        data
-    }
-    
     /// Creates a string from the given block of data.
     ///
     /// All non-ascii characters are removed from a copy of the block of data
@@ -111,8 +101,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func updateTextView(_ textView: NSTextView) {
         textView.textStorage?.append(appendix)
         appendix = NSMutableAttributedString()
-        //textView.font = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
-//        textView.textColor = .textColor
         textView.scrollToEndOfDocument(self)
     }
     
@@ -198,7 +186,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var ansiBegin = 0
         var bytes     = 0
 
-        var closedStyles: [(begin: Int, style: SPStyle)] = [(begin: 0, style: currentStyle)]
+        var closedStyles: [(begin: Int, style: SPStyle)] = []
 
         for byte in data {
             switch byte {
@@ -209,7 +197,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
+                
+                let oldCurrentStyle = currentStyle
                 if parseANSIBuffer(buffer) {
+                    if ansiBegin != 0 && closedStyles.isEmpty {
+                        closedStyles.append((0, oldCurrentStyle))
+                    }
                     closedStyles.append((begin: ansiBegin, style: currentStyle))
                 } else {
                     print("Error while parsing ANSI code!")
@@ -226,22 +219,20 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         let styledString = NSMutableAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text))
         
-        var lastBegin = 0
-        var i = 0
-        while i + 1 < closedStyles.count {
-            
-            // TODO: Recalculate indices!
-            
-            lastBegin = closedStyles[i].begin
-            //print("\"\(styledString.attributedSubstring(from: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin)))\", \(closedStyles[i].style)")
-            //print("Range: \(NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin)), string length: \(styledString.length), \(closedStyles[i].style)")
-            styledString.setAttributes(closedStyles[i].style.native, range: NSMakeRange(lastBegin, closedStyles[i + 1].begin - lastBegin))
-            i += 1
+        if closedStyles.isEmpty {
+            styledString.setAttributes(currentStyle.native, range: NSMakeRange(0, styledString.length))
+        } else {
+            for (i, style) in closedStyles.enumerated() {
+                let len: Int
+                if i + 1 < closedStyles.endIndex {
+                    len = closedStyles[i + 1].begin - style.begin
+                } else {
+                    len = styledString.length - style.begin
+                }
+                
+                styledString.setAttributes(style.style.native, range: NSMakeRange(style.begin, len))
+            }
         }
-        //print("\"\(styledString.attributedSubstring(from: NSMakeRange(lastBegin, styledString.length)))\", \(closedStyles.last!.style)")
-        //print("\(NSMakeRange(lastBegin, styledString.length)), \(closedStyles.last!.style) ----")
-        styledString.setAttributes(closedStyles.last!.style.native, range: NSMakeRange(lastBegin, styledString.length - lastBegin))
-        
         appendToContent(styledString)
     }
     
