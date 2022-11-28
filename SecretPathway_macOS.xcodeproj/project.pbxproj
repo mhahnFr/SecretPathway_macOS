@@ -95,6 +95,7 @@
 				BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */,
 				BF54F64C290D6F410093037F /* AboutView.swift */,
 				BFEA07B629043DB500294822 /* SettingsView.swift */,
+				BF9B7B952932810F00AACF0F /* SPStyle.swift */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -136,7 +137,6 @@
 			children = (
 				BFD9B0D12923F57400E59D00 /* dialog */,
 				BF832EC52927FBA000581CDA /* Int2Data.swift */,
-				BF9B7B952932810F00AACF0F /* SPStyle.swift */,
 			);
 			path = helper;
 			sourceTree = "<group>";
