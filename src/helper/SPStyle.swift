@@ -53,10 +53,10 @@ struct SPStyle {
             }
         }
         if let underlined {
-            toReturn[.underlineStyle] = underlined ? NSUnderlineStyle.thick : NSUnderlineStyle.init()
+            toReturn[.underlineStyle] = underlined ? NSUnderlineStyle.single.rawValue : 0
         }
         if let striken {
-            toReturn[.strikethroughStyle] = striken ? NSUnderlineStyle.thick : NSUnderlineStyle.init()
+            toReturn[.strikethroughStyle] = striken ? NSUnderlineStyle.single.rawValue : 0
         }
         toReturn[.font] = tmpFont
 
