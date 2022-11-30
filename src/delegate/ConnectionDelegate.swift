@@ -129,7 +129,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         let before = currentStyle
         
         let sub = string[string.index(after: string.startIndex)...]
-        for split in sub.split(separator: "\n", omittingEmptySubsequences: true) {
+        for split in sub.split(separator: ";", omittingEmptySubsequences: true) {
             if let decoded = Int(split) {
                 switch decoded {
                 case 0:  currentStyle            = SPStyle()
