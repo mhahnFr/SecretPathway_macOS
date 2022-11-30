@@ -52,6 +52,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var wasAnsi = false
     /// The current escaped buffer.
     private var buffer = Data()
+    /// The style currently being used for incoming text.
     private var currentStyle = SPStyle()
     
     /// The last timer used to remove the user message. Nil if none is active.
