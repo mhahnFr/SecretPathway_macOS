@@ -222,15 +222,16 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         if closedStyles.isEmpty {
             styledString.setAttributes(currentStyle.native, range: NSMakeRange(0, styledString.length))
         } else {
+            let factor = bytes > 0 ? (Double(styledString.length) / Double(bytes)) : 1
             for (i, style) in closedStyles.enumerated() {
                 let len: Int
                 if i + 1 < closedStyles.endIndex {
-                    len = closedStyles[i + 1].begin - style.begin
+                    len = Int(Double((closedStyles[i + 1].begin - style.begin)) * factor)
                 } else {
-                    len = styledString.length - style.begin
+                    len = styledString.length - Int(Double(style.begin) * factor)
                 }
                 
-                styledString.setAttributes(style.style.native, range: NSMakeRange(style.begin, len))
+                styledString.setAttributes(style.style.native, range: NSMakeRange(Int(Double(style.begin) * factor), len))
             }
         }
         appendToContent(styledString)
