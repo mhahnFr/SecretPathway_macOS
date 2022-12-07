@@ -179,18 +179,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         return true
     }
     
-    /*var lineBuffer = Data()
-    
-    internal func receive(data: Data) {
-        for byte in data {
-            lineBuffer.append(byte)
-            if byte == Character("\n").asciiValue! {
-                receive1(data: lineBuffer)
-                lineBuffer = Data()
-            }
-        }
-    }*/
-    
     /// Handles incoming data.
     ///
     /// - Parameter data: The new block of bytes
