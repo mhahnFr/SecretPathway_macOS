@@ -102,6 +102,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func updateTextView(_ textView: NSTextView) {
         textView.textStorage?.append(appendix)
         appendix = NSMutableAttributedString()
+        if let font = textView.font {
+            textView.font = NSFontManager.shared.convert(font, toSize: CGFloat(Settings.shared.fontSize))
+        }
         textView.scrollToEndOfDocument(self)
     }
     
