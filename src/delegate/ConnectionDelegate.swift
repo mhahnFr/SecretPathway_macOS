@@ -137,7 +137,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         let before = currentStyle
         
         let sub = string[string.index(after: string.startIndex)...]
-        for split in sub.split(separator: ";", omittingEmptySubsequences: true) {
+        let splits = sub.split(separator: ";", omittingEmptySubsequences: true)
+        var i = 0
+        while i < splits.endIndex {
+        //for split in sub.split(separator: ";", omittingEmptySubsequences: true) {
+            let split = splits[i]
+            
             if let decoded = Int(split) {
                 switch decoded {
                 case 0:  currentStyle            = SPStyle()
@@ -173,6 +178,19 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 case 49:  currentStyle.background = .textBackgroundColor
                 case 100: currentStyle.background = .darkGray
                 case 107: currentStyle.background = .white
+                  
+                case 38:
+                    if i + 4 >= splits.endIndex { break }
+                    
+                    i += 1
+                    if let code = Int(splits[i]) {
+                        if code == 5 {
+                            print("256 bit colour not supported!")
+                        } else if code == 2, let red = Int(splits[i + 1]), let green = Int(splits[i + 2]), let blue = Int(splits[i + 3]) {
+                            currentStyle.foreground = NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
+                            i += 3
+                        }
+                    }
                     
                 // TODO: 256 bit colour, RGB colour...
                     
@@ -182,6 +200,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 currentStyle = before
                 return false
             }
+            i += 1
         }
         return true
     }
