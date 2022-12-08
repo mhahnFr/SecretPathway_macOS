@@ -106,9 +106,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func updateTextView(_ textView: NSTextView) {
         textView.textStorage?.append(appendix)
         appendix = NSMutableAttributedString()
-        if let font = textView.font {
+        // FIXME: Font does not contain italic and bold sequences!
+        /*if let font = textView.font {
             textView.font = NSFontManager.shared.convert(font, toSize: CGFloat(Settings.shared.fontSize))
-        }
+        }*/
         textView.scrollToEndOfDocument(self)
     }
     
@@ -140,7 +141,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         let splits = sub.split(separator: ";", omittingEmptySubsequences: true)
         var i = 0
         while i < splits.endIndex {
-        //for split in sub.split(separator: ";", omittingEmptySubsequences: true) {
             let split = splits[i]
             
             if let decoded = Int(split) {
