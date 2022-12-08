@@ -192,7 +192,18 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                         }
                     }
                     
-                // TODO: 256 bit colour, RGB colour...
+                case 48:
+                    if i + 4 >= splits.endIndex { break }
+                    
+                    i += 1
+                    if let code = Int(splits[i]) {
+                        if code == 5 {
+                            print("256 bit colour not supported!")
+                        } else if code == 2, let red = Int(splits[i + 1]), let green = Int(splits[i + 2]), let blue = Int(splits[i + 3]) {
+                            currentStyle.background = NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
+                            i += 3
+                        }
+                    }
                     
                 default: print("Code not supported: \(decoded)!")
                 }
