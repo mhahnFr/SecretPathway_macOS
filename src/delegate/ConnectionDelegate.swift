@@ -50,8 +50,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var appendix = NSMutableAttributedString()
     /// Indicates whether incoming data should be treated as ANSI escape code.
     private var wasAnsi = false
+    /// Indicates whether incoming data should be treated as a SPP escape sequence.
+    private var wasSPP = false
     /// The current escaped buffer.
-    private var buffer = Data()
+    private var ansiBuffer = Data()
+    /// The current SPP escape sequence.
+    private var sppBuffer = Data()
     /// The style currently being used for incoming text.
     private var currentStyle = SPStyle()
     
@@ -195,15 +199,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         for byte in data {
             switch byte {
             case 0x1B:
-                wasAnsi   = true
-                buffer    = Data()
-                ansiBegin = bytes
+                wasAnsi    = true
+                ansiBuffer = Data()
+                ansiBegin  = bytes
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
                 
                 let oldCurrentStyle = currentStyle
-                if parseANSIBuffer(buffer) {
+                if parseANSIBuffer(ansiBuffer) {
                     if ansiBegin != 0 && closedStyles.isEmpty {
                         closedStyles.append((0, oldCurrentStyle))
                     }
@@ -212,9 +216,21 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     print("Error while parsing ANSI code!")
                 }
                 
+            case SPProtocolConstants.BEGIN where !wasAnsi:
+                wasSPP    = true
+                sppBuffer = Data()
+                
+            case SPProtocolConstants.END where !wasAnsi && wasSPP:
+                wasSPP = false
+                
+                // TODO: Parse SPP
+                print("SPP buffer: \(sppBuffer)")
+                
             default:
                 if wasAnsi {
-                    buffer.append(byte)
+                    ansiBuffer.append(byte)
+                } else if wasSPP {
+                    sppBuffer.append(byte)
                 } else {
                     text.append(byte)
                     bytes += 1
