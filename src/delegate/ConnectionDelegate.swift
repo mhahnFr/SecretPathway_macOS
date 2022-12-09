@@ -438,12 +438,21 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var result = true
         
         if !connection.isClosed {
-            result = Dialog(title: "\(Constants.APP_NAME): Active connection",
-                             text: "The connection \"\(connection.name)\" is active.",
-                         addition: "Do you want to close it?",
-                     cancelButton: "Cancel")
-                    .show()
-            if result { closeConnection() }
+            let alert = NSAlert()
+            
+            alert.window.title    = "\(Constants.APP_NAME): Active connection"
+            alert.messageText     = "The connection \"\(connection.name)\" is active."
+            alert.informativeText = "Do you want to close it?"
+            
+            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "Cancel")
+            
+            if alert.runModal() == .alertFirstButtonReturn {
+                result = true
+                closeConnection()
+            } else {
+                result = false
+            }
         }
         return result
     }
