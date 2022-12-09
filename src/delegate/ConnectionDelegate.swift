@@ -104,12 +104,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     internal func updateTextView(_ textView: NSTextView) {
-        textView.textStorage?.append(appendix)
+        guard let backingStorage = textView.textStorage else { fatalError("NSTextView's textStorage should never be nil!") }
+        
+        backingStorage.append(appendix)
         appendix = NSMutableAttributedString()
-        // FIXME: Font does not contain italic and bold sequences!
-        /*if let font = textView.font {
-            textView.font = NSFontManager.shared.convert(font, toSize: CGFloat(Settings.shared.fontSize))
-        }*/
+        backingStorage.enumerateAttribute(.font, in: NSMakeRange(0, backingStorage.length)) { value, range, _ in
+            guard let oldFont = value as? NSFont else { return }
+            
+            backingStorage.addAttribute(.font, value: oldFont.withSize(Settings.shared.fontSize), range: range)
+        }
         textView.scrollToEndOfDocument(self)
     }
     
