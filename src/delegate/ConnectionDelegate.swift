@@ -56,6 +56,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var ansiBuffer = Data()
     /// The current SPP escape sequence.
     private var sppBuffer = Data()
+    /// A buffer used for broken unicode points.
+    private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
     private var currentStyle = SPStyle()
     
@@ -223,10 +225,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter data: The new block of bytes
     internal func receive(data: Data) {
-        var text      = Data()
+        var text      = unicodeBuffer
         var ansiBegin = 0
-        var bytes     = 0
+        var bytes     = unicodeBuffer.count
 
+        unicodeBuffer = Data()
+        
         var closedStyles: [(begin: Int, style: SPStyle)] = []
 
         for byte in data {
@@ -270,6 +274,31 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 }
             }
         }
+        
+        if let last = text.last, last >> 7 == 1 {
+            if last >> 6 == 2 {
+                let exCount = text.count
+                
+                var index = text.count - 2
+                while text[index] >> 7 == 1 && text[index] >> 6 == 2 {
+                    index -= 1
+                }
+                
+                let shifted = text[index] >> 4
+                
+                let oneCount = shifted == 0b1100 ? 2
+                             : (shifted == 0b1110 ? 3 : 4)
+                
+                if text.count - index < oneCount {
+                    for _ in index ..< exCount {
+                        unicodeBuffer.append(text.remove(at: index))
+                    }
+                }
+            } else {
+                unicodeBuffer.append(text.removeLast())
+            }
+        }
+        
         let styledString = NSMutableAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text))
         
         if closedStyles.isEmpty {
