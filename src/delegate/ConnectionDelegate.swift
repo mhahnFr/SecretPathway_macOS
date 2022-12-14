@@ -227,7 +227,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     internal func receive(data: Data) {
         var text      = unicodeBuffer
         var ansiBegin = 0
-        var bytes     = unicodeBuffer.count
+        var chars     = unicodeBuffer.count > 0 ? 1 : 0
 
         unicodeBuffer = Data()
         
@@ -238,7 +238,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             case 0x1B:
                 wasAnsi    = true
                 ansiBuffer = Data()
-                ansiBegin  = bytes
+                ansiBegin  = chars//bytes
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
@@ -270,7 +270,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     sppBuffer.append(byte)
                 } else {
                     text.append(byte)
-                    bytes += 1
+                    if byte >> 7 == 0 || byte >> 6 == 3 {
+                        chars += 1
+                    }
                 }
             }
         }
@@ -293,9 +295,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     for _ in index ..< exCount {
                         unicodeBuffer.append(text.remove(at: index))
                     }
+                    chars -= 1
                 }
             } else {
                 unicodeBuffer.append(text.removeLast())
+                chars -= 1
             }
         }
         
@@ -304,16 +308,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         if closedStyles.isEmpty {
             styledString.setAttributes(currentStyle.native, range: NSMakeRange(0, styledString.length))
         } else {
-            let factor = bytes > 0 ? (Double(styledString.length) / Double(bytes)) : 1
             for (i, style) in closedStyles.enumerated() {
                 let len: Int
                 if i + 1 < closedStyles.endIndex {
-                    len = Int(Double((closedStyles[i + 1].begin - style.begin)) * factor)
+                    len = closedStyles[i + 1].begin - style.begin
                 } else {
-                    len = styledString.length - Int(Double(style.begin) * factor)
+                    len = styledString.length - style.begin
                 }
                 
-                styledString.setAttributes(style.style.native, range: NSMakeRange(Int(Double(style.begin) * factor), len))
+                styledString.setAttributes(style.style.native, range: NSMakeRange(style.begin, len))
             }
         }
         appendToContent(styledString)
