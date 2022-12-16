@@ -80,6 +80,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF2285F1294CBA6B0079EC8D /* protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BF94B2E2294240410030F487 /* spp */,
+			);
+			path = protocols;
+			sourceTree = "<group>";
+		};
 		BF94661329294D2C0005B2EA /* bridge */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,7 +132,7 @@
 		BFD5AB28291AAC1500890CE6 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				BF94B2E2294240410030F487 /* spp */,
+				BF2285F1294CBA6B0079EC8D /* protocols */,
 				BFD9B0CD2923DE6000E59D00 /* net */,
 				BF11297F2854EBDC00EACD21 /* Settings.swift */,
 				BF577EAC291BDF1900E7A897 /* Constants.swift */,
