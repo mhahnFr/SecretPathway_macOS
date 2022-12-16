@@ -52,6 +52,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var wasAnsi = false
     /// Indicates whether incoming data should be treated as a SPP escape sequence.
     private var wasSPP = false
+    /// Indicates whether incoming data should be treated as a telnet command.
+    private var wasTelnet = false
+    /// The telnet plugin to be called for telnet sequences.
+    private var telnetPlugin = TelnetPlugin()
     /// The current escaped buffer.
     private var ansiBuffer = Data()
     /// The current SPP escape sequence.
@@ -221,6 +225,18 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         return true
     }
     
+    private func telnetAppend(_ byte: UInt8) -> Bool {
+        print(byte)
+        switch byte {
+        case 240:
+            return false
+        case 251, 252, 253, 254:
+            return true
+        default:
+            return false
+        }
+    }
+    
     /// Handles incoming data.
     ///
     /// - Parameter data: The new block of bytes
@@ -238,7 +254,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             case 0x1B:
                 wasAnsi    = true
                 ansiBuffer = Data()
-                ansiBegin  = chars//bytes
+                ansiBegin  = chars
                 
             case 0x6D where wasAnsi:
                 wasAnsi = false
@@ -252,6 +268,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 } else {
                     print("Error while parsing ANSI code!")
                 }
+                
+            case 0xff where !wasSPP:
+                wasTelnet = true
                 
             case SPProtocolConstants.BEGIN where !wasAnsi:
                 wasSPP    = true
@@ -268,6 +287,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     ansiBuffer.append(byte)
                 } else if wasSPP {
                     sppBuffer.append(byte)
+                } else if wasTelnet {
+                    wasTelnet = telnetAppend(byte)
                 } else {
                     text.append(byte)
                     if byte >> 7 == 0 || byte >> 6 == 3 {

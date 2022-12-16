@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BF1129802854EBDC00EACD21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11297F2854EBDC00EACD21 /* Settings.swift */; };
+		BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */; };
 		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
 		BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF577EAC291BDF1900E7A897 /* Constants.swift */; };
 		BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF832EC52927FBA000581CDA /* Int2Data.swift */; };
@@ -38,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelnetPlugin.swift; sourceTree = "<group>"; };
 		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		BF577EAC291BDF1900E7A897 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		BF832EC52927FBA000581CDA /* Int2Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int2Data.swift; sourceTree = "<group>"; };
@@ -83,9 +85,18 @@
 		BF2285F1294CBA6B0079EC8D /* protocols */ = {
 			isa = PBXGroup;
 			children = (
+				BF2285F4294CC05A0079EC8D /* telnet */,
 				BF94B2E2294240410030F487 /* spp */,
 			);
 			path = protocols;
+			sourceTree = "<group>";
+		};
+		BF2285F4294CC05A0079EC8D /* telnet */ = {
+			isa = PBXGroup;
+			children = (
+				BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */,
+			);
+			path = telnet;
 			sourceTree = "<group>";
 		};
 		BF94661329294D2C0005B2EA /* bridge */ = {
@@ -286,6 +297,7 @@
 			files = (
 				BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */,
 				BFD9B0D32923F58900E59D00 /* DialogDelegate.swift in Sources */,
+				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */,
 				BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */,
