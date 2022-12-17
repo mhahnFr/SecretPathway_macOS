@@ -26,5 +26,5 @@ protocol ConnectionSender: AnyObject {
     /// This function is called when a piece of data should be sent.
     ///
     /// - Parameter data: The data that should be sent.
-    func send(_ data: Data)
+    func send(data: Data)
 }

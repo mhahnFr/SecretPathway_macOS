@@ -41,6 +41,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
     
+    /// The protocol abstractions object.
+    private let protocols: Protocols
+    
     /// The window that is controlled by this delegate instance.
     private(set) weak var window: NSWindow?
     
@@ -50,6 +53,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var appendix = NSMutableAttributedString()
     /// Indicates whether incoming data should be treated as ANSI escape code.
     private var wasAnsi = false
+    /// Indicates whether incoming data should be passed to the special protocols.
+    private var wasSpecial = false
     /// Indicates whether incoming data should be treated as a SPP escape sequence.
     private var wasSPP = false
     /// Indicates whether incoming data should be treated as a telnet command.
@@ -77,6 +82,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     init(for connection: Connection, window: NSWindow? = nil) {
         self.connection = connection
         self.window     = window
+        
+        self.protocols = Protocols(sender: connection)
         
         super.init()
         
@@ -283,13 +290,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 print("SPP buffer: \(sppBuffer)")
                 
             default:
+                wasSpecial = protocols.process(byte: byte)
+                
                 if wasAnsi {
                     ansiBuffer.append(byte)
                 } else if wasSPP {
                     sppBuffer.append(byte)
                 } else if wasTelnet {
                     wasTelnet = telnetAppend(byte)
-                } else {
+                } else if !wasSpecial {
                     text.append(byte)
                     if byte >> 7 == 0 || byte >> 6 == 3 {
                         chars += 1
