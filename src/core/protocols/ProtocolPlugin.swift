@@ -19,6 +19,14 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This protocol defines the interface for protocol plugins.
 protocol ProtocolPlugin {
-    func process(byte: UInt8) -> Bool
+    /// Called when a new byte is received and this function returned true
+    /// for the previous received byte or when the byte might be the beginning
+    /// of an escape sequence.
+    ///
+    /// - Parameter byte: The byte that was received.
+    /// - Parameter sender: A reference to the sender responsible for sending back a potential response.
+    /// - Returns: Whether this plugin should be called for the next received byte.
+    func process(byte: UInt8, sender: ConnectionSender) -> Bool
 }

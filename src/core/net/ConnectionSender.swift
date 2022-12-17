@@ -21,6 +21,10 @@
 
 import Foundation
 
+/// This protocol defines functionalitiy a connection sender has to conform to.
 protocol ConnectionSender: AnyObject {
+    /// This function is called when a piece of data should be sent.
+    ///
+    /// - Parameter data: The data that should be sent.
     func send(_ data: Data)
 }
