@@ -19,6 +19,18 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-class TelnetPlugin {
+/// This plugin adds telnet functionality.
+class TelnetPlugin: ProtocolPlugin {
+    internal func isBegin(byte: UInt8) -> Bool {
+        return byte == 0xff
+    }
     
+    internal func process(byte: UInt8, sender: ConnectionSender) -> Bool {
+        print(byte)
+        switch byte {
+        case 240: return false
+        case 250, 251, 252, 253, 254: return true
+        default: return false
+        }
+    }
 }
