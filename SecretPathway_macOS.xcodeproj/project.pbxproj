@@ -15,8 +15,8 @@
 		BF916177294E2C8600C8B967 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916176294E2C8600C8B967 /* Protocols.swift */; };
 		BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916178294E306700C8B967 /* ProtocolPlugin.swift */; };
 		BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91617A294E32EF00C8B967 /* ConnectionSender.swift */; };
+		BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91617C294E400E00C8B967 /* SPPPlugin.swift */; };
 		BF94661529294DB00005B2EA /* NSTextViewBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF94661429294DB00005B2EA /* NSTextViewBridge.swift */; };
-		BF94B2E4294240700030F487 /* SPProtocolConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF94B2E3294240700030F487 /* SPProtocolConstants.swift */; };
 		BF9B7B962932810F00AACF0F /* SPStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9B7B952932810F00AACF0F /* SPStyle.swift */; };
 		BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */; };
 		BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF33290D7E4300010BD6 /* Connection.swift */; };
@@ -49,8 +49,8 @@
 		BF916176294E2C8600C8B967 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		BF916178294E306700C8B967 /* ProtocolPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolPlugin.swift; sourceTree = "<group>"; };
 		BF91617A294E32EF00C8B967 /* ConnectionSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSender.swift; sourceTree = "<group>"; };
+		BF91617C294E400E00C8B967 /* SPPPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPPPlugin.swift; sourceTree = "<group>"; };
 		BF94661429294DB00005B2EA /* NSTextViewBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSTextViewBridge.swift; sourceTree = "<group>"; };
-		BF94B2E3294240700030F487 /* SPProtocolConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPProtocolConstants.swift; sourceTree = "<group>"; };
 		BF9B7B952932810F00AACF0F /* SPStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPStyle.swift; sourceTree = "<group>"; };
 		BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionDelegate.swift; sourceTree = "<group>"; };
 		BFA5CF33290D7E4300010BD6 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
@@ -119,7 +119,7 @@
 		BF94B2E2294240410030F487 /* spp */ = {
 			isa = PBXGroup;
 			children = (
-				BF94B2E3294240700030F487 /* SPProtocolConstants.swift */,
+				BF91617C294E400E00C8B967 /* SPPPlugin.swift */,
 			);
 			path = spp;
 			sourceTree = "<group>";
@@ -312,10 +312,10 @@
 				BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */,
 				BF94661529294DB00005B2EA /* NSTextViewBridge.swift in Sources */,
 				BF9B7B962932810F00AACF0F /* SPStyle.swift in Sources */,
+				BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */,
 				BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */,
 				BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */,
 				BF54F64D290D6F410093037F /* AboutView.swift in Sources */,
-				BF94B2E4294240700030F487 /* SPProtocolConstants.swift in Sources */,
 				BFD9B0D72923FBE800E59D00 /* Dialog.swift in Sources */,
 				BFD9B0D52923F59700E59D00 /* DialogView.swift in Sources */,
 				BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */,
