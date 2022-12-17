@@ -78,7 +78,7 @@ class Protocols {
             }
         } else {
             for plugin in plugins {
-                if plugin.process(byte: byte, sender: sender) {
+                if plugin.isBegin(byte: byte) {
                     lastPlugin = plugin
                     return true
                 }

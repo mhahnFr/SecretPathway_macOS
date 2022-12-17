@@ -21,9 +21,21 @@
 
 /// This protocol defines the interface for protocol plugins.
 protocol ProtocolPlugin {
-    /// Called when a new byte is received and this function returned true
-    /// for the previous received byte or when the byte might be the beginning
-    /// of an escape sequence.
+    /// Returns whether the given byte is to be interpreted as a begin for
+    /// sequences this plugin handles.
+    ///
+    /// It is called when the state machine tries to determine the type of a
+    /// received byte. If this function returns true, incoming data is sent to
+    /// this plugin's process function.
+    ///
+    /// - Parameter byte: The byte that might be the beginning byte.
+    /// - Returns: Whether this plugin should be called for processing the next byte.
+    func isBegin(byte: UInt8) -> Bool
+    
+    /// Called when a new byte is received and this plugin has indicated
+    /// that it is responsible for handling the next incoming data.
+    ///
+    /// It will return whether the next incoming byte belongs to this plugin.
     ///
     /// - Parameter byte: The byte that was received.
     /// - Parameter sender: A reference to the sender responsible for sending back a potential response.
