@@ -119,7 +119,7 @@ class TelnetPlugin: ProtocolPlugin {
                     data.append("UTF-8".data(using: .ascii)!)
                     send(codes: .SB, .charset, payload: data, sender: sender)
                 } else {
-                    print("NAC")
+                    send(codes: .SB, .charset, payload: Data(repeating: 3, count: 1), sender: sender)
                 }
             }
             
