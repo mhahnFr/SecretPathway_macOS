@@ -19,18 +19,79 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+import Foundation
+
 /// This plugin adds telnet functionality.
 class TelnetPlugin: ProtocolPlugin {
+    /// An enumeration with telnet codes defined by the IANA.
+    enum Code: UInt8 {
+        case binary_transmission = 0
+        case echo
+        
+        case terminal_type = 24
+        case eor
+        
+        case charset = 42
+        
+        case start_tls = 46
+        
+        
+        case SE = 240
+        case SB = 250
+        case WILL, WONT, DO, DONT, IAC
+    }
+    
+    private var last: Code?
+    
     internal func isBegin(byte: UInt8) -> Bool {
-        return byte == 0xff
+        let result = byte == 0xff
+        if result {
+            last = nil
+        }
+        return result
     }
     
     internal func process(byte: UInt8, sender: ConnectionSender) -> Bool {
         print(byte)
-        switch byte {
-        case 240: return false
-        case 250, 251, 252, 253, 254: return true
-        default: return false
+        var result = false
+        
+        if let code = Code(rawValue: byte) {
+            switch code {
+            case .WILL, .WONT, .DO, .DONT:
+                result = true
+                
+            case .charset where last == .DO:
+                send(.WILL, .charset, sender)
+                
+            case .charset where last == .WILL:
+                send(.DO, .charset, sender)
+                
+            default:
+                switch last {
+                case .WILL:
+                    send(.DONT, code, sender)
+                    
+                case .DO:
+                    send(.WONT, code, sender)
+                    
+                default:
+                    print("unrecognized")
+                }
+            }
+            last = code
         }
+        
+        return result
+    }
+    
+    private func send(_ ack: Code, _ option: Code, _ sender: ConnectionSender) {
+        var data = Data()
+        
+        data.append(Code.IAC.rawValue)
+        data.append(ack.rawValue)
+        data.append(option.rawValue)
+        
+        print("\(Code.IAC) \(ack) \(option)")
+        sender.send(data: data)
     }
 }
