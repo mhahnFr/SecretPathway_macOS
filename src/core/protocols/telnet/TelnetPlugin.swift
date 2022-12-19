@@ -42,6 +42,7 @@ class TelnetPlugin: ProtocolPlugin {
     }
     
     private var last: Code?
+    private var buffer = (code: Code.IAC, data: Data())
     
     internal func isBegin(byte: UInt8) -> Bool {
         let result = byte == 0xff
@@ -55,43 +56,94 @@ class TelnetPlugin: ProtocolPlugin {
         print(byte)
         var result = false
         
-        if let code = Code(rawValue: byte) {
-            switch code {
-            case .WILL, .WONT, .DO, .DONT:
-                result = true
-                
-            case .charset where last == .DO:
-                send(.WILL, .charset, sender)
-                
-            case .charset where last == .WILL:
-                send(.DO, .charset, sender)
-                
-            default:
-                switch last {
-                case .WILL:
-                    send(.DONT, code, sender)
+        switch last {
+        case .charset:
+            if byte == Code.IAC.rawValue {
+                last = .IAC
+            } else {
+                buffer.data.append(byte)
+            }
+            result = true
+            
+        default:
+            if let code = Code(rawValue: byte) {
+                switch code {
+                case .SE:
+                    interpretBuffer(buffer, sender: sender)
+                    result = false
                     
-                case .DO:
-                    send(.WONT, code, sender)
+                case .SB, .WILL, .WONT, .DO, .DONT:
+                    last = code
+                    result = true
+                    
+                case .charset:
+                    switch last {
+                    case .DO:   send(codes: .WILL, .charset, sender: sender)
+                    case .WILL: send(codes: .DO,   .charset, sender: sender)
+                    case .SB:
+                        buffer.code = .charset
+                        buffer.data = Data()
+                        last = code
+                        result = true
+                    default:
+                        print("Unrecognized1")
+                    }
                     
                 default:
-                    print("unrecognized")
+                    switch last {
+                    case .WILL:
+                        send(codes: .DONT, code, sender: sender)
+                        
+                    case .DO:
+                        send(codes: .WONT, code, sender: sender)
+                        
+                    default:
+                        print("unrecognized2")
+                    }
                 }
             }
-            last = code
         }
         
         return result
     }
     
-    private func send(_ ack: Code, _ option: Code, _ sender: ConnectionSender) {
+    private func interpretBuffer(_ buffer: (code: Code, data: Data), sender: ConnectionSender) {
+        switch buffer.code {
+        case .charset:
+            let command = buffer.data.first!
+            if command == 1 {
+                let separator = buffer.data[1]
+                if String(bytes: buffer.data.advanced(by: 2), encoding: .ascii)!.split(separator: Character(UnicodeScalar(separator))).contains("UTF-8") {
+                    var data = Data()
+                    data.append(1)
+                    data.append("UTF-8".data(using: .ascii)!)
+                    send(codes: .SB, .charset, payload: data, sender: sender)
+                } else {
+                    print("NAC")
+                }
+            }
+            
+        default:
+            print("Unrecognized3")
+        }
+    }
+    
+    private func send(codes: Code..., payload: Data = Data(), sender: ConnectionSender) {
         var data = Data()
         
         data.append(Code.IAC.rawValue)
-        data.append(ack.rawValue)
-        data.append(option.rawValue)
-        
-        print("\(Code.IAC) \(ack) \(option)")
+        print("\(Code.IAC) ", terminator: "")
+        for code in codes {
+            data.append(code.rawValue)
+            print("\(code) ", terminator: "")
+        }
+        data.append(payload)
+        if codes.first! == .SB {
+            data.append(Code.IAC.rawValue)
+            data.append(Code.SE.rawValue)
+            print("\(Code.IAC) \(Code.SE)", terminator: "")
+        }
+        print("")
         sender.send(data: data)
     }
 }
