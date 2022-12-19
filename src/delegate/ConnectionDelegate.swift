@@ -260,6 +260,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             default:
                 if wasAnsi {
                     ansiBuffer.append(byte)
+                } else if wasSpecial {
+                    wasSpecial = protocols.process(byte: byte)
                 } else {
                     wasSpecial = protocols.process(byte: byte)
                     
