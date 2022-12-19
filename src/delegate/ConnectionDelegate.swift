@@ -75,7 +75,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         self.connection = connection
         self.window     = window
         
-        self.protocols = Protocols(sender: connection)
+        self.protocols = Protocols(sender: connection, plugins: SPPPlugin(),
+                                                                TelnetPlugin())
         
         super.init()
         
