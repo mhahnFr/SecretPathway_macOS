@@ -98,6 +98,9 @@ class TelnetPlugin: ProtocolPlugin {
             case .DO:   return .DONT
             case .DONT: return .DO
                 
+            case .SE: return .SB
+            case .SB: return .SE
+                
             default: return self
             }
         }
