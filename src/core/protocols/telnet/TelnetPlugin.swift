@@ -25,125 +25,171 @@ import Foundation
 class TelnetPlugin: ProtocolPlugin {
     /// An enumeration with telnet codes defined by the IANA.
     enum Code: UInt8 {
-        case binary_transmission = 0
-        case echo
+        case binary_transmission = 0,
+             echo,
+             reconnection,
+             suppress_go_ahead,
+             approx_message_size_negotation,
+             status,
+             timing_mark,
+             rc_trans_echo,
+             o_line_width,
+             o_page_size,
+             o_cr_disposition,
+             o_htab_stops,
+             o_htab_disposition,
+             o_formfeed_disposition,
+             o_vtab_stops,
+             o_vtab_disposition,
+             o_lf_disposition,
+             extended_ascii,
+             logout,
+             byte_macro,
+             data_entry_terminal,
+             supdup,
+             supdup_output,
+             send_location,
+             terminal_type,
+             eor,
+             tacacs_user_identification,
+             output_marking,
+             terminal_location_number,
+             telnet_3270_regime,
+             x_3_pad,
+             naws,
+             terminal_speed,
+             remote_flow_control,
+             linemode,
+             x_display_location,
+             environment_option,
+             authentication_option,
+             encryption_option,
+             new_environment_option,
+             tn3270e,
+             xauth,
+             charset,
+             telnet_rsp,
+             com_port_control_option,
+             telnet_suppress_local_echo,
+             telnet_start_tls,
+             kermit,
+             send_url,
+             forward_x
         
-        case terminal_type = 24
-        case eor
-        
-        case charset = 42
-        
-        case start_tls = 46
-        
-        
+        case telopt_pragma_logon = 138,
+             telopt_sspi_logon,
+             telopt_pragma_heartbeat
+    }
+    /// An enumeration of the basic telnet functions.
+    enum TelnetFunction: UInt8 {
         case SE = 240
-        case SB = 250
-        case WILL, WONT, DO, DONT, IAC
+        case SB = 250,
+             WILL,
+             WONT,
+             DO,
+             DONT,
+             IAC
+        
+        var opposite: Self {
+            switch self {
+            case .WILL: return .WONT
+            case .WONT: return .WILL
+                
+            case .DO:   return .DONT
+            case .DONT: return .DO
+                
+            default: return self
+            }
+        }
+    }
+    /// An enumeration containing MUD specific additions
+    enum MudExtensions: UInt8 {
+        case a = 0
     }
     
-    private var last: Code?
-    private var buffer = (code: Code.IAC, data: Data())
+    private var hasEnd: Bool?
+    private var last = TelnetFunction.IAC
+    private var buffer = Data()
     
     internal func isBegin(byte: UInt8) -> Bool {
-        let result = byte == 0xff
-        if result {
-            last = nil
-        }
-        return result
+        return byte == TelnetFunction.IAC.rawValue
     }
     
     internal func process(byte: UInt8, sender: ConnectionSender) -> Bool {
         print(byte)
         var result = false
         
-        switch last {
-        case .charset:
-            if byte == Code.IAC.rawValue {
-                last = .IAC
-            } else {
-                buffer.data.append(byte)
-            }
-            result = true
-            
-        default:
-            if let code = Code(rawValue: byte) {
-                switch code {
-                case .SE:
-                    interpretBuffer(buffer, sender: sender)
-                    result = false
-                    
-                case .SB, .WILL, .WONT, .DO, .DONT:
-                    last = code
-                    result = true
-                    
-                case .charset:
-                    switch last {
-                    case .DO:   send(codes: .WILL, .charset, sender: sender)
-                    case .WILL: send(codes: .DO,   .charset, sender: sender)
-                    case .SB:
-                        buffer.code = .charset
-                        buffer.data = Data()
-                        last = code
-                        result = true
-                    default:
-                        print("Unrecognized1")
-                    }
-                    
-                default:
-                    switch last {
-                    case .WILL:
-                        send(codes: .DONT, code, sender: sender)
-                        
-                    case .DO:
-                        send(codes: .WONT, code, sender: sender)
-                        
-                    default:
-                        print("unrecognized2")
-                    }
-                }
+        defer {
+            if !result {
+                hasEnd = nil
+                buffer = Data()
+                last   = .IAC
             }
         }
         
+        if let hasEnd {
+            if hasEnd {
+                // Buffer until IAC SE, parse on receipt of it
+                if byte == TelnetFunction.IAC.rawValue {
+                    if last == .IAC {
+                        buffer.append(byte)
+                    } else {
+                        last = .IAC
+                    }
+                    result = true
+                } else if byte == TelnetFunction.SE.rawValue && last == TelnetFunction.IAC {
+                    parseBuffer(data: buffer, sender: sender)
+                } else {
+                    buffer.append(byte)
+                    result = true
+                }
+            } else {
+                // Normal telnet option w/o parameters
+                handleSingleOption(previous: last, byte: byte, sender: sender)
+            }
+        } else if let code = TelnetFunction(rawValue: byte) {
+            switch code {
+            case .WILL, .WONT, .DO, .DONT:
+                hasEnd = false
+                result = true
+                
+            case .SB:
+                hasEnd = true
+                result = true
+                
+            default:
+                print("Error1")
+            }
+            last = code
+        }
         return result
     }
     
-    private func interpretBuffer(_ buffer: (code: Code, data: Data), sender: ConnectionSender) {
-        switch buffer.code {
-        case .charset:
-            let command = buffer.data.first!
-            if command == 1 {
-                let separator = buffer.data[1]
-                if String(bytes: buffer.data.advanced(by: 2), encoding: .ascii)!.split(separator: Character(UnicodeScalar(separator))).contains("UTF-8") {
-                    var data = Data()
-                    data.append(1)
-                    data.append("UTF-8".data(using: .ascii)!)
-                    send(codes: .SB, .charset, payload: data, sender: sender)
-                } else {
-                    send(codes: .SB, .charset, payload: Data(repeating: 3, count: 1), sender: sender)
-                }
+    private func parseBuffer(data: Data, sender: ConnectionSender) {
+        // TODO: Implement handshaking dispatcher
+    }
+    
+    private func handleSingleOption(previous: TelnetFunction, byte: UInt8, sender: ConnectionSender) {
+        // TODO: Handle the option
+        if let code = Code(rawValue: byte) {
+            switch code {
+            default:
+                sendSingle(mode: previous.opposite, function: byte, sender: sender)
             }
-            
-        default:
-            print("Unrecognized3")
+        } else {
+            sendSingle(mode: previous.opposite, function: byte, sender: sender)
         }
     }
     
-    private func send(codes: Code..., payload: Data = Data(), sender: ConnectionSender) {
+    private func sendSingle(mode: TelnetFunction, function: UInt8, sender: ConnectionSender) {
         var data = Data()
         
-        data.append(Code.IAC.rawValue)
-        print("\(Code.IAC) ", terminator: "")
-        for code in codes {
-            data.append(code.rawValue)
-            print("\(code) ", terminator: "")
-        }
-        data.append(payload)
-        if codes.first! == .SB {
-            data.append(Code.IAC.rawValue)
-            data.append(Code.SE.rawValue)
-            print("\(Code.IAC) \(Code.SE)", terminator: "")
-        }
-        print("")
+        data.append(TelnetFunction.IAC.rawValue)
+        data.append(mode.rawValue)
+        data.append(function)
+        
+        print("IAC \(mode) \(function)")
+        
         sender.send(data: data)
     }
 }
