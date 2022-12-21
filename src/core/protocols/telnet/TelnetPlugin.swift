@@ -90,6 +90,9 @@ class TelnetPlugin: ProtocolPlugin {
              DONT,
              IAC
         
+        /// The opposite of this telnet function.
+        ///
+        /// If it does not have an opposite, it is simply returned.
         var opposite: Self {
             switch self {
             case .WILL: return .WONT
@@ -110,8 +113,11 @@ class TelnetPlugin: ProtocolPlugin {
         case a = 0
     }
     
+    /// Indicates whether the currently received telnet sequence ends with IAC SE.
     private var hasEnd: Bool?
+    /// The last telnet function received. Defaults to IAC.
     private var last = TelnetFunction.IAC
+    /// A buffer storing longer received telnet sequences.
     private var buffer = Data()
     
     internal func isBegin(byte: UInt8) -> Bool {
