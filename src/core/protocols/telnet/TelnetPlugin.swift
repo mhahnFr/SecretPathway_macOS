@@ -29,7 +29,7 @@ class TelnetPlugin: ProtocolPlugin {
              echo,
              reconnection,
              suppress_go_ahead,
-             approx_message_size_negotation,
+             approx_message_size_negotiation,
              status,
              timing_mark,
              rc_trans_echo,
@@ -170,7 +170,7 @@ class TelnetPlugin: ProtocolPlugin {
     
     /// Parses the given telnet buffer.
     ///
-    /// It should consist of the contents of an SB subnegotation,
+    /// It should consist of the contents of an SB subnegotiation,
     /// but without the telnet control codes.
     ///
     /// - Parameter data: The actual buffer to be parsed.
