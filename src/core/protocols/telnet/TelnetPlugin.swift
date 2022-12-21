@@ -168,10 +168,22 @@ class TelnetPlugin: ProtocolPlugin {
         return result
     }
     
+    /// Parses the given telnet buffer.
+    ///
+    /// It should consist of the contents of an SB subnegotation,
+    /// but without the telnet control codes.
+    ///
+    /// - Parameter data: The actual buffer to be parsed.
+    /// - Parameter sender: The sender used for sending the response.
     private func parseBuffer(data: Data, sender: ConnectionSender) {
         // TODO: Implement handshaking dispatcher
     }
     
+    /// This function handles a single telnet function.
+    ///
+    /// - Parameter previous: The previously received telnet option such as DO.
+    /// - Parameter byte: The telnet function to handle.
+    /// - Parameter sender: The sender used for sending back the response.
     private func handleSingleOption(previous: TelnetFunction, byte: UInt8, sender: ConnectionSender) {
         // TODO: Handle the option
         if let code = Code(rawValue: byte) {
@@ -184,6 +196,13 @@ class TelnetPlugin: ProtocolPlugin {
         }
     }
     
+    /// Sends back a single telnet function response.
+    ///
+    /// The sent message looks like: IAC `mode` `function`.
+    ///
+    /// - Parameter mode: The mode to sent to the remote host, such as `WILL`.
+    /// - Parameter function: The code of the telnet function.
+    /// - Parameter sender: The sender used for sending the response.
     private func sendSingle(mode: TelnetFunction, function: UInt8, sender: ConnectionSender) {
         var data = Data()
         
