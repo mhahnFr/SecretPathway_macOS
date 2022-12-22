@@ -134,6 +134,45 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    private func colorFrom256Bit(_ colorCode: Int) -> NSColor? {
+        let result: NSColor?
+        
+        if colorCode < 16 {
+            switch colorCode {
+            case 0:  result = NSColor(red: 0,     green: 0,     blue: 0,     alpha: 1)
+            case 1:  result = NSColor(red: 0.5,   green: 0,     blue: 0,     alpha: 1)
+            case 2:  result = NSColor(red: 0,     green: 0.5,   blue: 0,     alpha: 1)
+            case 3:  result = NSColor(red: 0.5,   green: 0.5,   blue: 0,     alpha: 1)
+            case 4:  result = NSColor(red: 0,     green: 0,     blue: 0.5,   alpha: 1)
+            case 5:  result = NSColor(red: 0.5,   green: 0,     blue: 0.5,   alpha: 1)
+            case 6:  result = NSColor(red: 0,     green: 0.5,   blue: 0.5,   alpha: 1)
+            case 7: let value = CGFloat(192) / 255
+                     result = NSColor(red: value, green: value, blue: value, alpha: 1)
+            case 8:  result = NSColor(red: 0.5,   green: 0.5,   blue: 0.5,   alpha: 1)
+            case 9:  result = NSColor(red: 1,     green: 0,     blue: 0,     alpha: 1)
+            case 10: result = NSColor(red: 1,     green: 1,     blue: 0,     alpha: 1)
+            case 11: result = NSColor(red: 0,     green: 1,     blue: 0,     alpha: 1)
+            case 12: result = NSColor(red: 0,     green: 0,     blue: 1,     alpha: 1)
+            case 13: result = NSColor(red: 1,     green: 0,     blue: 1,     alpha: 1)
+            case 14: result = NSColor(red: 0,     green: 1,     blue: 1,     alpha: 1)
+            case 15: result = NSColor(red: 1,     green: 1,     blue: 1,     alpha: 1)
+            default: result = nil
+            }
+        } else if colorCode < 232 {
+            let cubeCalc: (Int, Int) -> CGFloat = { color, code in
+                let tmp = ((color - 16) / code) % 6
+                return CGFloat(tmp == 0 ? 0 :
+                    (14135 + 10280 * tmp) / 256)
+            }
+            result = NSColor(red: cubeCalc(colorCode, 36) / 255, green: cubeCalc(colorCode, 6) / 255, blue: cubeCalc(colorCode, 1) / 255, alpha: 1)
+        } else {
+            let value = CGFloat((2056 + 2570 * (colorCode - 232)) / 256) / 255
+            result = NSColor(red: value, green: value, blue: value, alpha: 1)
+        }
+        
+        return result
+    }
+    
     /// Parses the given buffer into the current style.
     ///
     /// If it is impossible, false is returned and the current style remains the same as before
@@ -189,12 +228,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 case 107: currentStyle.background = .white
                   
                 case 38:
-                    if i + 4 >= splits.endIndex { break }
+                    if i + 1 >= splits.endIndex { break }
                     
                     i += 1
                     if let code = Int(splits[i]) {
-                        if code == 5 {
-                            print("256 bit colour not supported!")
+                        if (code == 5 && i + 1 >= splits.endIndex) || (code == 2 && i + 3 >= splits.endIndex) { break }
+                        if code == 5, let colorCode = Int(splits[i + 1]) {
+                            currentStyle.foreground = colorFrom256Bit(colorCode)
+                            i += 1
                         } else if code == 2, let red = Int(splits[i + 1]), let green = Int(splits[i + 2]), let blue = Int(splits[i + 3]) {
                             currentStyle.foreground = NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
                             i += 3
@@ -202,12 +243,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     }
                     
                 case 48:
-                    if i + 4 >= splits.endIndex { break }
+                    if i + 1 >= splits.endIndex { break }
                     
                     i += 1
                     if let code = Int(splits[i]) {
-                        if code == 5 {
-                            print("256 bit colour not supported!")
+                        if (code == 5 && i + 1 >= splits.endIndex) || (code == 2 && i + 3 >= splits.endIndex) { break }
+                        if code == 5, let colorCode = Int(splits[i + 1]) {
+                            currentStyle.background = colorFrom256Bit(colorCode)
+                            i += 1
                         } else if code == 2, let red = Int(splits[i + 1]), let green = Int(splits[i + 2]), let blue = Int(splits[i + 3]) {
                             currentStyle.background = NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
                             i += 3
