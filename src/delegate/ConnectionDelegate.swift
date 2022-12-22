@@ -134,6 +134,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    /// Tries to decode the given number to a colour using the default 256 bit
+    /// colour table.
+    ///
+    /// The number must be in the range of `0` to `255` in order to succeed.
+    /// Otherwise, `nil` is returned.
+    ///
+    /// - Parameter colorCode: The colour code to be decoded.
+    /// - Returns: The decoded colour or `nil` if it was not possible.
     private func colorFrom256Bit(_ colorCode: Int) -> NSColor? {
         let result: NSColor?
         
@@ -165,9 +173,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     (14135 + 10280 * tmp) / 256)
             }
             result = NSColor(red: cubeCalc(colorCode, 36) / 255, green: cubeCalc(colorCode, 6) / 255, blue: cubeCalc(colorCode, 1) / 255, alpha: 1)
-        } else {
+        } else if colorCode < 256 {
             let value = CGFloat((2056 + 2570 * (colorCode - 232)) / 256) / 255
             result = NSColor(red: value, green: value, blue: value, alpha: 1)
+        } else {
+            result = nil
         }
         
         return result
