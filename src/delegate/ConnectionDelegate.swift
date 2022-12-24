@@ -222,25 +222,31 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 case 37: currentStyle.foreground = .lightGray
                 case 39: currentStyle.foreground = .textColor
                 case 90: currentStyle.foreground = .darkGray
-                case 91: currentStyle.foreground = NSColor(red: 1,   green: 0,   blue: 0,   alpha: 1)
-                case 92: currentStyle.foreground = NSColor(red: 0,   green: 1,   blue: 0,   alpha: 1)
-                case 93: currentStyle.foreground = NSColor(red: 1,   green: 1,   blue: 0,   alpha: 1)
-                case 94: currentStyle.foreground = NSColor(red: 0,   green: 0,   blue: 1,   alpha: 1)
-                case 95: currentStyle.foreground = NSColor(red: 1,   green: 0,   blue: 1,   alpha: 1)
-                case 96: currentStyle.foreground = NSColor(red: 0,   green: 1,   blue: 1,   alpha: 1)
+                case 91: currentStyle.foreground = NSColor(red: 1,    green: 0,    blue: 0,    alpha: 1)
+                case 92: currentStyle.foreground = NSColor(red: 0,    green: 1,    blue: 0,    alpha: 1)
+                case 93: currentStyle.foreground = NSColor(red: 1,    green: 1,    blue: 0,    alpha: 1)
+                case 94: currentStyle.foreground = NSColor(red: 0,    green: 0,    blue: 1,    alpha: 1)
+                case 95: currentStyle.foreground = NSColor(red: 1,    green: 0,    blue: 1,    alpha: 1)
+                case 96: currentStyle.foreground = NSColor(red: 0,    green: 1,    blue: 1,    alpha: 1)
                 case 97: currentStyle.foreground = .white
                     
                 // Background
                 case 40:  currentStyle.background = .black
-                case 41:  currentStyle.background = .red
-                case 42:  currentStyle.background = .green
-                case 43:  currentStyle.background = .yellow
-                case 44:  currentStyle.background = .blue
-                case 45:  currentStyle.background = .magenta
-                case 46:  currentStyle.background = .cyan
+                case 41:  currentStyle.background = NSColor(red: 0.75, green: 0,    blue: 0,    alpha: 1)
+                case 42:  currentStyle.background = NSColor(red: 0,    green: 0.75, blue: 0,    alpha: 1)
+                case 43:  currentStyle.background = NSColor(red: 0.75, green: 0.75, blue: 0,    alpha: 1)
+                case 44:  currentStyle.background = NSColor(red: 0,    green: 0,    blue: 0.75, alpha: 1)
+                case 45:  currentStyle.background = NSColor(red: 0.75, green: 0,    blue: 0.75, alpha: 1)
+                case 46:  currentStyle.background = NSColor(red: 0,    green: 0.75, blue: 0.75, alpha: 1)
                 case 47:  currentStyle.background = .lightGray
                 case 49:  currentStyle.background = .textBackgroundColor
                 case 100: currentStyle.background = .darkGray
+                case 101: currentStyle.background = NSColor(red: 1,    green: 0,    blue: 0,    alpha: 1)
+                case 102: currentStyle.background = NSColor(red: 0,    green: 1,    blue: 0,    alpha: 1)
+                case 103: currentStyle.background = NSColor(red: 1,    green: 1,    blue: 0,    alpha: 1)
+                case 104: currentStyle.background = NSColor(red: 0,    green: 0,    blue: 1,    alpha: 1)
+                case 105: currentStyle.background = NSColor(red: 1,    green: 0,    blue: 1,    alpha: 1)
+                case 106: currentStyle.background = NSColor(red: 0,    green: 1,    blue: 1,    alpha: 1)
                 case 107: currentStyle.background = .white
                   
                 case 38:
