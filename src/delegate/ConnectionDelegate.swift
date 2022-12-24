@@ -213,15 +213,21 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     
                 // Foreground
                 case 30: currentStyle.foreground = .black
-                case 31: currentStyle.foreground = .red
-                case 32: currentStyle.foreground = .green
-                case 33: currentStyle.foreground = .yellow
-                case 34: currentStyle.foreground = .blue
-                case 35: currentStyle.foreground = .magenta
-                case 36: currentStyle.foreground = .cyan
+                case 31: currentStyle.foreground = NSColor(red: 0.75, green: 0,    blue: 0,    alpha: 1)
+                case 32: currentStyle.foreground = NSColor(red: 0,    green: 0.75, blue: 0,    alpha: 1)
+                case 33: currentStyle.foreground = NSColor(red: 0.75, green: 0.75, blue: 0,    alpha: 1)
+                case 34: currentStyle.foreground = NSColor(red: 0,    green: 0,    blue: 0.75, alpha: 1)
+                case 35: currentStyle.foreground = NSColor(red: 0.75, green: 0,    blue: 0.75, alpha: 1)
+                case 36: currentStyle.foreground = NSColor(red: 0,    green: 0.75, blue: 0.75, alpha: 1)
                 case 37: currentStyle.foreground = .lightGray
                 case 39: currentStyle.foreground = .textColor
                 case 90: currentStyle.foreground = .darkGray
+                case 91: currentStyle.foreground = NSColor(red: 1,   green: 0,   blue: 0,   alpha: 1)
+                case 92: currentStyle.foreground = NSColor(red: 0,   green: 1,   blue: 0,   alpha: 1)
+                case 93: currentStyle.foreground = NSColor(red: 1,   green: 1,   blue: 0,   alpha: 1)
+                case 94: currentStyle.foreground = NSColor(red: 0,   green: 0,   blue: 1,   alpha: 1)
+                case 95: currentStyle.foreground = NSColor(red: 1,   green: 0,   blue: 1,   alpha: 1)
+                case 96: currentStyle.foreground = NSColor(red: 0,   green: 1,   blue: 1,   alpha: 1)
                 case 97: currentStyle.foreground = .white
                     
                 // Background
