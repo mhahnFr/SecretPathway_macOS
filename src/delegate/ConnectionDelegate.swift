@@ -147,23 +147,22 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         
         if colorCode < 16 {
             switch colorCode {
-            case 0:  result = NSColor(red: 0,     green: 0,     blue: 0,     alpha: 1)
-            case 1:  result = NSColor(red: 0.5,   green: 0,     blue: 0,     alpha: 1)
-            case 2:  result = NSColor(red: 0,     green: 0.5,   blue: 0,     alpha: 1)
-            case 3:  result = NSColor(red: 0.5,   green: 0.5,   blue: 0,     alpha: 1)
-            case 4:  result = NSColor(red: 0,     green: 0,     blue: 0.5,   alpha: 1)
-            case 5:  result = NSColor(red: 0.5,   green: 0,     blue: 0.5,   alpha: 1)
-            case 6:  result = NSColor(red: 0,     green: 0.5,   blue: 0.5,   alpha: 1)
-            case 7: let value = CGFloat(192) / 255
-                     result = NSColor(red: value, green: value, blue: value, alpha: 1)
-            case 8:  result = NSColor(red: 0.5,   green: 0.5,   blue: 0.5,   alpha: 1)
-            case 9:  result = NSColor(red: 1,     green: 0,     blue: 0,     alpha: 1)
-            case 10: result = NSColor(red: 0,     green: 1,     blue: 0,     alpha: 1)
-            case 11: result = NSColor(red: 1,     green: 1,     blue: 0,     alpha: 1)
-            case 12: result = NSColor(red: 0,     green: 0,     blue: 1,     alpha: 1)
-            case 13: result = NSColor(red: 1,     green: 0,     blue: 1,     alpha: 1)
-            case 14: result = NSColor(red: 0,     green: 1,     blue: 1,     alpha: 1)
-            case 15: result = NSColor(red: 1,     green: 1,     blue: 1,     alpha: 1)
+            case 0:  result = NSColor(red: 0,    green: 0,    blue: 0,    alpha: 1)
+            case 1:  result = NSColor(red: 0.75, green: 0,    blue: 0,    alpha: 1)
+            case 2:  result = NSColor(red: 0,    green: 0.75, blue: 0,    alpha: 1)
+            case 3:  result = NSColor(red: 0.75, green: 0.75, blue: 0,    alpha: 1)
+            case 4:  result = NSColor(red: 0,    green: 0,    blue: 0.75, alpha: 1)
+            case 5:  result = NSColor(red: 0.75, green: 0,    blue: 0.75, alpha: 1)
+            case 6:  result = NSColor(red: 0,    green: 0.75, blue: 0.75, alpha: 1)
+            case 7:  result = NSColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1)
+            case 8:  result = NSColor(red: 0.5,  green: 0.5,  blue: 0.5,  alpha: 1)
+            case 9:  result = NSColor(red: 1,    green: 0,    blue: 0,    alpha: 1)
+            case 10: result = NSColor(red: 0,    green: 1,    blue: 0,    alpha: 1)
+            case 11: result = NSColor(red: 1,    green: 1,    blue: 0,    alpha: 1)
+            case 12: result = NSColor(red: 0,    green: 0,    blue: 1,    alpha: 1)
+            case 13: result = NSColor(red: 1,    green: 0,    blue: 1,    alpha: 1)
+            case 14: result = NSColor(red: 0,    green: 1,    blue: 1,    alpha: 1)
+            case 15: result = NSColor(red: 1,    green: 1,    blue: 1,    alpha: 1)
             default: result = nil
             }
         } else if colorCode < 232 {
