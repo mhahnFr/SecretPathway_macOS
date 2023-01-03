@@ -23,7 +23,7 @@ import AppKit
 import Foundation
 
 /// Represents a indepent representation of a text style.
-struct SPStyle: CustomDebugStringConvertible {
+struct SPStyle: CustomDebugStringConvertible, Equatable {
     var debugDescription: String {
         var toReturn = "SPStyle: [ "
         

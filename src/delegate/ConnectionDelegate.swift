@@ -52,6 +52,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The attributed string that should be appended the next time the view is updated.
     private var appendix = NSMutableAttributedString()
     /// Indicates whether incoming data should be treated as ANSI escape code.
+    private var styleChanged = false
     private var wasAnsi = false
     /// Indicates whether incoming data should be passed to the special protocols.
     private var wasSpecial = false
@@ -60,7 +61,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
-    internal var currentStyle = SPStyle()
+    internal var currentStyle = SPStyle() {
+        didSet {
+            styleChanged = true
+        }
+    }
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -298,6 +303,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var text      = unicodeBuffer
         var ansiBegin = 0
         var chars     = unicodeBuffer.count > 0 ? 1 : 0
+        
+        var oldCurrentStyle = currentStyle
 
         unicodeBuffer = Data()
         
@@ -332,10 +339,20 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     wasSpecial = protocols.process(byte: byte)
                     
                     if !wasSpecial {
+                        if currentStyle != oldCurrentStyle {
+                            if ansiBegin != 0 && closedStyles.isEmpty {
+                                closedStyles.append((0, oldCurrentStyle))
+                            }
+                            closedStyles.append((begin: ansiBegin, style: currentStyle))
+                        }
+                        
                         text.append(byte)
                         if byte >> 7 == 0 || byte >> 6 == 3 {
                             chars += 1
                         }
+                    } else {
+                        ansiBegin = chars
+                        oldCurrentStyle = currentStyle
                     }
                 }
             }
