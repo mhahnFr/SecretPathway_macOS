@@ -51,21 +51,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var connection: Connection
     /// The attributed string that should be appended the next time the view is updated.
     private var appendix = NSMutableAttributedString()
-    /// Indicates whether incoming data should be treated as ANSI escape code.
-    private var styleChanged = false
-    private var wasAnsi = false
     /// Indicates whether incoming data should be passed to the special protocols.
     private var wasSpecial = false
-    /// The current escaped buffer.
-    private var ansiBuffer = Data()
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
-    internal var currentStyle = SPStyle() {
-        didSet {
-            styleChanged = true
-        }
-    }
+    internal var currentStyle = SPStyle()
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -141,161 +132,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
-    /// Tries to decode the given number to a colour using the default 256 bit
-    /// colour table.
-    ///
-    /// The number must be in the range of `0` to `255` in order to succeed.
-    /// Otherwise, `nil` is returned.
-    ///
-    /// - Parameter colorCode: The colour code to be decoded.
-    /// - Returns: The decoded colour or `nil` if it was not possible.
-    private func colorFrom256Bit(_ colorCode: Int) -> NSColor? {
-        let result: NSColor?
-        
-        if colorCode < 16 {
-            switch colorCode {
-            case 0:  result = NSColor(red: 0,    green: 0,    blue: 0,    alpha: 1)
-            case 1:  result = NSColor(red: 0.75, green: 0,    blue: 0,    alpha: 1)
-            case 2:  result = NSColor(red: 0,    green: 0.75, blue: 0,    alpha: 1)
-            case 3:  result = NSColor(red: 0.75, green: 0.75, blue: 0,    alpha: 1)
-            case 4:  result = NSColor(red: 0,    green: 0,    blue: 0.75, alpha: 1)
-            case 5:  result = NSColor(red: 0.75, green: 0,    blue: 0.75, alpha: 1)
-            case 6:  result = NSColor(red: 0,    green: 0.75, blue: 0.75, alpha: 1)
-            case 7:  result = NSColor(red: 0.75, green: 0.75, blue: 0.75, alpha: 1)
-            case 8:  result = NSColor(red: 0.5,  green: 0.5,  blue: 0.5,  alpha: 1)
-            case 9:  result = NSColor(red: 1,    green: 0,    blue: 0,    alpha: 1)
-            case 10: result = NSColor(red: 0,    green: 1,    blue: 0,    alpha: 1)
-            case 11: result = NSColor(red: 1,    green: 1,    blue: 0,    alpha: 1)
-            case 12: result = NSColor(red: 0,    green: 0,    blue: 1,    alpha: 1)
-            case 13: result = NSColor(red: 1,    green: 0,    blue: 1,    alpha: 1)
-            case 14: result = NSColor(red: 0,    green: 1,    blue: 1,    alpha: 1)
-            case 15: result = NSColor(red: 1,    green: 1,    blue: 1,    alpha: 1)
-            default: result = nil
-            }
-        } else if colorCode < 232 {
-            let cubeCalc: (Int, Int) -> CGFloat = { color, code in
-                let tmp = ((color - 16) / code) % 6
-                return CGFloat(tmp == 0 ? 0 :
-                    (14135 + 10280 * tmp) / 256)
-            }
-            result = NSColor(red: cubeCalc(colorCode, 36) / 255, green: cubeCalc(colorCode, 6) / 255, blue: cubeCalc(colorCode, 1) / 255, alpha: 1)
-        } else if colorCode < 256 {
-            let value = CGFloat((2056 + 2570 * (colorCode - 232)) / 256) / 255
-            result = NSColor(red: value, green: value, blue: value, alpha: 1)
-        } else {
-            result = nil
-        }
-        
-        return result
-    }
-    
-    /// Parses the given buffer into the current style.
-    ///
-    /// If it is impossible, false is returned and the current style remains the same as before
-    /// invocation of this function.
-    ///
-    /// - Parameter buffer: The byte buffer to parse.
-    /// - Returns: Whether the ANSI code was successfully parsed.
-    private func parseANSIBuffer(_ buffer: Data) -> Bool {
-        guard let string = String(data: buffer, encoding: .ascii) else { return false }
-        
-        let before = currentStyle
-        
-        let sub = string[string.index(after: string.startIndex)...]
-        let splits = sub.split(separator: ";", omittingEmptySubsequences: true)
-        var i = 0
-        while i < splits.endIndex {
-            let split = splits[i]
-            
-            if let decoded = Int(split) {
-                switch decoded {
-                case 0:  currentStyle            = SPStyle()
-                case 1:  currentStyle.bold       = true
-                case 3:  currentStyle.italic     = true
-                case 4:  currentStyle.underlined = true
-                case 21: currentStyle.bold       = false
-                case 23: currentStyle.italic     = false
-                case 24: currentStyle.underlined = false
-                    
-                // Foreground
-                case 30: currentStyle.foreground = .black
-                case 31: currentStyle.foreground = NSColor(red: 0.75, green: 0,    blue: 0,    alpha: 1)
-                case 32: currentStyle.foreground = NSColor(red: 0,    green: 0.75, blue: 0,    alpha: 1)
-                case 33: currentStyle.foreground = NSColor(red: 0.75, green: 0.75, blue: 0,    alpha: 1)
-                case 34: currentStyle.foreground = NSColor(red: 0,    green: 0,    blue: 0.75, alpha: 1)
-                case 35: currentStyle.foreground = NSColor(red: 0.75, green: 0,    blue: 0.75, alpha: 1)
-                case 36: currentStyle.foreground = NSColor(red: 0,    green: 0.75, blue: 0.75, alpha: 1)
-                case 37: currentStyle.foreground = .lightGray
-                case 39: currentStyle.foreground = .textColor
-                case 90: currentStyle.foreground = .darkGray
-                case 91: currentStyle.foreground = NSColor(red: 1,    green: 0,    blue: 0,    alpha: 1)
-                case 92: currentStyle.foreground = NSColor(red: 0,    green: 1,    blue: 0,    alpha: 1)
-                case 93: currentStyle.foreground = NSColor(red: 1,    green: 1,    blue: 0,    alpha: 1)
-                case 94: currentStyle.foreground = NSColor(red: 0,    green: 0,    blue: 1,    alpha: 1)
-                case 95: currentStyle.foreground = NSColor(red: 1,    green: 0,    blue: 1,    alpha: 1)
-                case 96: currentStyle.foreground = NSColor(red: 0,    green: 1,    blue: 1,    alpha: 1)
-                case 97: currentStyle.foreground = .white
-                    
-                // Background
-                case 40:  currentStyle.background = .black
-                case 41:  currentStyle.background = NSColor(red: 0.75, green: 0,    blue: 0,    alpha: 1)
-                case 42:  currentStyle.background = NSColor(red: 0,    green: 0.75, blue: 0,    alpha: 1)
-                case 43:  currentStyle.background = NSColor(red: 0.75, green: 0.75, blue: 0,    alpha: 1)
-                case 44:  currentStyle.background = NSColor(red: 0,    green: 0,    blue: 0.75, alpha: 1)
-                case 45:  currentStyle.background = NSColor(red: 0.75, green: 0,    blue: 0.75, alpha: 1)
-                case 46:  currentStyle.background = NSColor(red: 0,    green: 0.75, blue: 0.75, alpha: 1)
-                case 47:  currentStyle.background = .lightGray
-                case 49:  currentStyle.background = .textBackgroundColor
-                case 100: currentStyle.background = .darkGray
-                case 101: currentStyle.background = NSColor(red: 1,    green: 0,    blue: 0,    alpha: 1)
-                case 102: currentStyle.background = NSColor(red: 0,    green: 1,    blue: 0,    alpha: 1)
-                case 103: currentStyle.background = NSColor(red: 1,    green: 1,    blue: 0,    alpha: 1)
-                case 104: currentStyle.background = NSColor(red: 0,    green: 0,    blue: 1,    alpha: 1)
-                case 105: currentStyle.background = NSColor(red: 1,    green: 0,    blue: 1,    alpha: 1)
-                case 106: currentStyle.background = NSColor(red: 0,    green: 1,    blue: 1,    alpha: 1)
-                case 107: currentStyle.background = .white
-                  
-                case 38:
-                    if i + 1 >= splits.endIndex { break }
-                    
-                    i += 1
-                    if let code = Int(splits[i]) {
-                        if (code == 5 && i + 1 >= splits.endIndex) || (code == 2 && i + 3 >= splits.endIndex) { break }
-                        if code == 5, let colorCode = Int(splits[i + 1]) {
-                            currentStyle.foreground = colorFrom256Bit(colorCode)
-                            i += 1
-                        } else if code == 2, let red = Int(splits[i + 1]), let green = Int(splits[i + 2]), let blue = Int(splits[i + 3]) {
-                            currentStyle.foreground = NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
-                            i += 3
-                        }
-                    }
-                    
-                case 48:
-                    if i + 1 >= splits.endIndex { break }
-                    
-                    i += 1
-                    if let code = Int(splits[i]) {
-                        if (code == 5 && i + 1 >= splits.endIndex) || (code == 2 && i + 3 >= splits.endIndex) { break }
-                        if code == 5, let colorCode = Int(splits[i + 1]) {
-                            currentStyle.background = colorFrom256Bit(colorCode)
-                            i += 1
-                        } else if code == 2, let red = Int(splits[i + 1]), let green = Int(splits[i + 2]), let blue = Int(splits[i + 3]) {
-                            currentStyle.background = NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
-                            i += 3
-                        }
-                    }
-                    
-                default: print("Code not supported: \(decoded)!")
-                }
-            } else {
-                currentStyle = before
-                return false
-            }
-            i += 1
-        }
-        return true
-    }
-    
     /// Handles incoming data.
     ///
     /// - Parameter data: The new block of bytes
@@ -311,49 +147,26 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var closedStyles: [(begin: Int, style: SPStyle)] = []
 
         for byte in data {
-            switch byte {
-            case 0x1B:
-                wasAnsi    = true
-                ansiBuffer = Data()
-                ansiBegin  = chars
+            if wasSpecial {
+                wasSpecial = protocols.process(byte: byte)
+            } else {
+                wasSpecial = protocols.process(byte: byte)
                 
-            case 0x6D where wasAnsi:
-                wasAnsi = false
-                
-                let oldCurrentStyle = currentStyle
-                if parseANSIBuffer(ansiBuffer) {
-                    if ansiBegin != 0 && closedStyles.isEmpty {
-                        closedStyles.append((0, oldCurrentStyle))
+                if !wasSpecial {
+                    if currentStyle != oldCurrentStyle {
+                        if ansiBegin != 0 && closedStyles.isEmpty {
+                            closedStyles.append((0, oldCurrentStyle))
+                        }
+                        closedStyles.append((begin: ansiBegin, style: currentStyle))
                     }
-                    closedStyles.append((begin: ansiBegin, style: currentStyle))
-                } else {
-                    print("Error while parsing ANSI code!")
-                }
-                
-            default:
-                if wasAnsi {
-                    ansiBuffer.append(byte)
-                } else if wasSpecial {
-                    wasSpecial = protocols.process(byte: byte)
-                } else {
-                    wasSpecial = protocols.process(byte: byte)
                     
-                    if !wasSpecial {
-                        if currentStyle != oldCurrentStyle {
-                            if ansiBegin != 0 && closedStyles.isEmpty {
-                                closedStyles.append((0, oldCurrentStyle))
-                            }
-                            closedStyles.append((begin: ansiBegin, style: currentStyle))
-                        }
-                        
-                        text.append(byte)
-                        if byte >> 7 == 0 || byte >> 6 == 3 {
-                            chars += 1
-                        }
-                    } else {
-                        ansiBegin = chars
-                        oldCurrentStyle = currentStyle
+                    text.append(byte)
+                    if byte >> 7 == 0 || byte >> 6 == 3 {
+                        chars += 1
                     }
+                } else {
+                    ansiBegin = chars
+                    oldCurrentStyle = currentStyle
                 }
             }
         }

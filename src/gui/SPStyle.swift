@@ -123,4 +123,18 @@ struct SPStyle: CustomDebugStringConvertible, Equatable {
         
             font: otherStyle.font)
     }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.bold       == rhs.bold
+            && lhs.italic     == rhs.italic
+            && lhs.striken    == rhs.striken
+            && lhs.underlined == rhs.underlined
+            && lhs.foreground == rhs.foreground
+            && lhs.background == rhs.background
+            && lhs.font       == rhs.font
+    }
+    
+    static func != (lhs: Self, rhs: Self) -> Bool {
+        return !(lhs == rhs)
+    }
 }
