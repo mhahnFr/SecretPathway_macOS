@@ -60,7 +60,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
-    private var currentStyle = SPStyle()
+    internal var currentStyle = SPStyle()
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -79,6 +79,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                                                                 TelnetPlugin())
         
         super.init()
+        
+        self.protocols.add(plugin: ANSIPlugin(self))
         
         self.connection.connectionListener = self
         self.connection.start()
