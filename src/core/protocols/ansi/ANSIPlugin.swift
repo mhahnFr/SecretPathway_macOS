@@ -22,11 +22,17 @@
 import AppKit
 import Foundation
 
+/// This class acts as a plugin for ANSI escape codes.
 class ANSIPlugin: ProtocolPlugin {
+    /// The buffer for the incoming escape code.
     private var buffer = Data()
     
-    private unowned let owner: ConnectionDelegate
+    /// The owner of this plugin, used for altering the text styles.
+    private unowned(unsafe) let owner: ConnectionDelegate
     
+    /// Initializes this plugin using the given owner.
+    ///
+    /// - Parameter owner: The owner of this plugin.
     init(_ owner: ConnectionDelegate) {
         self.owner = owner
     }
