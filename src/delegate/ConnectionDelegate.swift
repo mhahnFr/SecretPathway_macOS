@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -51,12 +51,16 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var connection: Connection
     /// The attributed string that should be appended the next time the view is updated.
     private var appendix = NSMutableAttributedString()
+    /// Indicates whether the current style has been changed.
+    private var styleChanged = false
     /// Indicates whether incoming data should be passed to the special protocols.
     private var wasSpecial = false
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
-    internal var currentStyle = SPStyle()
+    internal var currentStyle = SPStyle() {
+        didSet { styleChanged = true }
+    }
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -139,9 +143,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var text      = unicodeBuffer
         var ansiBegin = 0
         var chars     = unicodeBuffer.count > 0 ? 1 : 0
+        var oldStyle  = currentStyle
         
-        var oldCurrentStyle = currentStyle
-
         unicodeBuffer = Data()
         
         var closedStyles: [(begin: Int, style: SPStyle)] = []
@@ -153,22 +156,23 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 wasSpecial = protocols.process(byte: byte)
                 
                 if !wasSpecial {
-                    if currentStyle != oldCurrentStyle {
-                        if ansiBegin != 0 && closedStyles.isEmpty {
-                            closedStyles.append((0, oldCurrentStyle))
-                        }
-                        closedStyles.append((begin: ansiBegin, style: currentStyle))
-                    }
-                    
                     text.append(byte)
                     if byte >> 7 == 0 || byte >> 6 == 3 {
                         chars += 1
                     }
                 } else {
                     ansiBegin = chars
-                    oldCurrentStyle = currentStyle
                 }
             }
+            if styleChanged {
+                if ansiBegin != 0 && closedStyles.isEmpty {
+                    closedStyles.append((0, oldStyle))
+                }
+                closedStyles.append((begin: ansiBegin, style: currentStyle))
+                styleChanged = false
+                oldStyle = currentStyle
+            }
+
         }
         
         if let last = text.last, last >> 7 == 1 {
