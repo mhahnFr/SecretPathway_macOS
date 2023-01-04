@@ -19,27 +19,52 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This struct represents a string character stream.
 struct StringStream {
+    /// The underlying character array.
     private let characters: Array<Character>
 
+    /// The current index of the stream.
     private(set) var index = 0
     
+    /// Indicates whether the stream has a next character to be read.
+    var hasNext: Bool { index < characters.endIndex }
+
+    /// Initializes this stream using the given string.
+    ///
+    /// - Parameter text: The string to construct the stream from.
     init(text: any StringProtocol) {
         self.characters = Array(text)
     }
     
-    var hasNext: Bool { index < characters.endIndex }
-    
+    /// Returns whether the given character equals the next
+    /// character to be read.
+    ///
+    /// - Parameter c: The character to be checked.
+    /// - Returns: Whether the next character to be read equals the given one.
     func peek(_ c: Character) -> Bool {
         characters[index] == c
     }
     
+    /// Returns whether the given string equals to the next characters
+    /// to be read.
+    ///
+    /// - Parameter string: The string to be checked.
+    /// - Returns: Whether the next characters to be read form the given string
     func peek(_ string: any StringProtocol) -> Bool {
         if characters.count - index < string.count { return false }
         
         return String(characters[index ..< string.count]) == string
     }
     
+    /// Skips the given amount of characters.
+    ///
+    /// If there are less characters left in the stream than the amount that
+    /// should be skipped, all remaining characters are skipped. Returns
+    /// the new index.
+    ///
+    /// - Parameter amount: The amount of characters to be skipped.
+    /// - Returns: The new index after the skipping.
     mutating func skip(_ amount: Int = 1) -> Int {
         var tmpAmount = amount
         if characters.count - index <= amount {
@@ -49,6 +74,11 @@ struct StringStream {
         return index
     }
     
+    /// Advances this stream to the next character.
+    ///
+    /// The read character is returned.
+    ///
+    /// - Returns: The next character in the stream.
     mutating func next() -> Character {
         let toReturn = characters[index]
         index += 1
