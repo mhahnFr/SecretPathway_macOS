@@ -19,27 +19,18 @@
  * If not, see <https://www.gnu.org/licenses/>.
  */
 
-import SwiftUI
+import AppKit
 
-struct EditorView: View {
-    @ObservedObject var settings = Settings.shared
-    let delegate: EditorDelegate
+class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate {
+    internal func updateTextView(_ textView: NSTextView) {}
     
-    var body: some View {
-        VStack {
-            NSTextViewBridge(length: 0, fontSize: settings.fontSize, delegate: delegate)
-            VStack {
-                HStack {
-                    Button("Save") {}.keyboardShortcut(.defaultAction)
-                }.frame(maxWidth: .infinity, alignment: .trailing)
-                Text("Status").frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }.padding(5)
+    internal func initTextView(_ textView: NSTextView) {
+        textView.font      = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
+        textView.textColor = .textColor
+        textView.delegate  = self
     }
-}
-
-struct EditorView_Previews: PreviewProvider {
-    static var previews: some View {
-        EditorView(delegate: EditorDelegate())
+    
+    internal func textDidChange(_ notification: Notification) {
+        print("changed")
     }
 }
