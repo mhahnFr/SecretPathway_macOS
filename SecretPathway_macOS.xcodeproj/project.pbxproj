@@ -12,6 +12,7 @@
 		BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3572632964A206002661B5 /* ANSIPlugin.swift */; };
 		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
 		BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF577EAC291BDF1900E7A897 /* Constants.swift */; };
+		BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3532965C95F00DF333D /* EditorView.swift */; };
 		BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF832EC52927FBA000581CDA /* Int2Data.swift */; };
 		BF916177294E2C8600C8B967 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916176294E2C8600C8B967 /* Protocols.swift */; };
 		BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916178294E306700C8B967 /* ProtocolPlugin.swift */; };
@@ -47,6 +48,7 @@
 		BF3572632964A206002661B5 /* ANSIPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIPlugin.swift; sourceTree = "<group>"; };
 		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		BF577EAC291BDF1900E7A897 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		BF6AF3532965C95F00DF333D /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		BF832EC52927FBA000581CDA /* Int2Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int2Data.swift; sourceTree = "<group>"; };
 		BF916176294E2C8600C8B967 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		BF916178294E306700C8B967 /* ProtocolPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolPlugin.swift; sourceTree = "<group>"; };
@@ -118,6 +120,14 @@
 			path = ansi;
 			sourceTree = "<group>";
 		};
+		BF6AF3522965C95100DF333D /* editor */ = {
+			isa = PBXGroup;
+			children = (
+				BF6AF3532965C95F00DF333D /* EditorView.swift */,
+			);
+			path = editor;
+			sourceTree = "<group>";
+		};
 		BF94661329294D2C0005B2EA /* bridge */ = {
 			isa = PBXGroup;
 			children = (
@@ -138,6 +148,7 @@
 		BFD5AB26291AABA300890CE6 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				BF6AF3522965C95100DF333D /* editor */,
 				BF94661329294D2C0005B2EA /* bridge */,
 				BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */,
 				BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */,
@@ -332,6 +343,7 @@
 				BFD9B0D52923F59700E59D00 /* DialogView.swift in Sources */,
 				BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */,
 				BF916177294E2C8600C8B967 /* Protocols.swift in Sources */,
+				BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */,
 				BFEA07B929043DCC00294822 /* SettingsDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
 				BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */,
