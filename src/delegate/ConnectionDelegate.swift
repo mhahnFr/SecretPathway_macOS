@@ -51,16 +51,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var connection: Connection
     /// The attributed string that should be appended the next time the view is updated.
     private var appendix = NSMutableAttributedString()
-    /// Indicates whether the current style has been changed.
-    private var styleChanged = false
     /// Indicates whether incoming data should be passed to the special protocols.
     private var wasSpecial = false
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
-    internal var currentStyle = SPStyle() {
-        didSet { styleChanged = true }
-    }
+    internal var currentStyle = SPStyle()
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -164,12 +160,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                     ansiBegin = chars
                 }
             }
-            if styleChanged {
+            if currentStyle != oldStyle {
                 if ansiBegin != 0 && closedStyles.isEmpty {
                     closedStyles.append((0, oldStyle))
                 }
                 closedStyles.append((begin: ansiBegin, style: currentStyle))
-                styleChanged = false
                 oldStyle = currentStyle
             }
 
