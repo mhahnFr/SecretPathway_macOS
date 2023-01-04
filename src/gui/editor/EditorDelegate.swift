@@ -21,6 +21,9 @@
 
 import AppKit
 
+/// This class acts as a delegate for the EditorView.
+///
+/// It features the LPC syntax highlighting.
 class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate {
     internal func updateTextView(_ textView: NSTextView) {}
     
@@ -34,6 +37,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate {
         print("changed")
     }
     
+    /// Saves the text by sending a message to the server.
     func saveText() {
         // TODO: Save the text
         print("Saving")
