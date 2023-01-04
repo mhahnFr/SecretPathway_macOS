@@ -30,7 +30,9 @@ struct EditorView: View {
             NSTextViewBridge(length: 0, fontSize: settings.fontSize, delegate: delegate)
             VStack {
                 HStack {
-                    Button("Save") {}.keyboardShortcut(.defaultAction)
+                    Button("Save") {
+                        delegate.saveText()
+                    }.keyboardShortcut(.return, modifiers: .command)
                 }.frame(maxWidth: .infinity, alignment: .trailing)
                 Text("Status").frame(maxWidth: .infinity, alignment: .leading)
             }

@@ -33,4 +33,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate {
     internal func textDidChange(_ notification: Notification) {
         print("changed")
     }
+    
+    func saveText() {
+        // TODO: Save the text
+        print("Saving")
+    }
 }
