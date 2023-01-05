@@ -43,7 +43,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     }
     
     internal func textDidChange(_ notification: Notification) {
-        print(textStorage.string)
         if syntaxHighlighting {
             highlight()
         }
@@ -59,7 +58,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         if syntaxHighlighting {
             highlight()
         } else {
-            // TODO: Reset highlighting
+            textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, textStorage.length))
         }
     }
     
