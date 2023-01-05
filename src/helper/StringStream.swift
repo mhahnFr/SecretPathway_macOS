@@ -29,6 +29,8 @@ struct StringStream {
     
     /// Indicates whether the stream has a next character to be read.
     var hasNext: Bool { index < characters.endIndex }
+    /// The next character to be read.
+    var peek: Character { characters[index] }
 
     /// Initializes this stream using the given string.
     ///
@@ -65,6 +67,7 @@ struct StringStream {
     ///
     /// - Parameter amount: The amount of characters to be skipped.
     /// - Returns: The new index after the skipping.
+    @discardableResult
     mutating func skip(_ amount: Int = 1) -> Int {
         var tmpAmount = amount
         if characters.count - index <= amount {
@@ -79,6 +82,7 @@ struct StringStream {
     /// The read character is returned.
     ///
     /// - Returns: The next character in the stream.
+    @discardableResult
     mutating func next() -> Character {
         let toReturn = characters[index]
         index += 1

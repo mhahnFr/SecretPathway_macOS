@@ -21,5 +21,31 @@
 
 /// This enumeration consists of the possible token types.
 enum TokenType {
-    case inherit, eof
+    case eof,
+    
+    ident, int, string, character, symbol,
+    
+    leftParen, rightParen, leftBrack, rightBrack, leftCurly, rightCurly,
+    dot, comma, scope, colon, semicolon, ellipsis,
+    
+    equals, notEquals, less, lessOrEqual, greater, greaterOrEqual,
+    
+    or, and, not,
+    
+    assignment, arrow, pArrow, ampersand, pipe, leftShift, rightShift,
+    doubleQuestion, question,
+    
+    increment, decrement,
+    
+    plus, minus, star, slash, percent,
+    
+    assignmentPlus, assignmentMinus, assignmentStar, assignmentSlash, assignmentPercent,
+    
+    include, inherit, `private`, protected, `public`, `override`, deprecated, new,
+    this, `nil`, `true`, `false`, sizeof, `is`, `class`, void, charKeyword, intKeyword,
+    bool, object, stringKeyword, symbolKeyword, mapping, any, mixed, auto, `operator`,
+    `let`, `if`, `else`, `while`, `do`, `for`, foreach, `switch`, `case`, `default`,
+    `break`, `continue`, `return`, `try`, `catch`,
+    
+    commentBlock, commentLine
 }

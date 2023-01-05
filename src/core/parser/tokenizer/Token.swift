@@ -29,4 +29,11 @@ struct Token {
     let payload: String?
     /// The end of this token in the stream.
     let end: Int
+    
+    init(begin: Int, type: TokenType, payload: String? = nil, end: Int) {
+        self.begin = begin
+        self.type = type
+        self.payload = payload
+        self.end = end
+    }
 }
