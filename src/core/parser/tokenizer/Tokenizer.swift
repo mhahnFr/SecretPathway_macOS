@@ -237,7 +237,7 @@ struct Tokenizer {
             if let number = Int(buffer) {
                 return Token(begin: begin, type: .int, payload: number, end: stream.index)
             }
-            return Token(begin: begin, type: .ident, end: stream.index)
+            return Token(begin: begin, type: .ident, payload: buffer, end: stream.index)
         }
     }
     

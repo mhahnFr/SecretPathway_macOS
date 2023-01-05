@@ -56,7 +56,7 @@ struct StringStream {
     func peek(_ string: any StringProtocol) -> Bool {
         if characters.count - index < string.count { return false }
         
-        return String(characters[index ..< string.count]) == string
+        return String(characters[index ..< (index + string.count)]) == string
     }
     
     /// Skips the given amount of characters.
