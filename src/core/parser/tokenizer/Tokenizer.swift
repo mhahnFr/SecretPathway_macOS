@@ -143,10 +143,105 @@ struct Tokenizer {
             return Token(begin: stream.index, type: .symbol, payload: readTill("'", skipping: 2), end: stream.index)
         } else if stream.peek("#:") {
             return Token(begin: stream.index, type: .symbol, payload: readSymbol(), end: stream.index)
+        } else if stream.peek("#include") {
+            return Token(begin: stream.index, type: .include, end: stream.skip(8))
+        } else if stream.peek("inherit") {
+            return Token(begin: stream.index, type: .inherit, end: stream.skip(7))
+        } else if stream.peek("private") {
+            return Token(begin: stream.index, type: .private, end: stream.skip(7))
+        } else if stream.peek("protected") {
+            return Token(begin: stream.index, type: .protected, end: stream.skip(9))
+        } else if stream.peek("public") {
+            return Token(begin: stream.index, type: .public, end: stream.skip(6))
+        } else if stream.peek("override") {
+            return Token(begin: stream.index, type: .override, end: stream.skip(8))
+        } else if stream.peek("deprecated") {
+            return Token(begin: stream.index, type: .deprecated, end: stream.skip(10))
+        } else if stream.peek("new") {
+            return Token(begin: stream.index, type: .new, end: stream.skip(3))
+        } else if stream.peek("this") {
+            return Token(begin: stream.index, type: .this, end: stream.skip(4))
+        } else if stream.peek("nil") {
+            return Token(begin: stream.index, type: .nil, end: stream.skip(3))
+        } else if stream.peek("true") {
+            return Token(begin: stream.index, type: .true, end: stream.skip(4))
+        } else if stream.peek("false") {
+            return Token(begin: stream.index, type: .false, end: stream.skip(5))
+        } else if stream.peek("sizeof") {
+            return Token(begin: stream.index, type: .sizeof, end: stream.skip(6))
+        } else if stream.peek("is") {
+            return Token(begin: stream.index, type: .is, end: stream.skip(2))
+        } else if stream.peek("class") {
+            return Token(begin: stream.index, type: .class, end: stream.skip(5))
+        } else if stream.peek("void") {
+            return Token(begin: stream.index, type: .void, end: stream.skip(4))
+        } else if stream.peek("char") {
+            return Token(begin: stream.index, type: .charKeyword, end: stream.skip(4))
+        } else if stream.peek("int") {
+            return Token(begin: stream.index, type: .intKeyword, end: stream.skip(3))
+        } else if stream.peek("bool") {
+            return Token(begin: stream.index, type: .bool, end: stream.skip(4))
+        } else if stream.peek("object") {
+            return Token(begin: stream.index, type: .object, end: stream.skip(6))
+        } else if stream.peek("string") {
+            return Token(begin: stream.index, type: .stringKeyword, end: stream.skip(6))
+        } else if stream.peek("symbol") {
+            return Token(begin: stream.index, type: .symbolKeyword, end: stream.skip(6))
+        } else if stream.peek("mapping") {
+            return Token(begin: stream.index, type: .mapping, end: stream.skip(7))
+        } else if stream.peek("any") {
+            return Token(begin: stream.index, type: .any, end: stream.skip(3))
+        } else if stream.peek("mixed") {
+            return Token(begin: stream.index, type: .mixed, end: stream.skip(5))
+        } else if stream.peek("auto") {
+            return Token(begin: stream.index, type: .auto, end: stream.skip(4))
+        } else if stream.peek("let") {
+            return Token(begin: stream.index, type: .let, end: stream.skip(3))
+        } else if stream.peek("if") {
+            return Token(begin: stream.index, type: .if, end: stream.skip(2))
+        } else if stream.peek("else") {
+            return Token(begin: stream.index, type: .else, end: stream.skip(4))
+        } else if stream.peek("while") {
+            return Token(begin: stream.index, type: .while, end: stream.skip(5))
+        } else if stream.peek("do") {
+            return Token(begin: stream.index, type: .do, end: stream.skip(2))
+        } else if stream.peek("foreach") {
+            return Token(begin: stream.index, type: .foreach, end: stream.skip(7))
+        } else if stream.peek("for") {
+            return Token(begin: stream.index, type: .for, end: stream.skip(3))
+        } else if stream.peek("switch") {
+            return Token(begin: stream.index, type: .switch, end: stream.skip(6))
+        } else if stream.peek("case") {
+            return Token(begin: stream.index, type: .case, end: stream.skip(4))
+        } else if stream.peek("default") {
+            return Token(begin: stream.index, type: .default, end: stream.skip(7))
+        } else if stream.peek("break") {
+            return Token(begin: stream.index, type: .break, end: stream.skip(5))
+        } else if stream.peek("continue") {
+            return Token(begin: stream.index, type: .continue, end: stream.skip(8))
+        } else if stream.peek("return") {
+            return Token(begin: stream.index, type: .return, end: stream.skip(6))
+        } else if stream.peek("try") {
+            return Token(begin: stream.index, type: .try, end: stream.skip(3))
+        } else if stream.peek("catch") {
+            return Token(begin: stream.index, type: .catch, end: stream.skip(5))
+        } else if stream.peek("operator") {
+            return Token(begin: stream.index, type: .operator, end: stream.skip(8))
+        } else {
+            let begin = stream.index
+            var buffer = ""
+            while stream.hasNext && !isSpecial(stream.peek) {
+                buffer.append(stream.next())
+            }
+            if let number = Int(buffer) {
+                return Token(begin: begin, type: .int, payload: number, end: stream.index)
+            }
+            return Token(begin: begin, type: .ident, end: stream.index)
         }
-        // TODO: Keywords
-        
-        return Token(begin: 0, type: .eof, payload: nil, end: 0)
+    }
+    
+    private func isSpecial(_ c: Character) -> Bool {
+        return !(c.isNumber || c.isLetter || c == "_")
     }
     
     private mutating func readSymbol() -> String {

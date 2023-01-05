@@ -26,11 +26,11 @@ struct Token {
     /// The type of this token.
     let type: TokenType
     /// The optional payload of this token.
-    let payload: String?
+    let payload: Any?
     /// The end of this token in the stream.
     let end: Int
     
-    init(begin: Int, type: TokenType, payload: String? = nil, end: Int) {
+    init(begin: Int, type: TokenType, payload: Any? = nil, end: Int) {
         self.begin = begin
         self.type = type
         self.payload = payload
