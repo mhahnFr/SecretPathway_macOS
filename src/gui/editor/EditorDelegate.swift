@@ -25,10 +25,12 @@ import AppKit
 ///
 /// It features the LPC syntax highlighting.
 class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, ObservableObject {
+    /// Indicates whether the syntax highlighting is enabled.
     @Published var syntaxHighlighting = true {
         didSet { toggleHighlighting() }
     }
     
+    /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
     
     internal func updateTextView(_ textView: NSTextView) {}
@@ -54,6 +56,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         print("Saving")
     }
     
+    /// Toggles the highlighting.
+    ///
+    /// If the highlighting is enabled, the text is highlighted. Otherwise,
+    /// the text color is reset to normal.
     private func toggleHighlighting() {
         if syntaxHighlighting {
             highlight()
@@ -62,6 +68,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         }
     }
     
+    /// Performs the highlighting of the text.
     private func highlight() {
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
         var token = tokenizer.nextToken()
