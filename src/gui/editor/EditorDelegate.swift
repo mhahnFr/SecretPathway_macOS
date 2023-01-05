@@ -25,7 +25,11 @@ import AppKit
 ///
 /// It features the LPC syntax highlighting.
 class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, ObservableObject {
-    @Published var syntaxHighlighting = true
+    @Published var syntaxHighlighting = true {
+        didSet { toggleHighlighting() }
+    }
+    
+    private weak var textStorage: NSTextStorage!
     
     internal func updateTextView(_ textView: NSTextView) {}
     
@@ -33,15 +37,58 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         textView.font      = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor = .textColor
         textView.delegate  = self
+        textView.isAutomaticQuoteSubstitutionEnabled = false
+        
+        textStorage = textView.textStorage
     }
     
     internal func textDidChange(_ notification: Notification) {
-        print("changed")
+        print(textStorage.string)
+        if syntaxHighlighting {
+            highlight()
+        }
     }
     
     /// Saves the text by sending a message to the server.
     func saveText() {
         // TODO: Save the text
         print("Saving")
+    }
+    
+    private func toggleHighlighting() {
+        if syntaxHighlighting {
+            highlight()
+        } else {
+            // TODO: Reset highlighting
+        }
+    }
+    
+    private func highlight() {
+        var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
+        var token = tokenizer.nextToken()
+        while token.type != .eof {
+            let style: SPStyle
+            
+            switch token.type {
+            case .ident:
+                style = SPStyle(foreground: .green)
+                
+            case .commentLine, .commentBlock:
+                style = SPStyle(italic: true, foreground: .gray)
+                
+            case .string:
+                style = SPStyle(foreground: .red)
+                
+            case .include, .inherit, .private, .protected, .public, .override, .deprecated, .new, .this, .nil, .true, .false, .sizeof, .is, .class, .void, .charKeyword, .intKeyword, .bool, .object, .stringKeyword, .symbolKeyword, .mapping, .any, .mixed, .auto, .operator, .let, .if, .else, .while, .do, .for, .foreach, .switch, .`case`, .`default`, .break, .continue, .return, .try, .catch:
+                style = SPStyle(bold: true, foreground: .orange)
+                
+            default:
+                style = SPStyle()
+            }
+            
+            textStorage.setAttributes(style.native, range: NSMakeRange(token.begin, token.end - token.begin))
+            
+            token = tokenizer.nextToken()
+        }
     }
 }
