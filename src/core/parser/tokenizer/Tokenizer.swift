@@ -23,6 +23,7 @@
 struct Tokenizer {
     /// The stream to read characters from.
     var stream: StringStream
+    /// Indicates whether to generate comment tokens.
     var commentTokens = false
     
     /// Returns the next recognized token.
@@ -240,10 +241,17 @@ struct Tokenizer {
         }
     }
     
+    /// Returns whether the given character si to be treated as a special character.
+    ///
+    /// - Parameter c: The character to be checked.
+    /// - Returns: Whether the given character is a special one.
     private func isSpecial(_ c: Character) -> Bool {
         return !(c.isNumber || c.isLetter || c == "_")
     }
     
+    /// Returns the read symbol name.
+    ///
+    /// - Returns: The read symbol.
     private mutating func readSymbol() -> String {
         stream.skip(2)
         
@@ -254,6 +262,15 @@ struct Tokenizer {
         return buffer
     }
     
+    /// Returns a string read from the stream.
+    ///
+    /// The first given amount of characters are skipped, the string is read until
+    /// the end is read. The given end string is not part of the string, but consumed
+    /// from the stream.
+    ///
+    /// - Parameter end: The end pattern.
+    /// - Parameter skipping: The amount of characters to be skipped before reading.
+    /// - Returns: The read string.
     private mutating func readTill(_ end: String, skipping: Int = 1) -> String {
         stream.skip(skipping)
         
@@ -265,6 +282,7 @@ struct Tokenizer {
         return buffer
     }
     
+    /// Consumes the whitespaces from the stream.
     private mutating func skipWhitespaces() {
         while stream.hasNext && stream.peek.isWhitespace {
             stream.next()
