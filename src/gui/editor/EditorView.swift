@@ -30,7 +30,7 @@ struct EditorView: View {
             NSTextViewBridge(length: 0, fontSize: settings.fontSize, delegate: delegate)
             VStack {
                 HStack {
-                    Toggle("Syntax Highlighting", isOn: $delegate.syntaxHiglighting).frame(maxWidth: .infinity, alignment: .leading)
+                    Toggle("Syntax Highlighting", isOn: $delegate.syntaxHighlighting).frame(maxWidth: .infinity, alignment: .leading)
                     Button("Save") {
                         delegate.saveText()
                     }.keyboardShortcut(.return, modifiers: .command)

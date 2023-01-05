@@ -25,7 +25,8 @@ import AppKit
 ///
 /// It features the LPC syntax highlighting.
 class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, ObservableObject {
-    @Published var syntaxHiglighting = true
+    @Published var syntaxHighlighting = true
+    
     internal func updateTextView(_ textView: NSTextView) {}
     
     internal func initTextView(_ textView: NSTextView) {
