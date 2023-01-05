@@ -24,7 +24,8 @@ import AppKit
 /// This class acts as a delegate for the EditorView.
 ///
 /// It features the LPC syntax highlighting.
-class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate {
+class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, ObservableObject {
+    @Published var syntaxHiglighting = true
     internal func updateTextView(_ textView: NSTextView) {}
     
     internal func initTextView(_ textView: NSTextView) {
