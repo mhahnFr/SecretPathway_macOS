@@ -76,7 +76,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
             let style: SPStyle
             
             switch token.type {
-            case .ident:
+            case .identifier:
                 style = SPStyle(foreground: .green)
                 
             case .commentLine, .commentBlock:

@@ -23,7 +23,7 @@
 enum TokenType {
     case eof,
     
-    ident, int, string, character, symbol,
+    identifier, int, string, character, symbol,
     
     leftParen, rightParen, leftBrack, rightBrack, leftCurly, rightCurly,
     dot, comma, scope, colon, semicolon, ellipsis,
