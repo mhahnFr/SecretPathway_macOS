@@ -234,6 +234,11 @@ struct Tokenizer {
             while stream.hasNext && !isSpecial(stream.peek) {
                 buffer.append(stream.next())
             }
+            
+            if buffer.isEmpty {
+                stream.skip()
+            }
+            
             if let number = Int(buffer) {
                 return Token(begin: begin, type: .int, payload: number, end: stream.index)
             }
