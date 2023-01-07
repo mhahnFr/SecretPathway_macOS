@@ -148,6 +148,9 @@ struct Tokenizer {
         return nextWord()
     }
     
+    /// Constructs and returns a token from the next word read from the stream.
+    ///
+    /// - Returns: A token constructed from the next read word.
     private mutating func nextWord() -> Token {
         let begin = stream.index
         let word  = readWord()
@@ -205,13 +208,16 @@ struct Tokenizer {
         }
     }
     
+    /// Returns the next word read from the stream.
+    ///
+    /// - Returns: The next read word.
     private mutating func readWord() -> String {
         var buffer = ""
         while stream.hasNext && !isSpecial(stream.peek) {
             buffer.append(stream.next())
         }
         if buffer.isEmpty && stream.hasNext {
-            // Unrecognized character, use as identifier to prevent endless loop
+            // Unrecognized character, use as word to prevent endless loop
             buffer.append(stream.next())
         }
         return buffer
