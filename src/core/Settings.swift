@@ -55,6 +55,12 @@ class Settings: ObservableObject {
     /// Automatically retained by the underlying app storage.
     @AppStorage(Constants.Storage.EDITOR_INLINED)
     var editorInlined: Bool = false
+    /// Indicates whether the syntax highlighting of the LPC editor should be
+    /// enabled by default.
+    ///
+    /// Automatially retained by the underlying app storage.
+    @AppStorage(Constants.Storage.EDITOR_SYNTAX_HIGHLIGHT)
+    var editorSyntaxHighlighting = true
     
     /// The raw data of the currently opened connections.
     @AppStorage(Constants.Storage.OPEN_CONNECTIONS)

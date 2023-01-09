@@ -28,12 +28,14 @@ class Constants {
     /// Constants to be used for stored settings.
     class Storage {
         /// The size of the font.
-        static let FONT_SIZE          = "\(APP_NAME).fontSize"
+        static let FONT_SIZE               = "\(APP_NAME).fontSize"
         /// The currently open connections.
-        static let OPEN_CONNECTIONS   = "\(APP_NAME).openConnections"
+        static let OPEN_CONNECTIONS        = "\(APP_NAME).openConnections"
         /// The recently opened connections.
-        static let RECENT_CONNECTIONS = "\(APP_NAME).recentConnections"
+        static let RECENT_CONNECTIONS      = "\(APP_NAME).recentConnections"
         /// Indicates whether to display the editor in its controlling connection window.
-        static let EDITOR_INLINED     = "\(APP_NAME).editorInlined"
+        static let EDITOR_INLINED          = "\(APP_NAME).editorInlined"
+        /// Indicates whether to enable the syntax highlighting in the LPC editor by default.
+        static let EDITOR_SYNTAX_HIGHLIGHT = "\(APP_NAME).editorSyntaxHighlighting"
     }
 }

@@ -34,6 +34,8 @@ struct SettingsView: View {
             }
             Toggle("Use inlined editor", isOn: settings.$editorInlined)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            Toggle("Automatically enable syntax highlighting in the editor", isOn: settings.$editorSyntaxHighlighting)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }.padding(5)
     }
 }
