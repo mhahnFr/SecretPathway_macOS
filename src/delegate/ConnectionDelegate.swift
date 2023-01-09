@@ -37,6 +37,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     @Published private(set) var message: String?
     /// The color to be used for the user message.
     @Published private(set) var messageColor: Color?
+    /// The delegate to be used for the inlined LPC editor.
+    @Published private(set) var editorDelegate: EditorDelegate?
     
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?

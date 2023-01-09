@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import SwiftUI
@@ -29,26 +28,30 @@ struct ConnectionView: View {
     
     var body: some View {
         VStack {
-            if let message = delegate.message {
-                Text(message)
-                    .foregroundColor(delegate.messageColor)
-                    .bold()
-            }
-            NSTextViewBridge(length: delegate.contentLength, fontSize: settings.fontSize, delegate: delegate)
-            HStack {
-                if let prompt = delegate.prompt {
-                    Text(prompt)
+            if let delegate = delegate.editorDelegate {
+                EditorView(delegate: delegate)
+            } else {
+                if let message = delegate.message {
+                    Text(message)
+                        .foregroundColor(delegate.messageColor)
+                        .bold()
                 }
-                if #available(macOS 12.0, *) {
-                    TextField("Enter something...", text: $enteredText).onSubmit {
-                        sendMessage()
+                NSTextViewBridge(length: delegate.contentLength, fontSize: settings.fontSize, delegate: delegate)
+                HStack {
+                    if let prompt = delegate.prompt {
+                        Text(prompt)
                     }
-                } else {
-                    TextField("Enter something...", text: $enteredText)
+                    if #available(macOS 12.0, *) {
+                        TextField("Enter something...", text: $enteredText).onSubmit {
+                            sendMessage()
+                        }
+                    } else {
+                        TextField("Enter something...", text: $enteredText)
+                    }
+                    Button("Send") {
+                        sendMessage()
+                    }.keyboardShortcut(.defaultAction)
                 }
-                Button("Send") {
-                    sendMessage()
-                }.keyboardShortcut(.defaultAction)
             }
         }
         .frame(minWidth: 300, idealWidth: 750, minHeight: 200, idealHeight: 500)
