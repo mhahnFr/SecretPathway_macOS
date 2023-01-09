@@ -31,6 +31,9 @@ struct EditorView: View {
             VStack {
                 HStack {
                     Toggle("Syntax Highlighting", isOn: $delegate.syntaxHighlighting).frame(maxWidth: .infinity, alignment: .leading)
+                    Button("Close") {
+                        delegate.close()
+                    }.keyboardShortcut(.cancelAction)
                     Button("Save") {
                         delegate.saveText()
                     }.keyboardShortcut(.return, modifiers: .command)

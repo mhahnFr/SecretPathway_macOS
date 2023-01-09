@@ -63,6 +63,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         print("Saving")
     }
     
+    /// Closes the editor.
+    func close() {
+        // TODO: Close the editor
+        print("Closing")
+    }
+    
     /// Toggles the highlighting.
     ///
     /// If the highlighting is enabled, the text is highlighted. Otherwise,
