@@ -26,7 +26,7 @@ import AppKit
 /// It features the LPC syntax highlighting.
 class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, ObservableObject {
     /// Indicates whether the syntax highlighting is enabled.
-    @Published var syntaxHighlighting = true {
+    @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
     }
     
@@ -39,7 +39,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         textView.font      = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor = .textColor
         textView.delegate  = self
-        textView.isAutomaticQuoteSubstitutionEnabled = false
+        
+        textView.isAutomaticQuoteSubstitutionEnabled  = false
+        textView.isAutomaticDataDetectionEnabled      = false
+        textView.isAutomaticLinkDetectionEnabled      = false
+        textView.isAutomaticTextCompletionEnabled     = false
+        textView.isAutomaticTextReplacementEnabled    = false
+        textView.isAutomaticDashSubstitutionEnabled   = false
+        textView.isAutomaticSpellingCorrectionEnabled = false
         
         textStorage = textView.textStorage
     }
