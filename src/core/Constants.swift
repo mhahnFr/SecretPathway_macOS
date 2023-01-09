@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /// This class holds some constants used in the whole project.
@@ -34,5 +33,7 @@ class Constants {
         static let OPEN_CONNECTIONS   = "\(APP_NAME).openConnections"
         /// The recently opened connections.
         static let RECENT_CONNECTIONS = "\(APP_NAME).recentConnections"
+        /// Indicates whether to display the editor in its controlling connection window.
+        static let EDITOR_INLINED     = "\(APP_NAME).editorInlined"
     }
 }

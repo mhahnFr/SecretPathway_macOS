@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import Foundation
@@ -52,6 +51,10 @@ class Settings: ObservableObject {
     /// Automatically retained by the underlying app storage.
     @AppStorage(Constants.Storage.FONT_SIZE)
     var fontSize: Double = 12
+    /// Whether to inline the editor into its controlling window.
+    /// Automatically retained by the underlying app storage.
+    @AppStorage(Constants.Storage.EDITOR_INLINED)
+    var editorInlined: Bool = false
     
     /// The raw data of the currently opened connections.
     @AppStorage(Constants.Storage.OPEN_CONNECTIONS)
