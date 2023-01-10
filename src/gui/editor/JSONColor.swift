@@ -20,21 +20,34 @@
 
 import AppKit
 
+/// This struct represents a `Codable` color.
 struct JSONColor: Codable {
+    /// The red part of the color, in the range of `0` - `255`.
     var red: Int
+    /// The green part of the color, in the range of `0` - `255`.
     var green: Int
+    /// The blue part of the color, in the range of `0` - `255`.
     var blue: Int
     
+    /// A native representation of this color.
     var native: NSColor {
         NSColor(red: CGFloat(red) / 255, green: CGFloat(green) / 255, blue: CGFloat(blue) / 255, alpha: 1)
     }
     
+    /// Initializes this color using the given values.
+    ///
+    /// - Parameter red: The red part of the color, in the range of `0` - `255`.
+    /// - Parameter green: The green part of the color, in the range of `0` - `255`.
+    /// - Parameter blue: The blue part of the color, in the range of `0` - `255`.
     init(red: Int, green: Int, blue: Int) {
         self.red   = red
         self.green = green
         self.blue  = blue
     }
     
+    /// Initializes this color from the given `NSColor`.
+    ///
+    /// - Parameter color: The color, it might need to be converted using `usingColorSpace(_:)`.
     init(from color: NSColor) {
         self.init(red: Int(color.redComponent * 255), green: Int(color.greenComponent * 255), blue: Int(color.blueComponent * 255))
     }

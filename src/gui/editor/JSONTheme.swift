@@ -18,8 +18,12 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// Represents a `Codable` theme.
 struct JSONTheme: SPTheme, Codable {
+    /// The styles used for the token types.
     let styles: [JSONStyle]
+    /// A dictionary consisting of the token type and the index of
+    /// the style to be used.
     let dict: [TokenType: Int]
     
     func styleFor(tokenType: TokenType) -> SPStyle {

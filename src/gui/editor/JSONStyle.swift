@@ -20,18 +20,27 @@
 
 import AppKit
 
+/// Represents a `Codable` style.
 struct JSONStyle: Codable {
+    /// Indicates whether to use a bold font.
     var bold: Bool?
+    /// Indicates whether to use an italic font.
     var italic: Bool?
+    /// Indicates whether to use a strike-through font.
     var striken: Bool?
+    /// Indicates whether to use a underlined font.
     var underlined: Bool?
+    /// The foreground color to be used.
     var foreground: JSONColor?
+    /// The background color to be used.
     var background: JSONColor?
     
+    /// Converts this style to a `SPStyle`.
     var native: SPStyle {
         SPStyle(bold: bold, italic: italic, striken: striken, underlined: underlined, foreground: foreground?.native, background: background?.native)
     }
     
+    /// Initializes this style with default values.
     init(bold:       Bool?      = nil,
          italic:     Bool?      = nil,
          striken:    Bool?      = nil,
@@ -46,6 +55,11 @@ struct JSONStyle: Codable {
         self.background = background
     }
     
+    /// Initializes this style using the given `SPStyle`.
+    ///
+    /// If the colors are the default colors, they are not converted.
+    ///
+    /// - Parameter style: The style to be copied.
     init(from style: SPStyle) {
         self.bold       = style.bold
         self.italic     = style.italic
