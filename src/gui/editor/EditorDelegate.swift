@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import AppKit
@@ -32,6 +31,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     
     /// The closure called when the user clicks on the "Close" button.
     var onClose: (() -> Void)?
+    /// The theme to be used for the syntax highlighting.
+    var theme: SPTheme = DefaultTheme()
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!

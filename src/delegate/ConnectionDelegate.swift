@@ -121,9 +121,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         if inited {
             inited = false
             backingStorage.append(fullText)
+        } else {
+            backingStorage.append(appendix)
         }
         
-        backingStorage.append(appendix)
         appendix = NSMutableAttributedString()
         backingStorage.enumerateAttribute(.font, in: NSMakeRange(0, backingStorage.length)) { value, range, _ in
             guard let oldFont = value as? NSFont else { return }
@@ -139,8 +140,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter newContent: The new String to be appended.
     private func appendToContent(_ newContent: NSAttributedString) {
-        fullText.append(newContent)
         DispatchQueue.main.async {
+            self.fullText.append(newContent)
             self.appendix.append(newContent)
             self.contentLength += newContent.length
         }
