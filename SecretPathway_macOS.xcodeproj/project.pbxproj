@@ -161,13 +161,9 @@
 		BF6AF3522965C95100DF333D /* editor */ = {
 			isa = PBXGroup;
 			children = (
+				BFE06F29296DC1F9004A3C1F /* theme */,
 				BF6AF3532965C95F00DF333D /* EditorView.swift */,
 				BF6AF3552965CD6900DF333D /* EditorDelegate.swift */,
-				BFC2AE88296D6AF600592450 /* SPTheme.swift */,
-				BFC2AE8A296D6B0200592450 /* DefaultTheme.swift */,
-				BFE06F23296DA5B9004A3C1F /* JSONTheme.swift */,
-				BFE06F25296DAA24004A3C1F /* JSONStyle.swift */,
-				BFE06F27296DAC88004A3C1F /* JSONColor.swift */,
 			);
 			path = editor;
 			sourceTree = "<group>";
@@ -298,6 +294,18 @@
 				BFDDA0E828119FEE00C3E84A /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		BFE06F29296DC1F9004A3C1F /* theme */ = {
+			isa = PBXGroup;
+			children = (
+				BFE06F27296DAC88004A3C1F /* JSONColor.swift */,
+				BFE06F25296DAA24004A3C1F /* JSONStyle.swift */,
+				BFE06F23296DA5B9004A3C1F /* JSONTheme.swift */,
+				BFC2AE8A296D6B0200592450 /* DefaultTheme.swift */,
+				BFC2AE88296D6AF600592450 /* SPTheme.swift */,
+			);
+			path = theme;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
