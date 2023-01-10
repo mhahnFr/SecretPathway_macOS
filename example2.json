@@ -1,0 +1,137 @@
+{
+    "styles": [
+        {
+            "foreground": {
+                    "red":   11,
+                    "green": 79,
+                    "blue":  110
+            },
+            "bold": true
+        },
+        {
+            "foreground": {
+                "red":   15,
+                "green": 112,
+                "blue":  110
+            }
+        },
+        {
+            "foreground": {
+                "red":   0,
+                "green": 0,
+                "blue":  254
+            }
+        },
+        {
+            "foreground": {
+                "red":   161,
+                "green": 0,
+                "blue":  177
+            }
+        },
+        {
+            "foreground": {
+                "red":   22,
+                "green": 100,
+                "blue":  7
+            }
+        },
+        {
+            "foreground": {
+                "red":   108,
+                "green": 108,
+                "blue":  108
+            },
+            "italic":true
+        },
+        {},
+        {
+            "foreground": {
+                "red":   154,
+                "green": 144,
+                "blue":  8
+            }
+        }
+    ],
+    "dict": [
+        { "mapping":           {} }, 1,
+        { "star":              {} }, 6,
+        { "sizeof":            {} }, 2,
+        { "decrement":         {} }, 6,
+        { "assignment":        {} }, 6,
+        { "rightShift":        {} }, 6,
+        { "assignmentSlash":   {} }, 6,
+        { "slash":             {} }, 6,
+        { "protected":         {} }, 2,
+        { "pipe":              {} }, 6,
+        { "plus":              {} }, 6,
+        { "private":           {} }, 2,
+        { "nil":               {} }, 0,
+        { "try":               {} }, 4,
+        { "equals":            {} }, 6,
+        { "operator":          {} }, 1,
+        { "and":               {} }, 6,
+        { "increment":         {} }, 6,
+        { "default":           {} }, 4,
+        { "mixed":             {} }, 1,
+        { "do":                {} }, 4,
+        { "catch":             {} }, 4,
+        { "continue":          {} }, 4,
+        { "string":            {} }, 7,
+        { "new":               {} }, 2,
+        { "if":                {} }, 4,
+        { "public":            {} }, 2,
+        { "let":               {} }, 1,
+        { "greater":           {} }, 6,
+        { "include":           {} }, 2,
+        { "bool":              {} }, 1,
+        { "object":            {} }, 1,
+        { "notEquals":         {} }, 6,
+        { "ampersand":         {} }, 6,
+        { "doubleQuestion":    {} }, 6,
+        { "minus":             {} }, 6,
+        { "assignmentPlus":    {} }, 6,
+        { "lessOrEqual":       {} }, 6,
+        { "switch":            {} }, 4,
+        { "percent":           {} }, 6,
+        { "greaterOrEqual":    {} }, 6,
+        { "any":               {} }, 1,
+        { "symbol":            {} }, 7,
+        { "for":               {} }, 4,
+        { "foreach":           {} }, 4,
+        { "false":             {} }, 0,
+        { "assignmentPercent": {} }, 6,
+        { "pArrow":            {} }, 6,
+        { "assignmentStar":    {} }, 6,
+        { "or":                {} }, 6,
+        { "class":             {} }, 2,
+        { "break":             {} }, 4,
+        { "while":             {} }, 4,
+        { "else":              {} }, 4,
+        { "stringKeyword":     {} }, 1,
+        { "int":               {} }, 7,
+        { "charKeyword":       {} }, 1,
+        { "question":          {} }, 6,
+        { "assignmentMinus":   {} }, 6,
+        { "void":              {} }, 1,
+        { "intKeyword":        {} }, 1,
+        { "auto":              {} }, 1,
+        { "symbolKeyword":     {} }, 1,
+        { "inherit":           {} }, 2,
+        { "character":         {} }, 7,
+        { "not":               {} }, 6,
+        { "is":                {} }, 2,
+        { "less":              {} }, 6,
+        { "leftShift":         {} }, 6,
+        { "commentLine":       {} }, 5,
+        { "return":            {} }, 4,
+        { "true":              {} }, 0,
+        { "override":          {} }, 2,
+        { "deprecated":        {} }, 2,
+        { "commentBlock":      {} }, 5,
+        { "identifier":        {} }, 3,
+        { "arrow":             {} }, 6,
+        { "this":              {} }, 2,
+        { "case":              {} }, 4
+    ]
+}
