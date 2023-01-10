@@ -20,7 +20,7 @@
  */
 
 /// This enumeration consists of the possible token types.
-enum TokenType {
+enum TokenType: Codable {
     case eof,
     
     identifier, int, string, character, symbol,
