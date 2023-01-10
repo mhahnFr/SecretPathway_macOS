@@ -27,10 +27,10 @@ struct ConnectionView: View {
     @State var enteredText = ""
     
     var body: some View {
-        VStack {
-            if let delegate = delegate.editorDelegate {
-                EditorView(delegate: delegate)
-            } else {
+        if let delegate = delegate.editorDelegate {
+            EditorView(delegate: delegate)
+        } else {
+            VStack {
                 if let message = delegate.message {
                     Text(message)
                         .foregroundColor(delegate.messageColor)
@@ -53,9 +53,9 @@ struct ConnectionView: View {
                     }.keyboardShortcut(.defaultAction)
                 }
             }
+            .frame(minWidth: 300, idealWidth: 750, minHeight: 200, idealHeight: 500)
+            .padding(5)
         }
-        .frame(minWidth: 300, idealWidth: 750, minHeight: 200, idealHeight: 500)
-        .padding(5)
     }
     
     private func sendMessage() {
