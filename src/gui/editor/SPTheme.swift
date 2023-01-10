@@ -18,6 +18,11 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This protocol defines themes used for the LPC syntax highlighting.
 protocol SPTheme {
+    /// Generates the `SPStyle` for the given token type.
+    ///
+    /// - Parameter tokenType: The token type to be highlighted.
+    /// - Returns: The calculated style.
     func styleFor(tokenType: TokenType) -> SPStyle
 }

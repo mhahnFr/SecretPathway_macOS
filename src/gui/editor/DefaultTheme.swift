@@ -20,9 +20,12 @@
 
 import AppKit
 
+/// Represents the default syntax highlighting theme.
 struct DefaultTheme: SPTheme {
+    /// The mapping with the styles.
     private let styles: [TokenType: SPStyle]
     
+    /// Initializes this theme.
     init() {
         let keyword = SPStyle(bold: true, foreground: NSColor(red: 0.015, green: 0.388, blue: 0.51, alpha: 1))
         let type    = SPStyle(foreground: NSColor(red: 0.015, green: 0.51, blue: 0.51, alpha: 1))
