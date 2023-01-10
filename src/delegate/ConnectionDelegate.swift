@@ -51,8 +51,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     /// The connection that is managed by this delegate instance.
     private var connection: Connection
+    /// The full received and styled text.
+    private var fullText = NSMutableAttributedString()
     /// The attributed string that should be appended the next time the view is updated.
     private var appendix = NSMutableAttributedString()
+    /// Indicates whether the text view has been initialized.
+    private var inited = false
     /// Indicates whether incoming data should be passed to the special protocols.
     private var wasSpecial = false
     /// A buffer used for broken unicode points.
@@ -107,10 +111,17 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         textView.isEditable = false
         textView.font       = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor  = .textColor
+        
+        inited = true
     }
     
     internal func updateTextView(_ textView: NSTextView) {
         guard let backingStorage = textView.textStorage else { fatalError("NSTextView's textStorage should never be nil!") }
+        
+        if inited {
+            inited = false
+            backingStorage.append(fullText)
+        }
         
         backingStorage.append(appendix)
         appendix = NSMutableAttributedString()
@@ -128,6 +139,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter newContent: The new String to be appended.
     private func appendToContent(_ newContent: NSAttributedString) {
+        fullText.append(newContent)
         DispatchQueue.main.async {
             self.appendix.append(newContent)
             self.contentLength += newContent.length
@@ -402,6 +414,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     func windowWillClose(_ notification: Notification) {
-        if let onClose { onClose(self) }
+        onClose?(self)
     }
 }

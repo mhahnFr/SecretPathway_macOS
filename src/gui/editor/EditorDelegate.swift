@@ -30,6 +30,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         didSet { toggleHighlighting() }
     }
     
+    /// The closure called when the user clicks on the "Close" button.
+    var onClose: (() -> Void)?
+    
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
     
@@ -65,8 +68,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     
     /// Closes the editor.
     func close() {
-        // TODO: Close the editor
-        print("Closing")
+        onClose?()
     }
     
     /// Toggles the highlighting.
