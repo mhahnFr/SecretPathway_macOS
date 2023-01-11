@@ -29,7 +29,7 @@ struct DefaultTheme: SPTheme {
     init() {
         let keyword = SPStyle(bold: true, foreground: NSColor(red: 0.015, green: 0.388, blue: 0.51, alpha: 1))
         let type    = SPStyle(foreground: NSColor(red: 0.015, green: 0.51, blue: 0.51, alpha: 1))
-        let control = SPStyle(foreground: .blue)
+        let control = SPStyle(foreground: NSColor(red: 0.714, green: 0.004, blue: 0.09, alpha: 1))
         let id      = SPStyle(foreground: NSColor(red: 0.702, green: 0.043, blue: 0.749, alpha: 1))
         let flow    = SPStyle(foreground: NSColor(red: 0.086, green: 0.459, blue: 0.02, alpha: 1))
         let comment = SPStyle(italic: true, foreground: .gray)
