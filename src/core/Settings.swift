@@ -61,6 +61,9 @@ class Settings: ObservableObject {
     /// Automatially retained by the underlying app storage.
     @AppStorage(Constants.Storage.EDITOR_SYNTAX_HIGHLIGHT)
     var editorSyntaxHighlighting = true
+    /// The path to the theme file to be used for the editor.
+    @AppStorage(Constants.Storage.EDITOR_THEME)
+    var editorTheme: String?
     
     /// The raw data of the currently opened connections.
     @AppStorage(Constants.Storage.OPEN_CONNECTIONS)

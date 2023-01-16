@@ -37,5 +37,7 @@ class Constants {
         static let EDITOR_INLINED          = "\(APP_NAME).editorInlined"
         /// Indicates whether to enable the syntax highlighting in the LPC editor by default.
         static let EDITOR_SYNTAX_HIGHLIGHT = "\(APP_NAME).editorSyntaxHighlighting"
+        /// The used editor theme.
+        static let EDITOR_THEME            = "\(APP_NAME).editorTheme"
     }
 }

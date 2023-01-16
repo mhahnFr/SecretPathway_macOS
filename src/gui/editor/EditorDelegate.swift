@@ -32,10 +32,22 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// The closure called when the user clicks on the "Close" button.
     var onClose: (() -> Void)?
     /// The theme to be used for the syntax highlighting.
-    var theme: SPTheme = DefaultTheme()
+    var theme: SPTheme = restoreTheme()
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
+    
+    /// Attempts to restore the theme used for the editor.
+    ///
+    /// - Returns: Either the theme used previously or a default theme.
+    private static func restoreTheme() -> SPTheme {
+        if let path = Settings.shared.editorTheme,
+           let url  = URL(string: path),
+           let data = try? Data(contentsOf: url) {
+            return (try? JSONDecoder().decode(JSONTheme.self, from: data)) ?? DefaultTheme()
+        }
+        return DefaultTheme()
+    }
     
     internal func updateTextView(_ textView: NSTextView) {}
     
