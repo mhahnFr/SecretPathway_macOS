@@ -88,7 +88,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     private func highlight() {
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
         var token = tokenizer.nextToken()
-        while token.type != .eof {            
+        while token.type != .EOF {            
             textStorage.setAttributes(theme.styleFor(tokenType: token.type).native, range: NSMakeRange(token.begin, token.end - token.begin))
             
             token = tokenizer.nextToken()

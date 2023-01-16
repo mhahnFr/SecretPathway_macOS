@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /// Represents a tokenizer for LPC source code.
@@ -33,14 +32,14 @@ struct Tokenizer {
         skipWhitespaces()
         
         if !stream.hasNext {
-            return Token(begin: stream.index, type: .eof, end: stream.index)
+            return Token(begin: stream.index, type: .EOF, end: stream.index)
         } else if stream.peek("/*!") {
-            return Token(begin: stream.index, type: .string, payload: readTill("!*/", skipping: 3), end: stream.index)
+            return Token(begin: stream.index, type: .STRING, payload: readTill("!*/", skipping: 3), end: stream.index)
         } else if stream.peek("/*") {
             let begin = stream.index
             let comment = readTill("*/", skipping: 2)
             if commentTokens {
-                return Token(begin: begin, type: .commentBlock, payload: comment, end: stream.index)
+                return Token(begin: begin, type: .COMMENT_BLOCK, payload: comment, end: stream.index)
             } else {
                 return nextToken()
             }
@@ -48,57 +47,57 @@ struct Tokenizer {
             let begin = stream.index
             let comment = readTill("\n", skipping: 2)
             if commentTokens {
-                return Token(begin: begin, type: .commentLine, payload: comment, end: stream.index)
+                return Token(begin: begin, type: .COMMENT_LINE, payload: comment, end: stream.index)
             } else {
                 return nextToken()
             }
         }
-        else if stream.peek("(")   { return Token(begin: stream.index, type: .leftParen,         end: stream.skip())  }
-        else if stream.peek(")")   { return Token(begin: stream.index, type: .rightParen,        end: stream.skip())  }
-        else if stream.peek("[")   { return Token(begin: stream.index, type: .leftBrack,         end: stream.skip())  }
-        else if stream.peek("]")   { return Token(begin: stream.index, type: .rightBrack,        end: stream.skip())  }
-        else if stream.peek("{")   { return Token(begin: stream.index, type: .leftCurly,         end: stream.skip())  }
-        else if stream.peek("}")   { return Token(begin: stream.index, type: .rightCurly,        end: stream.skip())  }
-        else if stream.peek("...") { return Token(begin: stream.index, type: .ellipsis,          end: stream.skip(3)) }
-        else if stream.peek(".")   { return Token(begin: stream.index, type: .dot,               end: stream.skip())  }
-        else if stream.peek(",")   { return Token(begin: stream.index, type: .comma,             end: stream.skip())  }
-        else if stream.peek("::")  { return Token(begin: stream.index, type: .scope,             end: stream.skip(2)) }
-        else if stream.peek(":")   { return Token(begin: stream.index, type: .colon,             end: stream.skip())  }
-        else if stream.peek(";")   { return Token(begin: stream.index, type: .semicolon,         end: stream.skip())  }
-        else if stream.peek("==")  { return Token(begin: stream.index, type: .equals,            end: stream.skip(2)) }
-        else if stream.peek("!=")  { return Token(begin: stream.index, type: .notEquals,         end: stream.skip(2)) }
-        else if stream.peek("<<")  { return Token(begin: stream.index, type: .leftShift,         end: stream.skip(2)) }
-        else if stream.peek(">>")  { return Token(begin: stream.index, type: .rightShift,        end: stream.skip(2)) }
-        else if stream.peek("<=")  { return Token(begin: stream.index, type: .lessOrEqual,       end: stream.skip(2)) }
-        else if stream.peek("<")   { return Token(begin: stream.index, type: .less,              end: stream.skip())  }
-        else if stream.peek(">=")  { return Token(begin: stream.index, type: .greaterOrEqual,    end: stream.skip(2)) }
-        else if stream.peek(">")   { return Token(begin: stream.index, type: .greater,           end: stream.skip())  }
-        else if stream.peek("||")  { return Token(begin: stream.index, type: .not,               end: stream.skip(2)) }
-        else if stream.peek("&&")  { return Token(begin: stream.index, type: .and,               end: stream.skip(2)) }
-        else if stream.peek("!")   { return Token(begin: stream.index, type: .not,               end: stream.skip())  }
-        else if stream.peek("=")   { return Token(begin: stream.index, type: .assignment,        end: stream.skip())  }
-        else if stream.peek("->")  { return Token(begin: stream.index, type: .arrow,             end: stream.skip(2)) }
-        else if stream.peek("|->") { return Token(begin: stream.index, type: .pArrow,            end: stream.skip(3)) }
-        else if stream.peek("&")   { return Token(begin: stream.index, type: .ampersand,         end: stream.skip())  }
-        else if stream.peek("|")   { return Token(begin: stream.index, type: .pipe,              end: stream.skip())  }
-        else if stream.peek("??")  { return Token(begin: stream.index, type: .doubleQuestion,    end: stream.skip(2)) }
-        else if stream.peek("?")   { return Token(begin: stream.index, type: .question,          end: stream.skip())  }
-        else if stream.peek("+=")  { return Token(begin: stream.index, type: .assignmentPlus,    end: stream.skip(2)) }
-        else if stream.peek("-=")  { return Token(begin: stream.index, type: .assignmentMinus,   end: stream.skip(2)) }
-        else if stream.peek("*=")  { return Token(begin: stream.index, type: .assignmentStar,    end: stream.skip(2)) }
-        else if stream.peek("/=")  { return Token(begin: stream.index, type: .assignmentSlash,   end: stream.skip(2)) }
-        else if stream.peek("%=")  { return Token(begin: stream.index, type: .assignmentPercent, end: stream.skip(2)) }
-        else if stream.peek("++")  { return Token(begin: stream.index, type: .increment,         end: stream.skip(2)) }
-        else if stream.peek("--")  { return Token(begin: stream.index, type: .decrement,         end: stream.skip(2)) }
-        else if stream.peek("+")   { return Token(begin: stream.index, type: .plus,              end: stream.skip())  }
-        else if stream.peek("-")   { return Token(begin: stream.index, type: .minus,             end: stream.skip())  }
-        else if stream.peek("*")   { return Token(begin: stream.index, type: .star,              end: stream.skip())  }
-        else if stream.peek("/")   { return Token(begin: stream.index, type: .slash,             end: stream.skip())  }
-        else if stream.peek("%")   { return Token(begin: stream.index, type: .percent,           end: stream.skip())  }
-        else if stream.peek("\"")  { return Token(begin: stream.index, type: .string,    payload: readTill("\""),             end: stream.index) }
-        else if stream.peek("'")   { return Token(begin: stream.index, type: .character, payload: readTill("'"),              end: stream.index) }
-        else if stream.peek("#'")  { return Token(begin: stream.index, type: .symbol,    payload: readTill("'", skipping: 2), end: stream.index) }
-        else if stream.peek("#:")  { return Token(begin: stream.index, type: .symbol,    payload: readSymbol(),               end: stream.index) }
+        else if stream.peek("(")   { return Token(begin: stream.index, type: .LEFT_PAREN,         end: stream.skip())  }
+        else if stream.peek(")")   { return Token(begin: stream.index, type: .RIGHT_PAREN,        end: stream.skip())  }
+        else if stream.peek("[")   { return Token(begin: stream.index, type: .LEFT_BRACKET,       end: stream.skip())  }
+        else if stream.peek("]")   { return Token(begin: stream.index, type: .RIGHT_BRACKET,      end: stream.skip())  }
+        else if stream.peek("{")   { return Token(begin: stream.index, type: .LEFT_CURLY,         end: stream.skip())  }
+        else if stream.peek("}")   { return Token(begin: stream.index, type: .RIGHT_CURLY,        end: stream.skip())  }
+        else if stream.peek("...") { return Token(begin: stream.index, type: .ELLIPSIS,           end: stream.skip(3)) }
+        else if stream.peek(".")   { return Token(begin: stream.index, type: .DOT,                end: stream.skip())  }
+        else if stream.peek(",")   { return Token(begin: stream.index, type: .COMMA,              end: stream.skip())  }
+        else if stream.peek("::")  { return Token(begin: stream.index, type: .SCOPE,              end: stream.skip(2)) }
+        else if stream.peek(":")   { return Token(begin: stream.index, type: .COLON,              end: stream.skip())  }
+        else if stream.peek(";")   { return Token(begin: stream.index, type: .SEMICOLON,          end: stream.skip())  }
+        else if stream.peek("==")  { return Token(begin: stream.index, type: .EQUALS,             end: stream.skip(2)) }
+        else if stream.peek("!=")  { return Token(begin: stream.index, type: .NOT_EQUAL,          end: stream.skip(2)) }
+        else if stream.peek("<<")  { return Token(begin: stream.index, type: .LEFT_SHIFT,         end: stream.skip(2)) }
+        else if stream.peek(">>")  { return Token(begin: stream.index, type: .RIGHT_SHIFT,        end: stream.skip(2)) }
+        else if stream.peek("<=")  { return Token(begin: stream.index, type: .LESS_OR_EQUAL,      end: stream.skip(2)) }
+        else if stream.peek("<")   { return Token(begin: stream.index, type: .LESS,               end: stream.skip())  }
+        else if stream.peek(">=")  { return Token(begin: stream.index, type: .GREATER_OR_EQUAL,   end: stream.skip(2)) }
+        else if stream.peek(">")   { return Token(begin: stream.index, type: .GREATER,            end: stream.skip())  }
+        else if stream.peek("||")  { return Token(begin: stream.index, type: .NOT,                end: stream.skip(2)) }
+        else if stream.peek("&&")  { return Token(begin: stream.index, type: .AND,                end: stream.skip(2)) }
+        else if stream.peek("!")   { return Token(begin: stream.index, type: .NOT,                end: stream.skip())  }
+        else if stream.peek("=")   { return Token(begin: stream.index, type: .ASSIGNMENT,         end: stream.skip())  }
+        else if stream.peek("->")  { return Token(begin: stream.index, type: .ARROW,              end: stream.skip(2)) }
+        else if stream.peek("|->") { return Token(begin: stream.index, type: .P_ARROW,            end: stream.skip(3)) }
+        else if stream.peek("&")   { return Token(begin: stream.index, type: .AMPERSAND,          end: stream.skip())  }
+        else if stream.peek("|")   { return Token(begin: stream.index, type: .PIPE,               end: stream.skip())  }
+        else if stream.peek("??")  { return Token(begin: stream.index, type: .DOUBLE_QUESTION,    end: stream.skip(2)) }
+        else if stream.peek("?")   { return Token(begin: stream.index, type: .QUESTION,           end: stream.skip())  }
+        else if stream.peek("+=")  { return Token(begin: stream.index, type: .ASSIGNMENT_PLUS,    end: stream.skip(2)) }
+        else if stream.peek("-=")  { return Token(begin: stream.index, type: .ASSIGNMENT_MINUS,   end: stream.skip(2)) }
+        else if stream.peek("*=")  { return Token(begin: stream.index, type: .ASSIGNMENT_STAR,    end: stream.skip(2)) }
+        else if stream.peek("/=")  { return Token(begin: stream.index, type: .ASSIGNMENT_SLASH,   end: stream.skip(2)) }
+        else if stream.peek("%=")  { return Token(begin: stream.index, type: .ASSIGNMENT_PERCENT, end: stream.skip(2)) }
+        else if stream.peek("++")  { return Token(begin: stream.index, type: .INCREMENT,          end: stream.skip(2)) }
+        else if stream.peek("--")  { return Token(begin: stream.index, type: .DECREMENT,          end: stream.skip(2)) }
+        else if stream.peek("+")   { return Token(begin: stream.index, type: .PLUS,               end: stream.skip())  }
+        else if stream.peek("-")   { return Token(begin: stream.index, type: .MINUS,              end: stream.skip())  }
+        else if stream.peek("*")   { return Token(begin: stream.index, type: .STAR,               end: stream.skip())  }
+        else if stream.peek("/")   { return Token(begin: stream.index, type: .SLASH,              end: stream.skip())  }
+        else if stream.peek("%")   { return Token(begin: stream.index, type: .PERCENT,            end: stream.skip())  }
+        else if stream.peek("\"")  { return Token(begin: stream.index, type: .STRING,    payload: readTill("\""),             end: stream.index) }
+        else if stream.peek("'")   { return Token(begin: stream.index, type: .CHARACTER, payload: readTill("'"),              end: stream.index) }
+        else if stream.peek("#'")  { return Token(begin: stream.index, type: .SYMBOL,    payload: readTill("'", skipping: 2), end: stream.index) }
+        else if stream.peek("#:")  { return Token(begin: stream.index, type: .SYMBOL,    payload: readSymbol(),               end: stream.index) }
         return nextWord()
     }
     
@@ -111,54 +110,54 @@ struct Tokenizer {
         let end   = stream.index
         
         switch word {
-        case "#include":   return Token(begin: begin, type: .include,       end: end)
-        case "inherit":    return Token(begin: begin, type: .inherit,       end: end)
-        case "private":    return Token(begin: begin, type: .private,       end: end)
-        case "protected":  return Token(begin: begin, type: .protected,     end: end)
-        case "public":     return Token(begin: begin, type: .public,        end: end)
-        case "override":   return Token(begin: begin, type: .override,      end: end)
-        case "deprecated": return Token(begin: begin, type: .deprecated,    end: end)
-        case "new":        return Token(begin: begin, type: .new,           end: end)
-        case "this":       return Token(begin: begin, type: .this,          end: end)
-        case "nil":        return Token(begin: begin, type: .nil,           end: end)
-        case "true":       return Token(begin: begin, type: .true,          end: end)
-        case "false":      return Token(begin: begin, type: .false,         end: end)
-        case "sizeof":     return Token(begin: begin, type: .sizeof,        end: end)
-        case "is":         return Token(begin: begin, type: .is,            end: end)
-        case "class":      return Token(begin: begin, type: .class,         end: end)
-        case "void":       return Token(begin: begin, type: .void,          end: end)
-        case "char":       return Token(begin: begin, type: .charKeyword,   end: end)
-        case "int":        return Token(begin: begin, type: .intKeyword,    end: end)
-        case "bool":       return Token(begin: begin, type: .bool,          end: end)
-        case "object":     return Token(begin: begin, type: .object,        end: end)
-        case "string":     return Token(begin: begin, type: .stringKeyword, end: end)
-        case "symbol":     return Token(begin: begin, type: .symbolKeyword, end: end)
-        case "mapping":    return Token(begin: begin, type: .mapping,       end: end)
-        case "any":        return Token(begin: begin, type: .any,           end: end)
-        case "mixed":      return Token(begin: begin, type: .mixed,         end: end)
-        case "auto":       return Token(begin: begin, type: .auto,          end: end)
-        case "let":        return Token(begin: begin, type: .let,           end: end)
-        case "if":         return Token(begin: begin, type: .if,            end: end)
-        case "else":       return Token(begin: begin, type: .else,          end: end)
-        case "while":      return Token(begin: begin, type: .while,         end: end)
-        case "do":         return Token(begin: begin, type: .do,            end: end)
-        case "foreach":    return Token(begin: begin, type: .foreach,       end: end)
-        case "for":        return Token(begin: begin, type: .for,           end: end)
-        case "switch":     return Token(begin: begin, type: .switch,        end: end)
-        case "case":       return Token(begin: begin, type: .case,          end: end)
-        case "default":    return Token(begin: begin, type: .default,       end: end)
-        case "break":      return Token(begin: begin, type: .break,         end: end)
-        case "continue":   return Token(begin: begin, type: .continue,      end: end)
-        case "return":     return Token(begin: begin, type: .return,        end: end)
-        case "try":        return Token(begin: begin, type: .try,           end: end)
-        case "catch":      return Token(begin: begin, type: .catch,         end: end)
-        case "operator":   return Token(begin: begin, type: .operator,      end: end)
+        case "#include":   return Token(begin: begin, type: .INCLUDE,        end: end)
+        case "inherit":    return Token(begin: begin, type: .INHERIT,        end: end)
+        case "private":    return Token(begin: begin, type: .PRIVATE,        end: end)
+        case "protected":  return Token(begin: begin, type: .PROTECTED,      end: end)
+        case "public":     return Token(begin: begin, type: .PUBLIC,         end: end)
+        case "override":   return Token(begin: begin, type: .OVERRIDE,       end: end)
+        case "deprecated": return Token(begin: begin, type: .DEPRECATED,     end: end)
+        case "new":        return Token(begin: begin, type: .NEW,            end: end)
+        case "this":       return Token(begin: begin, type: .THIS,           end: end)
+        case "nil":        return Token(begin: begin, type: .NIL,            end: end)
+        case "true":       return Token(begin: begin, type: .TRUE,           end: end)
+        case "false":      return Token(begin: begin, type: .FALSE,          end: end)
+        case "sizeof":     return Token(begin: begin, type: .SIZEOF,         end: end)
+        case "is":         return Token(begin: begin, type: .IS,             end: end)
+        case "class":      return Token(begin: begin, type: .CLASS,          end: end)
+        case "void":       return Token(begin: begin, type: .VOID,           end: end)
+        case "char":       return Token(begin: begin, type: .CHAR_KEYWORD,   end: end)
+        case "int":        return Token(begin: begin, type: .INT_KEYWORD,    end: end)
+        case "bool":       return Token(begin: begin, type: .BOOL,           end: end)
+        case "object":     return Token(begin: begin, type: .OBJECT,         end: end)
+        case "string":     return Token(begin: begin, type: .STRING_KEYWORD, end: end)
+        case "symbol":     return Token(begin: begin, type: .SYMBOL_KEYWORD, end: end)
+        case "mapping":    return Token(begin: begin, type: .MAPPING,        end: end)
+        case "any":        return Token(begin: begin, type: .ANY,            end: end)
+        case "mixed":      return Token(begin: begin, type: .MIXED,          end: end)
+        case "auto":       return Token(begin: begin, type: .AUTO,           end: end)
+        case "let":        return Token(begin: begin, type: .LET,            end: end)
+        case "if":         return Token(begin: begin, type: .IF,             end: end)
+        case "else":       return Token(begin: begin, type: .ELSE,           end: end)
+        case "while":      return Token(begin: begin, type: .WHILE,          end: end)
+        case "do":         return Token(begin: begin, type: .DO,             end: end)
+        case "foreach":    return Token(begin: begin, type: .FOREACH,        end: end)
+        case "for":        return Token(begin: begin, type: .FOR,            end: end)
+        case "switch":     return Token(begin: begin, type: .SWITCH,         end: end)
+        case "case":       return Token(begin: begin, type: .CASE,           end: end)
+        case "default":    return Token(begin: begin, type: .DEFAULT,        end: end)
+        case "break":      return Token(begin: begin, type: .BREAK,          end: end)
+        case "continue":   return Token(begin: begin, type: .CONTINUE,       end: end)
+        case "return":     return Token(begin: begin, type: .RETURN,         end: end)
+        case "try":        return Token(begin: begin, type: .TRY,            end: end)
+        case "catch":      return Token(begin: begin, type: .CATCH,          end: end)
+        case "operator":   return Token(begin: begin, type: .OPERATOR,       end: end)
             
         default:
             if let number = Int(word) {
-                return Token(begin: begin, type: .int, payload: number, end: end)
+                return Token(begin: begin, type: .INTEGER, payload: number, end: end)
             }
-            return Token(begin: begin, type: .identifier, payload: word, end: end)
+            return Token(begin: begin, type: .IDENTIFIER, payload: word, end: end)
         }
     }
     
