@@ -67,13 +67,21 @@ class SettingsViewDelegate: NSObject, NSWindowDelegate, ObservableObject {
                 let data = try Data(contentsOf: url)
                 _ = try decoder.decode(JSONTheme.self, from: data)
             } catch {
-                // TODO: Implement
+                self.showError(error)
                 return
             }
             
             self.themes.append(url)
             self.selectedTheme = url
         }
+    }
+    
+    /// Displays the given error.
+    ///
+    /// - Parameter error: The error to be displayed.
+    private func showError(_ error: Error) {
+        let alert = NSAlert(error: error)
+        alert.runModal()
     }
     
     /// Displays the given theme as the selected one.
