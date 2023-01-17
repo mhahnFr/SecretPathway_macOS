@@ -38,12 +38,12 @@ struct SettingsView: View {
             Toggle("Automatically enable syntax highlighting in the editor", isOn: settings.$editorSyntaxHighlighting)
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack {
-                Menu(delegate.selectedTheme) {
+                Menu(delegate.selectedTheme?.lastPathComponent ?? "Default") {
                     Button("Default") {
                         delegate.useDefaultTheme()
                     }
                     ForEach(delegate.themes, id: \.self) { element in
-                        Button(element) {
+                        Button(element.lastPathComponent) {
                             delegate.useTheme(element)
                         }
                     }

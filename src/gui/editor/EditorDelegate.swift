@@ -41,8 +41,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     ///
     /// - Returns: Either the theme used previously or a default theme.
     private static func restoreTheme() -> SPTheme {
-        if let path = Settings.shared.editorTheme,
-           let url  = URL(string: path),
+        if let url  = Settings.shared.editorTheme,
            let data = try? Data(contentsOf: url) {
             return (try? JSONDecoder().decode(JSONTheme.self, from: data)) ?? DefaultTheme()
         }

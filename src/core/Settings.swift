@@ -46,6 +46,39 @@ class Settings: ObservableObject {
             recentConnectionsRaw = Settings.dumpConnectionRecords(recentConnections)
         }
     }
+
+    var editorTheme: URL? {
+        get {
+            if let editorThemeCache { return editorThemeCache }
+            
+            guard let data = editorThemeBookmark else { return nil }
+            
+            var stale = false
+            if let url = try? URL(resolvingBookmarkData: data, options: [.withSecurityScope], bookmarkDataIsStale: &stale) {
+                if url.startAccessingSecurityScopedResource() {
+                    if stale {
+                        editorThemeBookmark = try? url.bookmarkData(options: [.withSecurityScope], includingResourceValuesForKeys: nil, relativeTo: nil)
+                    }
+                    
+                    editorThemeCache = url
+                    return url
+                } else {
+                    editorThemeBookmark = nil
+                }
+            }
+            return nil
+        }
+        set {
+            editorThemeCache?.stopAccessingSecurityScopedResource()
+            
+            if let newValue {
+                editorThemeBookmark = try? newValue.bookmarkData(options: [.withSecurityScope], includingResourceValuesForKeys: nil, relativeTo: nil)
+            } else {
+                editorThemeBookmark = nil
+            }
+            editorThemeCache = newValue
+        }
+    }
     
     /// The font size to be used globally.
     /// Automatically retained by the underlying app storage.
@@ -61,10 +94,9 @@ class Settings: ObservableObject {
     /// Automatially retained by the underlying app storage.
     @AppStorage(Constants.Storage.EDITOR_SYNTAX_HIGHLIGHT)
     var editorSyntaxHighlighting = true
-    /// The path to the theme file to be used for the editor.
-    @AppStorage(Constants.Storage.EDITOR_THEME)
-    var editorTheme: String?
     
+    @AppStorage(Constants.Storage.EDITOR_THEME)
+    private var editorThemeBookmark: Data?
     /// The raw data of the currently opened connections.
     @AppStorage(Constants.Storage.OPEN_CONNECTIONS)
     private var openConnectionsRaw: Data = Data()
@@ -75,6 +107,8 @@ class Settings: ObservableObject {
     /// Indicates whether changes made should be reflected into the underlying
     /// settings storage.
     private(set) var frozen = false
+    
+    private var editorThemeCache: URL? = nil
     
     /// Private initializer to prevent instancing this class from outside.
     ///
