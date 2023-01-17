@@ -47,6 +47,10 @@ class Settings: ObservableObject {
         }
     }
 
+    /// Provides access to the used editor theme.
+    ///
+    /// All App Sandbox stuff is managed, and the URL is retained by the
+    /// app storage.
     var editorTheme: URL? {
         get {
             if let editorThemeCache { return editorThemeCache }
@@ -62,10 +66,9 @@ class Settings: ObservableObject {
                     
                     editorThemeCache = url
                     return url
-                } else {
-                    editorThemeBookmark = nil
                 }
             }
+            editorThemeBookmark = nil
             return nil
         }
         set {
@@ -108,6 +111,8 @@ class Settings: ObservableObject {
     /// settings storage.
     private(set) var frozen = false
     
+    /// The cached URL to the used theme file to avoid resolving the
+    /// bookmark each time.
     private var editorThemeCache: URL? = nil
     
     /// Private initializer to prevent instancing this class from outside.

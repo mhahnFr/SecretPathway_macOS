@@ -22,11 +22,15 @@ import AppKit
 
 /// The delegate for the settings window.
 class SettingsViewDelegate: NSObject, NSWindowDelegate, ObservableObject {
+    /// The URL representing the user's theme selection.
     @Published private(set) var selectedTheme: URL?
+    /// The URLs recently opened.
     @Published private(set) var themes: [URL] = []
     
+    /// The file chooser used for choosing the theme file.
     private var chooser: NSOpenPanel?
     
+    /// Initializes this instance.
     override init() {
         if let url  = Settings.shared.editorTheme,
            let data = try? Data(contentsOf: url),
@@ -38,10 +42,12 @@ class SettingsViewDelegate: NSObject, NSWindowDelegate, ObservableObject {
         }
     }
     
+    /// Indicating to use the default theme.
     func useDefaultTheme() {
         selectedTheme = nil
     }
     
+    /// Lets the user choose a theme file.
     func chooseTheme() {
         guard chooser == nil else {
             chooser!.makeKeyAndOrderFront(self)
@@ -70,6 +76,7 @@ class SettingsViewDelegate: NSObject, NSWindowDelegate, ObservableObject {
         }
     }
     
+    /// Displays the given theme as the selected one.
     func useTheme(_ theme: URL) {
         selectedTheme = theme
     }
