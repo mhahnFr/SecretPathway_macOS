@@ -22,6 +22,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject private var settings = Settings.shared
+    @ObservedObject var delegate: SettingsViewDelegate
     
     var body: some View {
         VStack {
@@ -36,12 +37,27 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Toggle("Automatically enable syntax highlighting in the editor", isOn: settings.$editorSyntaxHighlighting)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Menu(delegate.selectedTheme) {
+                    Button("Default") {
+                        delegate.useDefaultTheme()
+                    }
+                    ForEach(delegate.themes, id: \.self) { element in
+                        Button(element) {
+                            delegate.useTheme(element)
+                        }
+                    }
+                    Button("Choose...") {
+                        delegate.chooseTheme()
+                    }
+                }
+            }
         }.padding(5)
     }
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView()
+        SettingsView(delegate: SettingsViewDelegate())
     }
 }

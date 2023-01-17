@@ -22,7 +22,22 @@
 import AppKit
 
 /// The delegate for the settings window.
-class SettingsViewDelegate: NSObject, NSWindowDelegate {
+class SettingsViewDelegate: NSObject, NSWindowDelegate, ObservableObject {
+    @Published private(set) var selectedTheme = "Default"
+    @Published private(set) var themes: [String] = []
+    
+    func useDefaultTheme() {
+        // TODO: Implement
+    }
+    
+    func chooseTheme() {
+        // TODO: Implement
+    }
+    
+    func useTheme(_ theme: String) {
+        // TODO: Implement
+    }
+    
     func windowShouldClose(_ sender: NSWindow) -> Bool {
         NSApp.stopModal()
         return true
