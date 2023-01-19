@@ -47,6 +47,7 @@ class Connection: ConnectionSender {
     ///
     /// Defaults to the hostname or the IP address and the port.
     private(set) var name: String
+    /// Indicates whether to use TLS for this connection.
     private(set) var secure: Bool
     /// Indicates whether this connection has been closed.
     private(set) var isClosed = false
@@ -63,6 +64,7 @@ class Connection: ConnectionSender {
     ///
     /// - Parameter hostname: The hostname or the IP address to connect to.
     /// - Parameter port: The port to be used to connect to the given endpoint.
+    /// - Parameter secure: Whether to use TLS for the connection.
     init?(hostname: String, port: Int, secure: Bool) {
         guard !hostname.isEmpty && port >= 0 else { return nil }
         
@@ -92,6 +94,7 @@ class Connection: ConnectionSender {
     ///
     /// - Parameter hostname: The hostname or the IP address to connect to.
     /// - Parameter port: The port to be used to connect to the given endpoint.
+    /// - Parameter secure: Whether to use TLS for the connection.
     convenience init?(hostname: String, port: String, secure: Bool) {
         guard let port = Int(port) else { return nil }
         

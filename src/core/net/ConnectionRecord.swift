@@ -26,6 +26,7 @@ struct ConnectionRecord: Equatable {
     let hostname: String
     /// The used port.
     let port: Int
+    /// Whether to use TLS for the connection.
     let secure: Bool
     
     /// A reference to the associated delegate.
@@ -35,6 +36,7 @@ struct ConnectionRecord: Equatable {
     ///
     /// - Parameter hostname: The hostname or the IP address.
     /// - Parameter port: The used port.
+    /// - Parameter secure: Whether to use TLS for the connection.
     /// - Parameter delegate: The associated delegate.
     init(hostname: String, port: Int, secure: Bool, delegate: ConnectionDelegate?) {
         self.hostname = hostname

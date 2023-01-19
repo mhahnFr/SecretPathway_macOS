@@ -28,6 +28,7 @@ class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
     @Published var hostname = ""
     /// The port, filled by the associated view.
     @Published var port     = ""
+    /// Whether to use TLS for the connection.
     @Published var secure   = true
     /// A optional message to be displayed as error message.
     @Published var userInfo: String?
