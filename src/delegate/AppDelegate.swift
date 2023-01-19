@@ -162,7 +162,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             dialog.isReleasedWhenClosed = false
             
             NSApp.runModal(for: dialog)
-            toReturn = Connection(hostname: delegate.hostname, port: delegate.port)
+            toReturn = Connection(hostname: delegate.hostname, port: delegate.port, secure: delegate.secure)
             if toReturn == nil { userInfo = "Invalid hostname or port!" }
         } while delegate.accepted && toReturn == nil
         

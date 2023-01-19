@@ -66,6 +66,6 @@ struct ConnectionView: View {
 
 struct ConnectionView_Previews: PreviewProvider {
     static var previews: some View {
-        ConnectionView(delegate: ConnectionDelegate(for: Connection(hostname: "localhost", port: 4242)!))
+        ConnectionView(delegate: ConnectionDelegate(for: Connection(hostname: "localhost", port: 4242, secure: false)!))
     }
 }

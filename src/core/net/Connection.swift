@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import Foundation
@@ -48,6 +47,7 @@ class Connection: ConnectionSender {
     ///
     /// Defaults to the hostname or the IP address and the port.
     private(set) var name: String
+    private(set) var secure: Bool
     /// Indicates whether this connection has been closed.
     private(set) var isClosed = false
     
@@ -63,12 +63,13 @@ class Connection: ConnectionSender {
     ///
     /// - Parameter hostname: The hostname or the IP address to connect to.
     /// - Parameter port: The port to be used to connect to the given endpoint.
-    init?(hostname: String, port: Int) {
+    init?(hostname: String, port: Int, secure: Bool) {
         guard !hostname.isEmpty && port >= 0 else { return nil }
         
         self.hostname = hostname
         self.port     = port
         self.name     = "\(self.hostname):\(self.port)"
+        self.secure   = secure
         
         guard let portNo = NWEndpoint.Port(rawValue: UInt16(port)) else { return nil }
         
@@ -81,7 +82,7 @@ class Connection: ConnectionSender {
         } else {
             host = .name(hostname, nil)
         }
-        connection = NWConnection(host: host, port: portNo, using: .tcp)
+        connection = NWConnection(host: host, port: portNo, using: (secure ? .tls : .tcp))
         connection.stateUpdateHandler = stateUpdateHandler
     }
     
@@ -91,24 +92,24 @@ class Connection: ConnectionSender {
     ///
     /// - Parameter hostname: The hostname or the IP address to connect to.
     /// - Parameter port: The port to be used to connect to the given endpoint.
-    convenience init?(hostname: String, port: String) {
+    convenience init?(hostname: String, port: String, secure: Bool) {
         guard let port = Int(port) else { return nil }
         
-        self.init(hostname: hostname, port: port)
+        self.init(hostname: hostname, port: port, secure: secure)
     }
     
     /// Creates a connection instance using the given record.
     ///
     /// - Parameter record: The record to take the necessary information from.
     convenience init?(from record: ConnectionRecord) {
-        self.init(hostname: record.hostname, port: record.port)
+        self.init(hostname: record.hostname, port: record.port, secure: record.secure)
     }
 
     /// Creates a new connection instance from the given one.
     ///
     /// - Parameter connection: The connection whose information to use.
     convenience init(from connection: Connection) {
-        self.init(hostname: connection.hostname, port: connection.port)!
+        self.init(hostname: connection.hostname, port: connection.port, secure: connection.secure)!
     }
     
     /// Handles state updates of the underlying connection.

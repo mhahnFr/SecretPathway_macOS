@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import SwiftUI
@@ -50,6 +49,7 @@ struct ConnectionPromptView: View {
                     TextField("port number, ex: 4242", text: $delegate.port)
                 }
             }
+            Toggle("Use TLS", isOn: $delegate.secure).frame(maxWidth: .infinity, alignment: .leading)
             HStack {
                 Spacer()
                 Button("Cancel") {

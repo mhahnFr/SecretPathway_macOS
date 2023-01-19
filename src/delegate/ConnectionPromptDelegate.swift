@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import AppKit
@@ -29,6 +28,7 @@ class ConnectionPromptDelegate: NSObject, NSWindowDelegate, ObservableObject {
     @Published var hostname = ""
     /// The port, filled by the associated view.
     @Published var port     = ""
+    @Published var secure   = true
     /// A optional message to be displayed as error message.
     @Published var userInfo: String?
     

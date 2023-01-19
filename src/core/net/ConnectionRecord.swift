@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import Foundation
@@ -27,6 +26,7 @@ struct ConnectionRecord: Equatable {
     let hostname: String
     /// The used port.
     let port: Int
+    let secure: Bool
     
     /// A reference to the associated delegate.
     private(set) weak var delegate: ConnectionDelegate?
@@ -36,10 +36,11 @@ struct ConnectionRecord: Equatable {
     /// - Parameter hostname: The hostname or the IP address.
     /// - Parameter port: The used port.
     /// - Parameter delegate: The associated delegate.
-    init(hostname: String, port: Int, delegate: ConnectionDelegate?) {
+    init(hostname: String, port: Int, secure: Bool, delegate: ConnectionDelegate?) {
         self.hostname = hostname
         self.port     = port
         self.delegate = delegate
+        self.secure   = secure
     }
     
     /// Initializes this instance using the given connection and the given delegate.
@@ -47,7 +48,7 @@ struct ConnectionRecord: Equatable {
     /// - Parameter connection: The connection to take the information from.
     /// - Parameter delegate: The associated delegate.
     init(from connection: Connection, delegate: ConnectionDelegate?) {
-        self.init(hostname: connection.hostname, port: connection.port, delegate: delegate)
+        self.init(hostname: connection.hostname, port: connection.port, secure: connection.secure, delegate: delegate)
     }
     
     /// Reads the record information from the given data.
@@ -69,8 +70,11 @@ struct ConnectionRecord: Equatable {
         guard data.count >= advancer + stringSize else { return nil }
         
         guard let hostname = String(data: data.subdata(in: advancer ..< (advancer + stringSize)), encoding: .unicode) else { return nil }
+        advancer += stringSize
         
-        self.init(hostname: hostname, port: port, delegate: nil)
+        guard data.count >= advancer + 1 else { return nil }
+        
+        self.init(hostname: hostname, port: port, secure: data[advancer] == 1, delegate: nil)
     }
     
     /// Dumps itself into a piece of data.
@@ -88,6 +92,7 @@ struct ConnectionRecord: Equatable {
         let stringData = hostname.data(using: .unicode)!
         tmpData.append(stringData.count.dump())
         tmpData.append(stringData)
+        tmpData.append(secure ? 1 : 0)
         
         return tmpData
     }
