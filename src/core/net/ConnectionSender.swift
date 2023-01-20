@@ -24,6 +24,8 @@ import Foundation
 protocol ConnectionSender: AnyObject {
     /// Indicates whether to escape the telnet's `IAC` command.
     var escapeIAC: Bool { get set }
+    /// The charset to be used for encoding strings.
+    var charset: String.Encoding { get set }
     
     /// This function is called when a piece of data should be sent.
     ///

@@ -220,6 +220,7 @@ class TelnetPlugin: ProtocolPlugin {
                         data.append(Code.charset.rawValue)
                         data.append(3)
                         data.append(firstMatchString!.data(using: .ascii)!)
+                        sender.charset = firstMatch
                         sendSB(sender: sender, data: data)
                     } else {
                         sendSB(sender: sender, data: Code.charset.rawValue, 3)

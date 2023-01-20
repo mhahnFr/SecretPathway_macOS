@@ -42,6 +42,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
     var escapeIAC = false
+    var charset = String.Encoding.ascii
     
     /// The window that is controlled by this delegate instance.
     private(set) weak var window: NSWindow?
@@ -226,7 +227,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             }
         }
         
-        let styledString = NSMutableAttributedString(string: String(data: text, encoding: .utf8) ?? plainAscii(from: text))
+        let styledString = NSMutableAttributedString(string: String(data: text, encoding: charset) ?? plainAscii(from: text))
         
         if closedStyles.isEmpty {
             styledString.setAttributes(currentStyle.native, range: NSMakeRange(0, styledString.length))
@@ -371,7 +372,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         appendToContent(toAppend)
         
-        let data = toAppend.string.data(using: .utf8, allowLossyConversion: true)!
+        let data = toAppend.string.data(using: charset, allowLossyConversion: true)!
         
         send(data: data)
     }
