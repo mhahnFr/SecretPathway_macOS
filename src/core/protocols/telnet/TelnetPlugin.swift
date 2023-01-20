@@ -183,7 +183,48 @@ class TelnetPlugin: ProtocolPlugin {
     private func parseBuffer(data: Data, sender: ConnectionSender) {
         if let first = data.first, let code = Code(rawValue: first) {
             switch code {
-            case .charset: break // TODO: Implement
+            case .charset:
+                guard data.count > 3 else { return }
+                if data[1] == 1 {
+                    let separator = data[2]
+                    var sets: [String] = []
+                    var buffer = ""
+                    
+                    for i in 3 ..< data.count {
+                        if data[i] == separator {
+                            sets.append(buffer)
+                            buffer = ""
+                        } else {
+                            buffer.append(Character(Unicode.Scalar(data[i])))
+                        }
+                    }
+                    
+                    var firstMatch: String.Encoding?
+                    var firstMatchString: String?
+                    for set in sets {
+                        switch set.lowercased() {
+                        case "utf-8":  firstMatch = .utf8
+                        case "utf-16": firstMatch = .utf16
+                        case "ascii":  firstMatch = .ascii
+                        // And maybe some more in the future...
+                            
+                        default: break
+                        }
+                        if firstMatch != nil {
+                            firstMatchString = set
+                            break
+                        }
+                    }
+                    if let firstMatch {
+                        var data = Data()
+                        data.append(Code.charset.rawValue)
+                        data.append(3)
+                        data.append(firstMatchString!.data(using: .ascii)!)
+                        sendSB(sender: sender, data: data)
+                    } else {
+                        sendSB(sender: sender, data: Code.charset.rawValue, 3)
+                    }
+                }
                 
             default: break
             }
@@ -247,13 +288,7 @@ class TelnetPlugin: ProtocolPlugin {
         sender.send(data: data)
     }
     
-    /// Sends back the given sub negatiation.
-    ///
-    /// The sent message looks like: IAC SB `data` IAC SE.
-    ///
-    /// - Parameter sender: The sender used for sending the response.
-    /// - Parameter data: The data to be sent as sub negotiation.
-    private func sendSB(sender: ConnectionSender, data: UInt8...) {
+    private func sendSB(sender: ConnectionSender, data: Data) {
         var d = Data()
         
         d.append(TelnetFunction.IAC.rawValue)
@@ -265,5 +300,15 @@ class TelnetPlugin: ProtocolPlugin {
         d.append(TelnetFunction.SE.rawValue)
         
         sender.send(data: d)
+    }
+    
+    /// Sends back the given sub negatiation.
+    ///
+    /// The sent message looks like: IAC SB `data` IAC SE.
+    ///
+    /// - Parameter sender: The sender used for sending the response.
+    /// - Parameter data: The data to be sent as sub negotiation.
+    private func sendSB(sender: ConnectionSender, data: UInt8...) {
+        sendSB(sender: sender, data: Data(data))
     }
 }
