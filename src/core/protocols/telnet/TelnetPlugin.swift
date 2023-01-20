@@ -199,6 +199,19 @@ class TelnetPlugin: ProtocolPlugin {
         var refuse = false
         if let code = Code(rawValue: byte) {
             switch code {
+            case .binary_transmission:
+                switch previous {
+                case .DO, .WILL:
+                    // sender.escapeIAC = true
+                    sendSingle(mode: previous == .DO ? .WILL : .DO, function: byte, sender: sender)
+                    
+                case .DONT, .WONT:
+                    // sender.escapeIAC = false
+                    sendSingle(mode: previous == .DONT ? .WONT : .DONT, function: byte, sender: sender)
+                    
+                default: refuse = true
+                }
+                
             case .charset:
                 if previous == .WILL {
                     sendSingle(mode: .DO, function: byte, sender: sender)

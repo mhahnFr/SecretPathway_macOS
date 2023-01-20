@@ -23,7 +23,7 @@ import Network
 import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
-class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, TextViewBridgeDelegate {
+class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, ConnectionSender, TextViewBridgeDelegate {
     /// The default style to be used for user entered text.
     static let inputStyle  = SPStyle(foreground: .gray)
     /// The default style to be used for the prompt text.
@@ -41,12 +41,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
-    
-    /// The protocol abstractions object.
-    private let protocols: Protocols
+    var escapeIAC = false
     
     /// The window that is controlled by this delegate instance.
     private(set) weak var window: NSWindow?
+
+    /// The protocol abstractions object.
+    private lazy var protocols = Protocols(sender: self, plugins: SPPPlugin(),
+                                                                  TelnetPlugin(),
+                                                                  ANSIPlugin(self))
     
     /// The connection that is managed by this delegate instance.
     private var connection: Connection
@@ -75,9 +78,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     init(for connection: Connection, window: NSWindow? = nil) {
         self.connection = connection
         self.window     = window
-        
-        self.protocols = Protocols(sender: connection, plugins: SPPPlugin(),
-                                                                TelnetPlugin())
         
         super.init()
         
@@ -357,6 +357,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         
         let data = toAppend.string.data(using: .utf8, allowLossyConversion: true)!
         
+        send(data: data)
+    }
+
+    internal func send(data: Data) {
         connection.send(data: data)
     }
     

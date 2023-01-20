@@ -22,7 +22,7 @@ import Foundation
 import Network
 
 /// Represents a MUD connection.
-class Connection: ConnectionSender {
+class Connection {
     /// The hostname or the IP address to connect to.
     let hostname: String
     /// The port to be used.
