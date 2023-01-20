@@ -61,6 +61,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var inited = false
     /// Indicates whether incoming data should be passed to the special protocols.
     private var wasSpecial = false
+    /// Indicates whether the last received byte was telnet's `IAC` function.
+    private var lastWasIAC = false
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
@@ -160,6 +162,20 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var closedStyles: [(begin: Int, style: SPStyle)] = []
 
         for byte in data {
+            if escapeIAC {
+                if byte == 0xff {
+                    if lastWasIAC {
+                        lastWasIAC = false
+                    } else {
+                        lastWasIAC = true
+                        continue
+                    }
+                } else if lastWasIAC {
+                    lastWasIAC = false
+                    wasSpecial = protocols.process(byte: 0xff)
+                }
+            }
+            
             if wasSpecial {
                 wasSpecial = protocols.process(byte: byte)
             } else {
