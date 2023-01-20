@@ -95,11 +95,11 @@ class TelnetPlugin: ProtocolPlugin {
         /// If it does not have an opposite, it is simply returned.
         var opposite: Self {
             switch self {
-            case .WILL: return .WONT
-            case .WONT: return .WILL
+            case .WILL: return .DONT
+            case .WONT: return .DO
                 
-            case .DO:   return .DONT
-            case .DONT: return .DO
+            case .DO:   return .WONT
+            case .DONT: return .WILL
                 
             case .SE: return .SB
             case .SB: return .SE
