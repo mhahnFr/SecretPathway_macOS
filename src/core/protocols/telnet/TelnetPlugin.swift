@@ -246,4 +246,24 @@ class TelnetPlugin: ProtocolPlugin {
         
         sender.send(data: data)
     }
+    
+    /// Sends back the given sub negatiation.
+    ///
+    /// The sent message looks like: IAC SB `data` IAC SE.
+    ///
+    /// - Parameter sender: The sender used for sending the response.
+    /// - Parameter data: The data to be sent as sub negotiation.
+    private func sendSB(sender: ConnectionSender, data: UInt8...) {
+        var d = Data()
+        
+        d.append(TelnetFunction.IAC.rawValue)
+        d.append(TelnetFunction.SB.rawValue)
+        
+        d.append(contentsOf: data)
+        
+        d.append(TelnetFunction.IAC.rawValue)
+        d.append(TelnetFunction.SE.rawValue)
+        
+        sender.send(data: d)
+    }
 }
