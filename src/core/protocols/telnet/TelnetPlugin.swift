@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import Foundation
@@ -182,7 +181,13 @@ class TelnetPlugin: ProtocolPlugin {
     /// - Parameter data: The actual buffer to be parsed.
     /// - Parameter sender: The sender used for sending the response.
     private func parseBuffer(data: Data, sender: ConnectionSender) {
-        // TODO: Implement handshaking dispatcher
+        if let first = data.first, let code = Code(rawValue: first) {
+            switch code {
+            case .charset: break // TODO: Implement
+                
+            default: break
+            }
+        }
     }
     
     /// This function handles a single telnet function.
@@ -191,13 +196,21 @@ class TelnetPlugin: ProtocolPlugin {
     /// - Parameter byte: The telnet function to handle.
     /// - Parameter sender: The sender used for sending back the response.
     private func handleSingleOption(previous: TelnetFunction, byte: UInt8, sender: ConnectionSender) {
-        // TODO: Handle the option
+        var refuse = false
         if let code = Code(rawValue: byte) {
             switch code {
+            case .charset:
+                if previous == .WILL {
+                    sendSingle(mode: .DO, function: byte, sender: sender)
+                } else if previous == .DO {
+                    sendSingle(mode: .WILL, function: byte, sender: sender)
+                }
+                
             default:
-                sendSingle(mode: previous.opposite, function: byte, sender: sender)
+                refuse = true
             }
-        } else {
+        }
+        if (refuse) {
             sendSingle(mode: previous.opposite, function: byte, sender: sender)
         }
     }
