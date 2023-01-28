@@ -117,6 +117,7 @@ struct Tokenizer {
         case "public":     return Token(begin: begin, type: .PUBLIC,         end: end)
         case "override":   return Token(begin: begin, type: .OVERRIDE,       end: end)
         case "deprecated": return Token(begin: begin, type: .DEPRECATED,     end: end)
+        case "nosave":     return Token(begin: begin, type: .NOSAVE,         end: end)
         case "new":        return Token(begin: begin, type: .NEW,            end: end)
         case "this":       return Token(begin: begin, type: .THIS,           end: end)
         case "nil":        return Token(begin: begin, type: .NIL,            end: end)

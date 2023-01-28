@@ -49,6 +49,7 @@ struct DefaultTheme: SPTheme {
             .PUBLIC:     control,
             .OVERRIDE:   control,
             .DEPRECATED: control,
+            .NOSAVE:     control,
             .NEW:        control,
             .THIS:       control,
             .SIZEOF:     control,
