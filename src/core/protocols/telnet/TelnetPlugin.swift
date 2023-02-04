@@ -88,24 +88,6 @@ class TelnetPlugin: ProtocolPlugin {
              DO,
              DONT,
              IAC
-        
-        /// The opposite of this telnet function.
-        ///
-        /// If it does not have an opposite, it is simply returned.
-        var opposite: Self {
-            switch self {
-            case .WILL: return .DONT
-            case .WONT: return .DO
-                
-            case .DO:   return .WONT
-            case .DONT: return .WILL
-                
-            case .SE: return .SB
-            case .SB: return .SE
-                
-            default: return self
-            }
-        }
     }
     /// An enumeration containing MUD specific additions
     enum MudExtensions: UInt8 {
@@ -244,11 +226,11 @@ class TelnetPlugin: ProtocolPlugin {
             case .binary_transmission:
                 switch previous {
                 case .DO, .WILL:
-                    // sender.escapeIAC = true
+                    sender.escapeIAC = true
                     sendSingle(mode: previous == .DO ? .WILL : .DO, function: byte, sender: sender)
                     
                 case .DONT, .WONT:
-                    // sender.escapeIAC = false
+                    sender.escapeIAC = false
                     sendSingle(mode: previous == .DONT ? .WONT : .DONT, function: byte, sender: sender)
                     
                 default: refuse = true
@@ -266,7 +248,13 @@ class TelnetPlugin: ProtocolPlugin {
             }
         }
         if (refuse) {
-            sendSingle(mode: previous.opposite, function: byte, sender: sender)
+            if previous == .DO {
+                sendSingle(mode: .WONT, function: byte, sender: sender)
+            } else if previous == .WILL {
+                sendSingle(mode: .DONT, function: byte, sender: sender)
+            } else if previous == .DONT {
+                sendSingle(mode: .WONT, function: byte, sender: sender)
+            }
         }
     }
     
