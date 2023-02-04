@@ -39,6 +39,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The delegate to be used for the inlined LPC editor.
     @Published private(set) var editorDelegate: EditorDelegate?
     
+    /// Indicates whether an inlined editor is being displayed.
+    private(set) var isEditorShowing = false
+    
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
     /// Indicates whether to use escaped IACs.
@@ -148,6 +151,16 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             self.fullText.append(newContent)
             self.appendix.append(newContent)
             self.contentLength += newContent.length
+        }
+    }
+    
+    /// Opens an inlined editor.
+    func showEditor() {
+        isEditorShowing = true
+        editorDelegate  = EditorDelegate()
+        editorDelegate!.onClose = {
+            self.editorDelegate  = nil
+            self.isEditorShowing = false
         }
     }
     
