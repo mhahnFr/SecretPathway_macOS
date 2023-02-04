@@ -41,8 +41,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     /// Callback to be called when the window this instance is controlling is definitively closing.
     var onClose: ((ConnectionDelegate) -> Void)?
+    /// Indicates whether to use escaped IACs.
     var escapeIAC = false
-    var charset = String.Encoding.ascii
+    /// The charset to be used for sending and receiving text.
+    var charset = Settings.shared.useUTF8 ? String.Encoding.utf8 : String.Encoding.ascii
     
     /// The window that is controlled by this delegate instance.
     private(set) weak var window: NSWindow?

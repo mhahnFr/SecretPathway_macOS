@@ -97,6 +97,9 @@ class Settings: ObservableObject {
     /// Automatially retained by the underlying app storage.
     @AppStorage(Constants.Storage.EDITOR_SYNTAX_HIGHLIGHT)
     var editorSyntaxHighlighting = true
+    /// Indicates whether to use UTF-8 by default.
+    @AppStorage(Constants.Storage.USE_UTF8)
+    var useUTF8 = true
     
     @AppStorage(Constants.Storage.EDITOR_THEME)
     private var editorThemeBookmark: Data?

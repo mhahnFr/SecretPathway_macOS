@@ -37,6 +37,8 @@ struct SettingsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             Toggle("Automatically enable syntax highlighting in the editor", isOn: settings.$editorSyntaxHighlighting)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            Toggle("Use UTF-8 by default", isOn: settings.$useUTF8)
+                .frame(maxWidth: .infinity, alignment: .leading)
             HStack {
                 Menu(delegate.selectedTheme?.lastPathComponent ?? "Default") {
                     Button("Default") {

@@ -33,6 +33,8 @@ class Constants {
         static let OPEN_CONNECTIONS        = "\(APP_NAME).openConnections"
         /// The recently opened connections.
         static let RECENT_CONNECTIONS      = "\(APP_NAME).recentConnections"
+        /// The key for storing whether to use UTF-8 by default.
+        static let USE_UTF8                = "\(APP_NAME).useUTF8"
         /// Indicates whether to display the editor in its controlling connection window.
         static let EDITOR_INLINED          = "\(APP_NAME).editorInlined"
         /// Indicates whether to enable the syntax highlighting in the LPC editor by default.
