@@ -37,6 +37,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let content  = EditorView(delegate: delegate)
         delegate.onClose   = { window.performClose(delegate) }
         window.contentView = NSHostingView(rootView: content)
+        window.title       = "\(Constants.APP_NAME): LPC Editor"
+        
         window.makeKeyAndOrderFront(self)
     }
     
