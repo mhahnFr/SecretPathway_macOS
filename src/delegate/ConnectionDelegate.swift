@@ -242,7 +242,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             }
         }
         
-        let styledString = NSMutableAttributedString(string: String(data: text, encoding: charset) ?? plainAscii(from: text))
+        let string = String(data: text, encoding: charset) ?? plainAscii(from: text)
+        let styledString = NSMutableAttributedString(string: string)
         
         if closedStyles.isEmpty {
             styledString.setAttributes(currentStyle.native, range: NSMakeRange(0, styledString.length))
@@ -252,10 +253,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
                 if i + 1 < closedStyles.endIndex {
                     len = closedStyles[i + 1].begin - style.begin
                 } else {
-                    len = styledString.length - style.begin
+                    len = string.count - style.begin
                 }
                 
-                styledString.setAttributes(style.style.native, range: NSMakeRange(style.begin, len))
+                guard style.begin < string.count else { break }
+                
+                let begin = string.index(string.startIndex, offsetBy: style.begin)
+                let end   = string.index(string.startIndex, offsetBy: style.begin + len)
+                
+                styledString.setAttributes(style.style.native, range: NSRange(begin ..< end, in: string))
             }
         }
         appendToContent(styledString)
