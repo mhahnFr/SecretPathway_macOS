@@ -22,7 +22,7 @@
 struct JSONTheme: SPTheme, Codable {
     /// The styles used for the token types.
     let styles: [JSONStyle]
-    /// A dictionary consisting of the token type and the index of
+    /// A dictionary consisting of the token type and the name of
     /// the style to be used.
     let tokenStyles: [String: String]
     

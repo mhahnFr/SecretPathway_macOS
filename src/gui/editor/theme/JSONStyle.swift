@@ -34,8 +34,11 @@ struct JSONStyle: Codable {
     var foreground: JSONColor?
     /// The background color to be used.
     var background: JSONColor?
+    /// The string representation of the foreground color.
     var fg_rgb: String?
+    /// The string representation of the background color.
     var bg_rgb: String?
+    /// The name of this style.
     var name: String?
     
     /// Converts this style to a `SPStyle`.
@@ -43,6 +46,12 @@ struct JSONStyle: Codable {
         SPStyle(bold: bold, italic: italic, striken: striken, underlined: underlined, foreground: getColor(description: fg_rgb, color: foreground), background: getColor(description: bg_rgb, color: background))
     }
     
+    /// Converts the given `color` to an `NSColor`. If the color is nil,
+    /// the given string is decoded. If no string is given, `nil` is returned.
+    ///
+    /// - Parameter description: The string representation of the color.
+    /// - Parameter color: The `JSONColor`.
+    /// - Returns: The decoded color or `nil`.
     private func getColor(description: String?, color: JSONColor?) -> NSColor? {
         if let color {
             return color.native
