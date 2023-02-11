@@ -24,11 +24,17 @@ struct JSONTheme: SPTheme, Codable {
     let styles: [JSONStyle]
     /// A dictionary consisting of the token type and the index of
     /// the style to be used.
-    let tokenStyles: [String: Int]
+    let tokenStyles: [String: String]
     
     func styleFor(tokenType: TokenType) -> SPStyle {
-        guard let index = tokenStyles["\(tokenType)"] else { return SPStyle() }
+        guard let styleName = tokenStyles["\(tokenType)"] else { return SPStyle() }
         
-        return styles[index].native
+        // TODO: Cache
+        for style in styles {
+            if style.name == styleName {
+                return style.native
+            }
+        }
+        return SPStyle()
     }
 }
