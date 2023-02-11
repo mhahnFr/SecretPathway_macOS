@@ -34,10 +34,35 @@ struct JSONStyle: Codable {
     var foreground: JSONColor?
     /// The background color to be used.
     var background: JSONColor?
+    var fg_rgb: String?
+    var bg_rgb: String?
+    var name: String?
     
     /// Converts this style to a `SPStyle`.
     var native: SPStyle {
-        SPStyle(bold: bold, italic: italic, striken: striken, underlined: underlined, foreground: foreground?.native, background: background?.native)
+        SPStyle(bold: bold, italic: italic, striken: striken, underlined: underlined, foreground: getColor(description: fg_rgb, color: foreground), background: getColor(description: bg_rgb, color: background))
+    }
+    
+    private func getColor(description: String?, color: JSONColor?) -> NSColor? {
+        if let color {
+            return color.native
+        } else if let description {
+            let i: Int?
+            if description.hasPrefix("#") {
+                i = Int(description.dropFirst(), radix: 16)
+            } else if description.hasPrefix("0x") {
+                i = Int(description.dropFirst(2), radix: 16)
+            } else {
+                i = Int(description, radix: 16)
+            }
+            if let i {
+                return NSColor(red: CGFloat(i >> 16 & 0xff) / 255,
+                             green: CGFloat(i >>  8 & 0xff) / 255,
+                              blue: CGFloat(i >>  0 & 0xff) / 255,
+                             alpha: 1)
+            }
+        }
+        return nil
     }
     
     /// Initializes this style with default values.
