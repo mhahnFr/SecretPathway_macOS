@@ -19,7 +19,7 @@
  */
 
 /// This enumeration consists of the possible token types.
-enum TokenType: Codable {
+enum TokenType: String, Codable {
     case EOF,
     
     IDENTIFIER, INTEGER, STRING, CHARACTER, SYMBOL,

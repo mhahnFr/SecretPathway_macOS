@@ -26,15 +26,33 @@ struct JSONTheme: SPTheme, Codable {
     /// the style to be used.
     let tokenStyles: [String: String]
     
-    func styleFor(tokenType: TokenType) -> SPStyle {
-        guard let styleName = tokenStyles["\(tokenType)"] else { return SPStyle() }
+    private var cached: [TokenType: SPStyle] = [:]
+    
+    private enum CodingKeys: CodingKey {
+        case styles, tokenStyles
+    }
+    
+    mutating func styleFor(tokenType: TokenType) -> SPStyle {
+        if cached.isEmpty { validate() }
         
-        // TODO: Cache
+        return cached[tokenType] ?? SPStyle()
+    }
+    
+    private func findStyleBy(name: String) -> JSONStyle? {
         for style in styles {
-            if style.name == styleName {
-                return style.native
+            if style.name == name {
+                return style
             }
         }
-        return SPStyle()
+        
+        return nil
+    }
+    
+    mutating func validate() {
+        for (typeName, styleName) in tokenStyles {
+            if let type = TokenType(rawValue: typeName), let style = findStyleBy(name: styleName) {
+                cached[type] = style.native
+            }
+        }
     }
 }

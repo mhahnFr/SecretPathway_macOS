@@ -24,5 +24,5 @@ protocol SPTheme {
     ///
     /// - Parameter tokenType: The token type to be highlighted.
     /// - Returns: The calculated style.
-    func styleFor(tokenType: TokenType) -> SPStyle
+    mutating func styleFor(tokenType: TokenType) -> SPStyle
 }
