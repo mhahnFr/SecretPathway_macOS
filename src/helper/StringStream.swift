@@ -14,15 +14,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /// This struct represents a string character stream.
 struct StringStream {
     /// The underlying character array.
-    private let characters: Array<Character>
+    private let characters: [Character]
 
     /// The current index of the stream.
     private(set) var index = 0
