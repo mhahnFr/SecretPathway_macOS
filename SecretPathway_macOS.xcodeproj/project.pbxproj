@@ -48,8 +48,11 @@
 		BFE06F28296DAC88004A3C1F /* JSONColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE06F27296DAC88004A3C1F /* JSONColor.swift */; };
 		BFEA07B729043DB500294822 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEA07B629043DB500294822 /* SettingsView.swift */; };
 		BFEA07B929043DCC00294822 /* SettingsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEA07B829043DCC00294822 /* SettingsDelegate.swift */; };
+		BFEA71BA29A654DE004832AF /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEA71B929A654DE004832AF /* Parser.swift */; };
 		BFEC182C28BD00DB00894639 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = BFEC182A28BD00DB00894639 /* LICENSE */; };
 		BFEC182D28BD00DB00894639 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BFEC182B28BD00DB00894639 /* README.md */; };
+		BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFD268729A69663002998E8 /* ASTExpression.swift */; };
+		BFFD268A29A69759002998E8 /* ASTType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFFD268929A69759002998E8 /* ASTType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,8 +100,11 @@
 		BFE06F27296DAC88004A3C1F /* JSONColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONColor.swift; sourceTree = "<group>"; };
 		BFEA07B629043DB500294822 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BFEA07B829043DCC00294822 /* SettingsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDelegate.swift; sourceTree = "<group>"; };
+		BFEA71B929A654DE004832AF /* Parser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		BFEC182A28BD00DB00894639 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		BFEC182B28BD00DB00894639 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		BFFD268729A69663002998E8 /* ASTExpression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTExpression.swift; sourceTree = "<group>"; };
+		BFFD268929A69759002998E8 /* ASTType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTType.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,7 +141,9 @@
 		BF2DAAD02965DC590063F91C /* parser */ = {
 			isa = PBXGroup;
 			children = (
+				BFFD268629A69647002998E8 /* ast */,
 				BF2DAAD12965DC680063F91C /* tokenizer */,
+				BFEA71B929A654DE004832AF /* Parser.swift */,
 			);
 			path = parser;
 			sourceTree = "<group>";
@@ -308,6 +316,15 @@
 			path = theme;
 			sourceTree = "<group>";
 		};
+		BFFD268629A69647002998E8 /* ast */ = {
+			isa = PBXGroup;
+			children = (
+				BFFD268729A69663002998E8 /* ASTExpression.swift */,
+				BFFD268929A69759002998E8 /* ASTType.swift */,
+			);
+			path = ast;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -386,17 +403,20 @@
 				BF2DAAD92965DE170063F91C /* StringStream.swift in Sources */,
 				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
+				BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BFE06F24296DA5B9004A3C1F /* JSONTheme.swift in Sources */,
 				BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */,
 				BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */,
 				BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */,
 				BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */,
+				BFFD268A29A69759002998E8 /* ASTType.swift in Sources */,
 				BF94661529294DB00005B2EA /* NSTextViewBridge.swift in Sources */,
 				BF9B7B962932810F00AACF0F /* SPStyle.swift in Sources */,
 				BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */,
 				BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */,
 				BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */,
+				BFEA71BA29A654DE004832AF /* Parser.swift in Sources */,
 				BF54F64D290D6F410093037F /* AboutView.swift in Sources */,
 				BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */,
 				BFD9B0D72923FBE800E59D00 /* Dialog.swift in Sources */,
