@@ -18,32 +18,21 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// This class is the base for all expressions.
-class ASTExpression {
-    /// The beginning position of this expression.
-    let begin: Int
-    /// The end position of this expression.
-    let end: Int
-    /// The actual type of this expression.
-    let type: ASTType
+protocol ASTVisitor {
+    func visit(_ expression: ASTExpression)
     
-    /// Initializes this AST node using the given beginning and ending position
-    /// and its type.
-    ///
-    /// - Parameter begin: The beginning position.
-    /// - Parameter end: The end position.
-    /// - Parameter type: The type.
-    init(begin: Int, end: Int, type: ASTType) {
-        self.begin = begin
-        self.end = end
-        self.type = type
+    func visitType(_ type: ASTType) -> Bool
+    
+    func maybeVisit(_ expression: ASTExpression) -> Bool
+}
+
+extension ASTVisitor {
+    func visitType(_ type: ASTType) -> Bool {
+        return true
     }
     
-    func visit(_ visitor: ASTVisitor) {
-        visitor.visit(self)
-    }
-    
-    func describe(_ indentation: Int) -> String {
-        return "\(type) [\(begin) - \(end)]"
+    func maybeVisit(_ expression: ASTExpression) -> Bool {
+        visit(expression)
+        return visitType(expression.type)
     }
 }
