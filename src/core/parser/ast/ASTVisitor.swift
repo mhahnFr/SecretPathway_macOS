@@ -18,14 +18,29 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This protocol defines an AST visitor.
 protocol ASTVisitor {
+    /// Visits the given expression.
+    ///
+    /// - Parameter expression: The expression to be visited.
     func visit(_ expression: ASTExpression)
     
+    /// Returns whether the given type should be visited
+    /// in depth.
+    ///
+    /// - Parameter type: The type in question.
+    /// - Returns: Whether the given type should be visited in depth.
     func visitType(_ type: ASTType) -> Bool
     
+    /// Visits the given expression and returns whether to
+    /// visit contained nodes.
+    ///
+    /// - Parameter expression: The expression to be visited.
+    /// - Returns: Whether to visit contained nodes.
     func maybeVisit(_ expression: ASTExpression) -> Bool
 }
 
+/// This extension implements a default behaviour for the AST visitor.
 extension ASTVisitor {
     func visitType(_ type: ASTType) -> Bool {
         return true

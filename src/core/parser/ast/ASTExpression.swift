@@ -39,10 +39,17 @@ class ASTExpression {
         self.type = type
     }
     
+    /// Visits the given visitor on this node.
+    ///
+    /// - Parameter visitor: The visitor to be visited.
     func visit(_ visitor: ASTVisitor) {
         visitor.visit(self)
     }
     
+    /// Creates and returns a description of this node.
+    ///
+    /// - Parameter indentation: The indentation to be used for the description.
+    /// - Returns: A full description of this AST node.
     func describe(_ indentation: Int) -> String {
         return String(repeating: " ", count: indentation) + "\(type) [\(begin) - \(end)]"
     }
