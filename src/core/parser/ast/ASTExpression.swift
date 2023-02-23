@@ -44,6 +44,6 @@ class ASTExpression {
     }
     
     func describe(_ indentation: Int) -> String {
-        return "\(type) [\(begin) - \(end)]"
+        return String(repeating: " ", count: indentation) + "\(type) [\(begin) - \(end)]"
     }
 }
