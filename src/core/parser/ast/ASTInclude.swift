@@ -33,4 +33,8 @@ class ASTInclude: ASTExpression {
         
         super.init(begin: begin, end: end, type: .AST_INCLUDE)
     }
+    
+    override func describe(_ indentation: Int) -> String {
+        super.describe(indentation) + " Including \"\(included)\""
+    }
 }

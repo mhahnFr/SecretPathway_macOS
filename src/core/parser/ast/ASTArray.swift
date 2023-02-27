@@ -33,4 +33,16 @@ class ASTArray: ASTExpression {
         
         super.init(begin: begin, end: end, type: .ARRAY)
     }
+    
+    override func describe(_ indentation: Int) -> String {
+        var buffer = super.describe(indentation) + " [\n"
+        
+        for element in content {
+            buffer.append(element.describe(indentation + 4) + "\n")
+        }
+        
+        buffer.append(String(repeating: " ", count: indentation) + "]")
+        
+        return buffer
+    }
 }

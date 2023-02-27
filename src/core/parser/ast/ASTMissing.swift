@@ -34,4 +34,8 @@ class ASTMissing: ASTExpression {
         
         super.init(begin: begin, end: end, type: .MISSING)
     }
+    
+    override func describe(_ indentation: Int) -> String {
+        super.describe(indentation) + " " + message
+    }
 }

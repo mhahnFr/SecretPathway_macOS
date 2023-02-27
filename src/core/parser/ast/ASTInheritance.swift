@@ -33,4 +33,8 @@ class ASTInheritance: ASTExpression {
         
         super.init(begin: begin, end: end, type: .AST_INHERITANCE)
     }
+    
+    override func describe(_ indentation: Int) -> String {
+        super.describe(indentation) + " Inheriting from \"\(inherited)\""
+    }
 }

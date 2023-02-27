@@ -33,4 +33,8 @@ class ASTWrong: ASTExpression {
         
         super.init(begin: token.begin, end: token.end, type: .WRONG)
     }
+    
+    override func describe(_ indentation: Int) -> String {
+        super.describe(indentation) + " " + message
+    }
 }
