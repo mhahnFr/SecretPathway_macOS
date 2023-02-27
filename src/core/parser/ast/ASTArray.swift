@@ -45,4 +45,10 @@ class ASTArray: ASTExpression {
         
         return buffer
     }
+    
+    override func visit(_ visitor: ASTVisitor) {
+        if visitor.maybeVisit(self) {
+            content.forEach { $0.visit(visitor) }
+        }
+    }
 }
