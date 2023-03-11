@@ -37,6 +37,7 @@
 		BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891529BD0F32001E51C1 /* ASTCombination.swift */; };
 		BFC6891829BD10E5001E51C1 /* ASTContinue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891729BD10E5001E51C1 /* ASTContinue.swift */; };
 		BFC6891A29BD1177001E51C1 /* ASTDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891929BD1177001E51C1 /* ASTDefault.swift */; };
+		BFC6891C29BD11E5001E51C1 /* ASTEllipsis.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891B29BD11E5001E51C1 /* ASTEllipsis.swift */; };
 		BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */; };
 		BFD9049D29252289006B728B /* ConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9049C29252289006B728B /* ConnectionError.swift */; };
 		BFD9B0CC2923CFF500E59D00 /* ConnectionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */; };
@@ -102,6 +103,7 @@
 		BFC6891529BD0F32001E51C1 /* ASTCombination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTCombination.swift; sourceTree = "<group>"; };
 		BFC6891729BD10E5001E51C1 /* ASTContinue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTContinue.swift; sourceTree = "<group>"; };
 		BFC6891929BD1177001E51C1 /* ASTDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTDefault.swift; sourceTree = "<group>"; };
+		BFC6891B29BD11E5001E51C1 /* ASTEllipsis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTEllipsis.swift; sourceTree = "<group>"; };
 		BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptDelegate.swift; sourceTree = "<group>"; };
 		BFD9049C29252289006B728B /* ConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionError.swift; sourceTree = "<group>"; };
 		BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionRecord.swift; sourceTree = "<group>"; };
@@ -369,6 +371,7 @@
 				BFC6891529BD0F32001E51C1 /* ASTCombination.swift */,
 				BFC6891729BD10E5001E51C1 /* ASTContinue.swift */,
 				BFC6891929BD1177001E51C1 /* ASTDefault.swift */,
+				BFC6891B29BD11E5001E51C1 /* ASTEllipsis.swift */,
 			);
 			path = ast;
 			sourceTree = "<group>";
@@ -480,6 +483,7 @@
 				BFD9B0D52923F59700E59D00 /* DialogView.swift in Sources */,
 				BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */,
 				BF916177294E2C8600C8B967 /* Protocols.swift in Sources */,
+				BFC6891C29BD11E5001E51C1 /* ASTEllipsis.swift in Sources */,
 				BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */,
 				BFEA07B929043DCC00294822 /* SettingsDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
