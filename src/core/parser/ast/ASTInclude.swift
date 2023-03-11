@@ -21,20 +21,26 @@
 /// This class represents an include statement as an AST node.
 class ASTInclude: ASTExpression {
     /// The included file.
-    let included: String
+    let included: ASTExpression
     
     /// Initializes this AST node using the given information.
     ///
     /// - Parameter begin: The beginning position.
     /// - Parameter end: The end position.
     /// - Parameter included: The included file.
-    init(begin: Int, end: Int, included: String) {
+    init(begin: Int, end: Int, included: ASTExpression) {
         self.included = included
         
         super.init(begin: begin, end: end, type: .AST_INCLUDE)
     }
     
     override func describe(_ indentation: Int) -> String {
-        super.describe(indentation) + " Including \"\(included)\""
+        super.describe(indentation) + " Including:\n\(included.describe(indentation))"
+    }
+    
+    override func visit(_ visitor: ASTVisitor) {
+        if visitor.maybeVisit(self) {
+            included.visit(visitor)
+        }
     }
 }
