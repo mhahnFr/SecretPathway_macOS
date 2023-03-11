@@ -21,20 +21,26 @@
 /// This class represents an inheritance statement as an AST node.
 class ASTInheritance: ASTExpression {
     /// The inherited file.
-    let inherited: String
+    let inherited: ASTExpression
     
     /// Initializes this AST node using the given information.
     ///
     /// - Parameter begin: The beginning position.
     /// - Parameter end: The end position.
     /// - Parameter inherited: The inherited file.
-    init(begin: Int, end: Int, inherited: String) {
+    init(begin: Int, end: Int, inherited: ASTExpression) {
         self.inherited = inherited
         
         super.init(begin: begin, end: end, type: .AST_INHERITANCE)
     }
     
     override func describe(_ indentation: Int) -> String {
-        super.describe(indentation) + " Inheriting from \"\(inherited)\""
+        super.describe(indentation) + " Inheriting from:\n\(inherited.describe(indentation))"
+    }
+    
+    override func visit(_ visitor: ASTVisitor) {
+        if visitor.maybeVisit(self) {
+            inherited.visit(visitor)
+        }
     }
 }
