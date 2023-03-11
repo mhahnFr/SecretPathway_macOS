@@ -18,9 +18,14 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents a combination as an AST node.
 class ASTCombination: ASTExpression {
+    /// The `ASTExpression`s this combination is made of.
     let expressions: [ASTExpression]
     
+    /// Initializes this AST node using the given sub-expressions.
+    ///
+    /// - Parameter expressions: The sub-expressions.
     init(_ expressions: [ASTExpression]) {
         self.expressions = expressions
         
