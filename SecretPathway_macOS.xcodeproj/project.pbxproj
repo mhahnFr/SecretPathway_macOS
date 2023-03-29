@@ -32,6 +32,7 @@
 		BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */; };
 		BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */; };
 		BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB9037292E99A400854C71 /* TextViewBridgeDelegate.swift */; };
+		BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6CE2229D48B8F004A49F2 /* ASTFor.swift */; };
 		BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC2AE88296D6AF600592450 /* SPTheme.swift */; };
 		BFC2AE8B296D6B0200592450 /* DefaultTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC2AE8A296D6B0200592450 /* DefaultTheme.swift */; };
 		BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891529BD0F32001E51C1 /* ASTCombination.swift */; };
@@ -99,6 +100,7 @@
 		BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptView.swift; sourceTree = "<group>"; };
 		BFAB9037292E99A400854C71 /* TextViewBridgeDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewBridgeDelegate.swift; sourceTree = "<group>"; };
+		BFB6CE2229D48B8F004A49F2 /* ASTFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTFor.swift; sourceTree = "<group>"; };
 		BFC2AE88296D6AF600592450 /* SPTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPTheme.swift; sourceTree = "<group>"; };
 		BFC2AE8A296D6B0200592450 /* DefaultTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTheme.swift; sourceTree = "<group>"; };
 		BFC6891529BD0F32001E51C1 /* ASTCombination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTCombination.swift; sourceTree = "<group>"; };
@@ -363,6 +365,7 @@
 				BFE2DB7F29A7EE5C003E2BFF /* ASTWrong.swift */,
 				BFE2DB8129A7EE69003E2BFF /* ASTMissing.swift */,
 				BFDCA77629AD1C5D005B8AA9 /* ASTArray.swift */,
+				BFB6CE2229D48B8F004A49F2 /* ASTFor.swift */,
 				BFDCA77829AD226F005B8AA9 /* ASTBlock.swift */,
 				BFDCA77A29AD2569005B8AA9 /* ASTBool.swift */,
 				BFDCA77C29AD2634005B8AA9 /* ASTBreak.swift */,
@@ -465,6 +468,7 @@
 				BFFD268C29A69C18002998E8 /* ASTInclude.swift in Sources */,
 				BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */,
 				BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */,
+				BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */,
 				BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */,
 				BFDCA77929AD226F005B8AA9 /* ASTBlock.swift in Sources */,
 				BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */,
