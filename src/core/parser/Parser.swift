@@ -70,11 +70,64 @@ struct Parser {
         fatalError()
     }
     
+    /// Parses a modifier list.
+    ///
+    /// - Returns: The parsed modifiers.
+    private mutating func parseModifiers() -> [ASTExpression] {
+        fatalError()
+    }
+    
+    /// Parses a type.
+    ///
+    /// - Returns: The parsed type.
+    private mutating func parseType() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a name.
+    ///
+    /// - Returns: The parsed name.
+    private mutating func parseName() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a function definition.
+    ///
+    /// - Parameter modifiers: The modifier list.
+    /// - Parameter type: The type.
+    /// - Parameter name: The name.
+    /// - Returns: The parsed function definition.
+    private mutating func parseFunctionDefinition(_ modifiers: [ASTExpression],
+                                                  _ type:      ASTExpression,
+                                                  _ name:      ASTExpression) -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a variable definition.
+    ///
+    /// - Parameter modifiers; The modifier list.
+    /// - Parameter type: The type.
+    /// - Parameter name: The name.
+    /// - Returns: The parsed variable definition.
+    private mutating func parseVariableDefinition(_ modifiers: [ASTExpression],
+                                                  _ type:      ASTExpression,
+                                                  _ name:      ASTExpression) -> ASTExpression {
+        fatalError()
+    }
+    
     /// Parses a variable or a function definition.
     ///
     /// - Returns: The parsed expression.
     private mutating func parseVarFunc() -> ASTExpression {
-        fatalError()
+        let modifiers = parseModifiers()
+        let type      = parseType()
+        let name      = parseName()
+        
+        if current.isType(.LEFT_PAREN) {
+            advance()
+            return parseFunctionDefinition(modifiers, type, name)
+        }
+        return parseVariableDefinition(modifiers, type, name)
     }
     
     /// Parses a toplevel file statement.
