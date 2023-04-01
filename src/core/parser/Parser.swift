@@ -20,6 +20,8 @@
 
 /// This struct parses LPC source code.
 struct Parser {
+    /// The start token.
+    private static let startToken = Token(begin: 0, type: .EOF, end: 0)
     /// The tokenizer splitting the source code.
     private var tokenizer: Tokenizer
     /// The token that was previously in the stream..
@@ -35,7 +37,7 @@ struct Parser {
     init(text: any StringProtocol) {
         tokenizer = Tokenizer(stream: StringStream(text: text))
         
-        previous = Token(begin: 0, type: .EOF, end: 0)
+        previous = Parser.startToken
         current  = tokenizer.nextToken()
         next     = tokenizer.nextToken()
     }
@@ -47,13 +49,67 @@ struct Parser {
         next     = tokenizer.nextToken()
     }
     
+    /// Parses an `inherit` statement.
+    ///
+    /// - Returns: The parsed statement.
+    private mutating func parseInherit() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses an `#include` statement.
+    ///
+    /// - Returns: The parsed statement.
+    private mutating func parseInclude() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `class` definition.
+    ///
+    /// - Returns: The parsed statement.
+    private mutating func parseClass() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a variable or a function definition.
+    ///
+    /// - Returns: The parsed expression.
+    private mutating func parseVarFunc() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a toplevel file statement.
+    ///
+    /// - Returns: The parsed expression.
+    private mutating func parseToplevelExpression() -> ASTExpression {
+        switch current.type {
+        case .INHERIT: return parseInherit()
+        case .INCLUDE: return parseInclude()
+        case .CLASS:   return parseClass()
+            
+        default: return parseVarFunc()
+        }
+    }
+    
     /// Parses the source code until the given end token is reached.
     ///
     /// - Parameter end: The end token type.
     /// - Returns: The read expressions.
     private mutating func parse(end: TokenType) -> [ASTExpression] {
-        // TODO: Implement
-        return []
+        var expressions: [ASTExpression] = []
+        
+        var lastToken = Parser.startToken
+        while !current.isType(.EOF) && !current.isType(end) {
+            if current == lastToken {
+                expressions.append(ASTWrong(token: current, message: "Unexpected token 1"))
+                advance()
+                continue
+            } else {
+                lastToken = current
+            }
+            expressions.append(parseToplevelExpression())
+        }
+        
+        return expressions
     }
     
     /// Parses the source code until the end of the source code
