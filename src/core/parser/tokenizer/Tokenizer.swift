@@ -182,7 +182,7 @@ struct Tokenizer {
     /// - Parameter c: The character to be checked.
     /// - Returns: Whether the given character is a special one.
     private func isSpecial(_ c: Character) -> Bool {
-        return !(c.isNumber || c.isLetter || c == "_")
+        return !(c.isNumber || c.isLetter || c == "_" || c == "$" || c == "#")
     }
     
     /// Returns the read symbol name.
@@ -192,7 +192,7 @@ struct Tokenizer {
         stream.skip(2)
         
         var buffer = ""
-        while stream.hasNext && (stream.peek.isLetter || stream.peek.isNumber || stream.peek == "_" || stream.peek == "$" || stream.peek == "#") {
+        while stream.hasNext && !isSpecial(stream.peek) {
             buffer.append(stream.next())
         }
         return buffer
@@ -211,8 +211,13 @@ struct Tokenizer {
         stream.skip(skipping)
         
         var buffer = ""
-        while stream.hasNext && !stream.peek(end) {
-            buffer.append(stream.next())
+        var previous: Character     = "\0"
+        var overPrevious: Character = "\0"
+        while stream.hasNext && !(stream.peek(end) && (previous != "\\" || overPrevious == "\\")) {
+            overPrevious = previous
+            previous     = stream.next()
+            
+            buffer.append(previous)
         }
         stream.skip(end.count)
         return buffer
