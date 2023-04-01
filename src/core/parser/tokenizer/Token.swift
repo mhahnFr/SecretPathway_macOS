@@ -20,7 +20,7 @@
  */
 
 /// Represents a token.
-struct Token {
+struct Token: Equatable {
     /// The beginning of this token in the stream.
     let begin: Int
     /// The type of this token.
@@ -30,10 +30,30 @@ struct Token {
     /// The end of this token in the stream.
     let end: Int
     
+    /// Initializes this token using the given information.
+    ///
+    /// - Parameter begin: The beginning position.
+    /// - Parameter type: The type of this token.
+    /// - Parameter payload: The optional payload.
+    /// - Parameter end: The end position.
     init(begin: Int, type: TokenType, payload: Any? = nil, end: Int) {
-        self.begin = begin
-        self.type = type
+        self.begin   = begin
+        self.type    = type
         self.payload = payload
-        self.end = end
+        self.end     = end
+    }
+    
+    /// Returns whether this token is of the given type.
+    ///
+    /// - Parameter type: The type to be checked.
+    /// - Returns: Whether the type equals to the given one.
+    func isType(_ type: TokenType) -> Bool {
+        self.type == type
+    }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.begin == rhs.begin &&
+        lhs.end   == rhs.end   &&
+        lhs.type  == rhs.type
     }
 }
