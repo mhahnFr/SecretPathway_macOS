@@ -91,6 +91,20 @@ struct Parser {
         fatalError()
     }
     
+    /// Parses the parameter definition list of a function definition.
+    ///
+    /// - Returns: The parsed parameter definitions.
+    private mutating func parseParameterDefinitions() -> [ASTExpression] {
+        fatalError()
+    }
+    
+    /// Parses a block.
+    ///
+    /// - Returns: The parsed block.
+    private mutating func parseBlock() -> ASTExpression {
+        fatalError()
+    }
+    
     /// Parses a function definition.
     ///
     /// - Parameter modifiers: The modifier list.
@@ -100,7 +114,10 @@ struct Parser {
     private mutating func parseFunctionDefinition(_ modifiers: [ASTExpression],
                                                   _ type:      ASTExpression,
                                                   _ name:      ASTExpression) -> ASTExpression {
-        fatalError()
+        let parameters = parseParameterDefinitions()
+        let body       = parseBlock()
+        
+        return ASTFunctionDefinition(modifiers: modifiers, type: type, name: name, parameters: parameters, body: body)
     }
     
     /// Parses a variable definition.
