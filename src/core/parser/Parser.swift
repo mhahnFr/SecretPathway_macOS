@@ -98,11 +98,45 @@ struct Parser {
         fatalError()
     }
     
+    /// Parses an instruction.
+    ///
+    /// - Returns: The parsed instruction.
+    private mutating func parseInstruction() -> ASTExpression {
+        fatalError()
+    }
+    
     /// Parses a block.
     ///
     /// - Returns: The parsed block.
     private mutating func parseBlock() -> ASTExpression {
-        fatalError()
+        var expressions: [ASTExpression] = []
+        
+        let begin = current.begin
+        
+        if !current.isType(.LEFT_CURLY) {
+            expressions.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'"))
+        } else {
+            advance()
+        }
+        
+        var lastToken = Parser.startToken
+        while !current.isType(.RIGHT_CURLY, .EOF) {
+            if current == lastToken {
+                expressions.append(ASTWrong(token: current, message: "Unexpected token 2"))
+                advance()
+                continue
+            } else {
+                lastToken = current
+            }
+            expressions.append(parseInstruction())
+        }
+        
+        if current.isType(.EOF) {
+            expressions.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'"))
+        } else {
+            advance()
+        }
+        return ASTBlock(begin: begin, end: previous.end, body: expressions)
     }
     
     /// Parses a function definition.
