@@ -88,7 +88,37 @@ struct Parser {
     ///
     /// - Returns: The parsed name.
     private mutating func parseName() -> ASTExpression {
-        fatalError()
+        let toReturn: ASTExpression
+        
+        if isStopToken(current) {
+            toReturn = combine(ASTName(begin: previous.end, end: current.begin),
+                               ASTMissing(begin: previous.end, end: current.begin, message: "Missing name"))
+        } else if current.isType(.OPERATOR) {
+            let begin = current.begin
+            advance()
+            
+            let part: ASTExpression?
+            if !isOperator(current) {
+                part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing operator")
+            } else {
+                part = nil
+                advance()
+            }
+            let identifier = ASTOperatorName(begin: begin, token: previous)
+            if let part {
+                toReturn = combine(identifier, part)
+            } else {
+                toReturn = identifier
+            }
+        } else if !current.isType(.IDENTIFIER) {
+            toReturn = combine(ASTName(begin: current.begin, end: current.end),
+                               ASTWrong(token: current, message: "Expected a name"))
+        } else {
+            toReturn = ASTName(token: current)
+            advance()
+        }
+        
+        return toReturn
     }
     
     /// Parses the parameter definition list of a function definition.
@@ -96,6 +126,26 @@ struct Parser {
     /// - Returns: The parsed parameter definitions.
     private mutating func parseParameterDefinitions() -> [ASTExpression] {
         fatalError()
+    }
+    
+    /// Returns whether the given token is a stop token.
+    ///
+    /// - Parameter token: The token to be checked.
+    /// - Returns: Whether the given token should stop a parsing loop.
+    private mutating func isStopToken(_ token: Token) -> Bool {
+        token.isType(.EOF, .RIGHT_PAREN, .RIGHT_BRACKET, .RIGHT_CURLY, .COLON, .SEMICOLON,
+                     .ASSIGNMENT, .ASSIGNMENT_PLUS, .ASSIGNMENT_STAR, .ASSIGNMENT_MINUS,
+                     .ASSIGNMENT_SLASH, .ASSIGNMENT_PERCENT, .ELSE, .WHILE, .CATCH)
+    }
+    
+    /// Returns whether the given type represents an operator.
+    ///
+    /// - Parameter token: The token to be checked.
+    /// - Returns: Whether the given token represents an operator.
+    private mutating func isOperator(_ token: Token) -> Bool {
+        token.isType(.DOT, .ARROW, .PIPE, .LEFT_SHIFT, .RIGHT_SHIFT, .DOUBLE_QUESTION, .QUESTION,
+                     .PLUS, .MINUS, .STAR, .SLASH, .PERCENT, .LESS, .LESS_OR_EQUAL, .GREATER, .IS,
+                     .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET)
     }
     
     /// Parses an instruction.
