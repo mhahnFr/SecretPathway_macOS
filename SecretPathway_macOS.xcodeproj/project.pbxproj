@@ -68,6 +68,7 @@
 		BFE06F28296DAC88004A3C1F /* JSONColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE06F27296DAC88004A3C1F /* JSONColor.swift */; };
 		BFE2926429DB2B8A00185467 /* ASTVariableDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926329DB2B8A00185467 /* ASTVariableDefinition.swift */; };
 		BFE2926629DB31AA00185467 /* ASTOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926529DB31AA00185467 /* ASTOperation.swift */; };
+		BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926729DB3B4C00185467 /* ASTName.swift */; };
 		BFE2DB7E29A7E466003E2BFF /* ASTVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2DB7D29A7E466003E2BFF /* ASTVisitor.swift */; };
 		BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2DB7F29A7EE5C003E2BFF /* ASTWrong.swift */; };
 		BFE2DB8229A7EE69003E2BFF /* ASTMissing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2DB8129A7EE69003E2BFF /* ASTMissing.swift */; };
@@ -147,6 +148,7 @@
 		BFE06F27296DAC88004A3C1F /* JSONColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONColor.swift; sourceTree = "<group>"; };
 		BFE2926329DB2B8A00185467 /* ASTVariableDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTVariableDefinition.swift; sourceTree = "<group>"; };
 		BFE2926529DB31AA00185467 /* ASTOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTOperation.swift; sourceTree = "<group>"; };
+		BFE2926729DB3B4C00185467 /* ASTName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTName.swift; sourceTree = "<group>"; };
 		BFE2DB7D29A7E466003E2BFF /* ASTVisitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTVisitor.swift; sourceTree = "<group>"; };
 		BFE2DB7F29A7EE5C003E2BFF /* ASTWrong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTWrong.swift; sourceTree = "<group>"; };
 		BFE2DB8129A7EE69003E2BFF /* ASTMissing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTMissing.swift; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 				BFC6891D29BD1258001E51C1 /* ASTEmpty.swift */,
 				BFE2926329DB2B8A00185467 /* ASTVariableDefinition.swift */,
 				BFE2926529DB31AA00185467 /* ASTOperation.swift */,
+				BFE2926729DB3B4C00185467 /* ASTName.swift */,
 			);
 			path = ast;
 			sourceTree = "<group>";
@@ -489,6 +492,7 @@
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
 				BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
+				BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */,
 				BFC6891829BD10E5001E51C1 /* ASTContinue.swift in Sources */,
 				BFE06F24296DA5B9004A3C1F /* JSONTheme.swift in Sources */,
 				BFFD268C29A69C18002998E8 /* ASTInclude.swift in Sources */,
