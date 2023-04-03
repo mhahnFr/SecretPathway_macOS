@@ -120,6 +120,41 @@ struct Parser {
         return ASTFunctionDefinition(modifiers: modifiers, type: type, name: name, parameters: parameters, body: body)
     }
     
+    /// Combines the given expressions.
+    ///
+    /// - Parameter main: The main expression.
+    /// - Parameter parts: The parts to complete the main expression.
+    /// - Returns: An `ASTCombination` of the given expressions.
+    private mutating func combine(_ main: ASTExpression, _ parts: ASTExpression...) -> ASTExpression {
+        var elements = [ main ]
+        elements.append(contentsOf: parts)
+        
+        return ASTCombination(elements)
+    }
+    
+    /// Asserts a semicolon follows after the given expression.
+    ///
+    /// - Parameter expression: The expression to be followed by a semicolon
+    /// - Returns: The AST representation of the semicolon-ed expression.
+    private mutating func assertSemicolon(for expression: ASTExpression) -> ASTExpression {
+        let toReturn: ASTExpression
+        
+        if !current.isType(.SEMICOLON) {
+            toReturn = combine(expression, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
+        } else {
+            toReturn = expression
+        }
+        
+        return toReturn
+    }
+    
+    /// Parses a normal expression.
+    ///
+    /// - Returns: The parsed expression.
+    private mutating func parseExpression() -> ASTExpression {
+        fatalError()
+    }
+    
     /// Parses a variable definition.
     ///
     /// - Parameter modifiers; The modifier list.
@@ -129,7 +164,24 @@ struct Parser {
     private mutating func parseVariableDefinition(_ modifiers: [ASTExpression],
                                                   _ type:      ASTExpression,
                                                   _ name:      ASTExpression) -> ASTExpression {
-        fatalError()
+        let toReturn: ASTExpression
+        
+        let variable = ASTVariableDefinition(begin:     modifiers.first?.begin ?? type.begin,
+                                             end:       name.end,
+                                             modifiers: modifiers,
+                                             type:      type,
+                                             name:      name)
+        if current.isType(.SEMICOLON) {
+            advance()
+            toReturn = variable
+        } else if current.isType(.ASSIGNMENT) {
+            advance()
+            toReturn = assertSemicolon(for: ASTOperation(lhs: variable, rhs: parseExpression(), operatorType: .ASSIGNMENT))
+        } else {
+            toReturn = combine(variable, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
+        }
+        
+        return toReturn
     }
     
     /// Parses a variable or a function definition.
