@@ -49,11 +49,47 @@ struct Parser {
         next     = tokenizer.nextToken()
     }
     
+    /// Parses a string expression. Multiple following strings
+    /// are concatenated.
+    ///
+    /// - Returns: The AST representation of the read strings.
+    private mutating func parseStrings() -> ASTExpression {
+        var toReturn: [ASTExpression] = []
+        
+        while current.isType(.STRING) {
+            toReturn.append(ASTString(token: current))
+            advance()
+        }
+        
+        return ASTStrings(strings: toReturn)
+    }
+    
     /// Parses an `inherit` statement.
     ///
     /// - Returns: The parsed statement.
     private mutating func parseInherit() -> ASTExpression {
-        fatalError()
+        let toReturn: ASTExpression
+        
+        advance()
+        if current.isType(.SEMICOLON) {
+            toReturn = ASTInheritance(begin: previous.begin, end: current.end, inherited: nil)
+            advance()
+        } else if next.isType(.SEMICOLON) && !current.isType(.STRING) {
+            toReturn = combine(ASTInheritance(begin: previous.begin, end: next.end, inherited: nil),
+                               ASTWrong(token: current, message: "Expected a string literal"))
+        } else if current.isType(.STRING) {
+            let begin   = previous.begin
+            let strings = parseStrings()
+            
+            toReturn = assertSemicolon(for: ASTInheritance(begin: begin, end: (current.isType(.SEMICOLON) ? current : previous).end, inherited: strings))
+        } else if !current.isType(.SEMICOLON) && !next.isType(.SEMICOLON) {
+            toReturn = combine(ASTInheritance(begin: previous.begin, end: previous.end, inherited: nil),
+                               ASTMissing(begin: previous.end, end: current.begin, message: "Expected ';'"))
+        } else {
+            toReturn = ASTInheritance(begin: previous.begin, end: next.end, inherited: nil)
+            advance()
+        }
+        return toReturn
     }
     
     /// Parses an `#include` statement.
