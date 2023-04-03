@@ -45,10 +45,15 @@ struct Token: Equatable {
     
     /// Returns whether this token is of the given type.
     ///
-    /// - Parameter type: The type to be checked.
+    /// - Parameter types: The type to be checked.
     /// - Returns: Whether the type equals to the given one.
-    func isType(_ type: TokenType) -> Bool {
-        self.type == type
+    func isType(_ types: TokenType...) -> Bool {
+        for type in types {
+            if self.type == type {
+                return true
+            }
+        }
+        return false
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
