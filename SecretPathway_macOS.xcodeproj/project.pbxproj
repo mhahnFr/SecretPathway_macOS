@@ -71,6 +71,7 @@
 		BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926729DB3B4C00185467 /* ASTName.swift */; };
 		BFE2926A29DB3CF800185467 /* ASTOperatorName.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926929DB3CF800185467 /* ASTOperatorName.swift */; };
 		BFE2926C29DB434D00185467 /* ASTString.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926B29DB434D00185467 /* ASTString.swift */; };
+		BFE2926E29DB442500185467 /* ASTStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2926D29DB442500185467 /* ASTStrings.swift */; };
 		BFE2DB7E29A7E466003E2BFF /* ASTVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2DB7D29A7E466003E2BFF /* ASTVisitor.swift */; };
 		BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2DB7F29A7EE5C003E2BFF /* ASTWrong.swift */; };
 		BFE2DB8229A7EE69003E2BFF /* ASTMissing.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE2DB8129A7EE69003E2BFF /* ASTMissing.swift */; };
@@ -153,6 +154,7 @@
 		BFE2926729DB3B4C00185467 /* ASTName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTName.swift; sourceTree = "<group>"; };
 		BFE2926929DB3CF800185467 /* ASTOperatorName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTOperatorName.swift; sourceTree = "<group>"; };
 		BFE2926B29DB434D00185467 /* ASTString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTString.swift; sourceTree = "<group>"; };
+		BFE2926D29DB442500185467 /* ASTStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTStrings.swift; sourceTree = "<group>"; };
 		BFE2DB7D29A7E466003E2BFF /* ASTVisitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTVisitor.swift; sourceTree = "<group>"; };
 		BFE2DB7F29A7EE5C003E2BFF /* ASTWrong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTWrong.swift; sourceTree = "<group>"; };
 		BFE2DB8129A7EE69003E2BFF /* ASTMissing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTMissing.swift; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				BFFD268B29A69C18002998E8 /* ASTInclude.swift */,
 				BFFD268D29A69C29002998E8 /* ASTInheritance.swift */,
 				BFE2926B29DB434D00185467 /* ASTString.swift */,
+				BFE2926D29DB442500185467 /* ASTStrings.swift */,
 				BFE2DB7D29A7E466003E2BFF /* ASTVisitor.swift */,
 				BFE2DB7F29A7EE5C003E2BFF /* ASTWrong.swift */,
 				BFE2DB8129A7EE69003E2BFF /* ASTMissing.swift */,
@@ -500,6 +503,7 @@
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */,
 				BFC6891829BD10E5001E51C1 /* ASTContinue.swift in Sources */,
+				BFE2926E29DB442500185467 /* ASTStrings.swift in Sources */,
 				BFE06F24296DA5B9004A3C1F /* JSONTheme.swift in Sources */,
 				BFFD268C29A69C18002998E8 /* ASTInclude.swift in Sources */,
 				BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */,
