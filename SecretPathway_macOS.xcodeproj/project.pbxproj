@@ -27,6 +27,7 @@
 		BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916178294E306700C8B967 /* ProtocolPlugin.swift */; };
 		BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91617A294E32EF00C8B967 /* ConnectionSender.swift */; };
 		BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91617C294E400E00C8B967 /* SPPPlugin.swift */; };
+		BF92224B29E5D6EC001085B9 /* ASTModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF92224A29E5D6EC001085B9 /* ASTModifier.swift */; };
 		BF94661529294DB00005B2EA /* NSTextViewBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF94661429294DB00005B2EA /* NSTextViewBridge.swift */; };
 		BF9B7B962932810F00AACF0F /* SPStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9B7B952932810F00AACF0F /* SPStyle.swift */; };
 		BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */; };
@@ -107,6 +108,7 @@
 		BF916178294E306700C8B967 /* ProtocolPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolPlugin.swift; sourceTree = "<group>"; };
 		BF91617A294E32EF00C8B967 /* ConnectionSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSender.swift; sourceTree = "<group>"; };
 		BF91617C294E400E00C8B967 /* SPPPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPPPlugin.swift; sourceTree = "<group>"; };
+		BF92224A29E5D6EC001085B9 /* ASTModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTModifier.swift; sourceTree = "<group>"; };
 		BF94661429294DB00005B2EA /* NSTextViewBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSTextViewBridge.swift; sourceTree = "<group>"; };
 		BF9B7B952932810F00AACF0F /* SPStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPStyle.swift; sourceTree = "<group>"; };
 		BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionDelegate.swift; sourceTree = "<group>"; };
@@ -414,6 +416,7 @@
 				BFE2926529DB31AA00185467 /* ASTOperation.swift */,
 				BFE2926729DB3B4C00185467 /* ASTName.swift */,
 				BFE2926929DB3CF800185467 /* ASTOperatorName.swift */,
+				BF92224A29E5D6EC001085B9 /* ASTModifier.swift */,
 			);
 			path = ast;
 			sourceTree = "<group>";
@@ -499,6 +502,7 @@
 				BFE2926629DB31AA00185467 /* ASTOperation.swift in Sources */,
 				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
+				BF92224B29E5D6EC001085B9 /* ASTModifier.swift in Sources */,
 				BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */,
