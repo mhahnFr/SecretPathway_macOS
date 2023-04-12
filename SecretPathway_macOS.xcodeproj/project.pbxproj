@@ -23,6 +23,7 @@
 		BF5C0F3E29E744FE007F49BA /* ASTSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F3D29E744FE007F49BA /* ASTSubscript.swift */; };
 		BF5C0F4029E745E9007F49BA /* ASTMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F3F29E745E9007F49BA /* ASTMapping.swift */; };
 		BF5C0F4229E7473D007F49BA /* ASTIf.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F4129E7473D007F49BA /* ASTIf.swift */; };
+		BF5C0F4429E75041007F49BA /* ASTTypeDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F4329E75041007F49BA /* ASTTypeDeclaration.swift */; };
 		BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3532965C95F00DF333D /* EditorView.swift */; };
 		BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3552965CD6900DF333D /* EditorDelegate.swift */; };
 		BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF832EC52927FBA000581CDA /* Int2Data.swift */; };
@@ -114,6 +115,7 @@
 		BF5C0F3D29E744FE007F49BA /* ASTSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTSubscript.swift; sourceTree = "<group>"; };
 		BF5C0F3F29E745E9007F49BA /* ASTMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTMapping.swift; sourceTree = "<group>"; };
 		BF5C0F4129E7473D007F49BA /* ASTIf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTIf.swift; sourceTree = "<group>"; };
+		BF5C0F4329E75041007F49BA /* ASTTypeDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTTypeDeclaration.swift; sourceTree = "<group>"; };
 		BF6AF3532965C95F00DF333D /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		BF6AF3552965CD6900DF333D /* EditorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorDelegate.swift; sourceTree = "<group>"; };
 		BF832EC52927FBA000581CDA /* Int2Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int2Data.swift; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 				BF5C0F3D29E744FE007F49BA /* ASTSubscript.swift */,
 				BF5C0F3F29E745E9007F49BA /* ASTMapping.swift */,
 				BF5C0F4129E7473D007F49BA /* ASTIf.swift */,
+				BF5C0F4329E75041007F49BA /* ASTTypeDeclaration.swift */,
 			);
 			path = ast;
 			sourceTree = "<group>";
@@ -582,6 +585,7 @@
 				BFEA07B929043DCC00294822 /* SettingsDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
 				BF2DAAD32965DC7B0063F91C /* Token.swift in Sources */,
+				BF5C0F4429E75041007F49BA /* ASTTypeDeclaration.swift in Sources */,
 				BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */,
 				BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */,
 				BF92224F29E5D8CB001085B9 /* ASTUnaryOperation.swift in Sources */,
