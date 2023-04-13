@@ -317,11 +317,106 @@ struct Parser {
                      .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET)
     }
     
+    /// Checks and parses a variable declaration. If no variable
+    /// declaration follows, `nil` is returned.
+    ///
+    /// - Returns: The AST representation of the variable declaration or `nil`.
+    private mutating func parseMaybeVariable() -> ASTExpression? {
+        fatalError()
+    }
+    
+    /// Parses an `if` statement. It can optionally be followed by
+    /// an `else` statement.
+    ///
+    /// - Returns: The representation of the full `if` statement.
+    private mutating func parseIf() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `while` statement.
+    ///
+    /// - Returns: The AST representation of the full `while` statement.
+    private mutating func parseWhile() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `for` statement. `foreach` loops are parsed by this
+    /// method as well.
+    ///
+    /// - Returns: The AST representation of the full statement.
+    private mutating func parseFor() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `switch` statement.
+    ///
+    /// - Returns: The AST representation of the full statement.
+    private mutating func parseSwitch() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `do-while` statement.
+    ///
+    /// - Returns: The AST representation of the full `do-while` statement.
+    private mutating func parseDo() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `break` statement.
+    ///
+    /// - Returns: The AST representation of the statement.
+    private mutating func parseBreak() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `continue` statement.
+    ///
+    /// - Returns: The AST representation of the statement.
+    private mutating func parseContinue() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `return` statement.
+    ///
+    /// - Returns: The AST representation of the full statement.
+    private mutating func parseReturn() -> ASTExpression {
+        fatalError()
+    }
+    
+    /// Parses a `try-catch` block. The catch block can have a
+    /// reference to the caught object.
+    ///
+    /// - Returns: The AST representation of the full statement.
+    private mutating func parseTryCatch() -> ASTExpression {
+        fatalError()
+    }
+    
     /// Parses an instruction.
     ///
     /// - Returns: The parsed instruction.
     private mutating func parseInstruction() -> ASTExpression {
-        fatalError()
+        let toReturn: ASTExpression
+        
+        let maybeVariable = parseMaybeVariable()
+        if let maybeVariable {
+            return assertSemicolon(for: maybeVariable)
+        }
+        switch current.type {
+        case .LEFT_CURLY:    toReturn = parseBlock()
+        case .IF:            toReturn = parseIf()
+        case .WHILE:         toReturn = parseWhile()
+        case .FOR, .FOREACH: toReturn = parseFor()
+        case .SWITCH:        toReturn = parseSwitch()
+        case .DO:            toReturn = parseDo()
+        case .BREAK:         toReturn = parseBreak()
+        case .CONTINUE:      toReturn = parseContinue()
+        case .RETURN:        toReturn = assertSemicolon(for: parseReturn())
+        case .TRY:           toReturn = parseTryCatch()
+        case .SEMICOLON:     toReturn = assertSemicolon(for: ASTEmpty(current.begin, current.end))
+        default:             toReturn = assertSemicolon(for: parseExpression())
+        }
+        
+        return toReturn
     }
     
     /// Parses a block.
