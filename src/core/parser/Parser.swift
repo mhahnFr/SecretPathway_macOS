@@ -383,12 +383,51 @@ struct Parser {
         return toReturn
     }
     
+    /// Parses an expression surrounded by parentheses.
+    ///
+    /// - Returns: The AST reresentation of the parenthesized expression.
+    private mutating func parseParenthesizedExpression() -> ASTExpression {
+        var parts: [ASTExpression] = []
+        
+        if !current.isType(.LEFT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+        } else {
+            advance()
+        }
+        let expression = parseExpression()
+        if !current.isType(.RIGHT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+        } else {
+            advance()
+        }
+        
+        if !parts.isEmpty {
+            return combine(expression, parts)
+        }
+        return expression
+    }
+    
     /// Parses an `if` statement. It can optionally be followed by
     /// an `else` statement.
     ///
     /// - Returns: The representation of the full `if` statement.
     private mutating func parseIf() -> ASTExpression {
-        fatalError()
+        let begin = current.begin
+        
+        advance()
+        
+        let condition   = parseParenthesizedExpression()
+        let instruction = parseInstruction()
+        
+        let elseInstruction: ASTExpression?
+        if current.isType(.ELSE) {
+            advance()
+            elseInstruction = parseInstruction()
+        } else {
+            elseInstruction = nil
+        }
+        
+        return ASTIf(begin: begin, condition: condition, instruction: instruction, elseInstruction: elseInstruction)
     }
     
     /// Parses a `while` statement.
