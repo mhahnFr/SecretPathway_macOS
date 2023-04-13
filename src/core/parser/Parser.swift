@@ -111,7 +111,49 @@ struct Parser {
     ///
     /// - Returns: The parsed statement.
     private mutating func parseClass() -> ASTExpression {
-        fatalError()
+        var parts: [ASTExpression] = []
+        let begin = current.begin
+        
+        advance()
+        
+        let name = parseName()
+        
+        if current.isType(.SEMICOLON, .STRING) || (!current.isType(.LEFT_CURLY) && next.isType(.SEMICOLON)) {
+            let inheritance: ASTExpression?
+            
+            if current.isType(.STRING) {
+                let inheritanceBegin  = current.begin
+                let inheritExpression = parseStrings()
+                inheritance = ASTInheritance(begin: inheritanceBegin, end: previous.end, inherited: inheritExpression)
+            } else if current.isType(.SEMICOLON) {
+                inheritance = nil
+            } else {
+                inheritance = combine(ASTInheritance(begin: current.begin, end: current.end, inherited: nil),
+                                      ASTWrong(token: current, message: "Expected a string literal"))
+            }
+            return assertSemicolon(for: ASTClass(begin: begin, name: name, inheritance: inheritance))
+        } else if !current.isType(.LEFT_CURLY) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'"))
+        } else {
+            advance()
+        }
+        
+        let statements = parse(end: .RIGHT_CURLY)
+        if !current.isType(.RIGHT_CURLY) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'"))
+        } else {
+            advance()
+        }
+        if !current.isType(.SEMICOLON) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
+        } else {
+            advance()
+        }
+        let c = ASTClass(begin: begin, name: name, statements: statements)
+        if !parts.isEmpty {
+            return combine(c, parts)
+        }
+        return c
     }
     
     /// Parses a modifier list.
@@ -253,7 +295,16 @@ struct Parser {
     /// - Parameter main: The main expression.
     /// - Parameter parts: The parts to complete the main expression.
     /// - Returns: An `ASTCombination` of the given expressions.
-    private mutating func combine(_ main: ASTExpression, _ parts: ASTExpression...) -> ASTExpression {
+    private func combine(_ main: ASTExpression, _ parts: ASTExpression...) -> ASTExpression {
+        combine(main, parts as [ASTExpression])
+    }
+    
+    /// Combines the given expressions.
+    ///
+    /// - Parameter main: The main expression.
+    /// - Parameter parts: The parts to complete the main expression.
+    /// - Returns: An `ASTCombination` of the given expressions.
+    private func combine(_ main: ASTExpression, _ parts: [ASTExpression]) -> ASTExpression {
         var elements = [ main ]
         elements.append(contentsOf: parts)
         
