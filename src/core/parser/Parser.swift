@@ -198,6 +198,7 @@ struct Parser {
     ///
     /// - Returns: The parsed type.
     private mutating func parseType() -> ASTExpression {
+        // TODO: Implement type system
         fatalError()
     }
     
@@ -317,12 +318,69 @@ struct Parser {
                      .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET)
     }
     
+    /// Returns whether the given token represents a type.
+    ///
+    /// - Parameter token: The token to be checked.
+    /// - Returns: Whether the given token represents a type.
+    private func isType(_ token: Token) -> Bool {
+        token.isType(.VOID, .CHAR_KEYWORD, .INT_KEYWORD, .BOOL, .OBJECT, .STRING_KEYWORD,
+                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR)
+    }
+    
     /// Checks and parses a variable declaration. If no variable
     /// declaration follows, `nil` is returned.
     ///
     /// - Returns: The AST representation of the variable declaration or `nil`.
     private mutating func parseMaybeVariable() -> ASTExpression? {
-        fatalError()
+        if current.isType(.LET)                                                            ||
+            ((current.isType(.IDENTIFIER) || isType(current)) && next.isType(.IDENTIFIER)) ||
+            isType(current) && next.isType(.LEFT_BRACKET, .STAR, .RIGHT_BRACKET)           ||
+            (isType(current) && isStopToken(next))                                         ||
+            (isType(current) && next.isType(.LEFT_PAREN, .RIGHT_PAREN)) {
+            return parseFancyVariableDeclaration()
+        }
+        
+        return nil
+    }
+    
+    /// Parses a fancy variable declaration. `let` declarations do not need a type
+    /// declaration.
+    ///
+    /// - Returns: The AST representation of the variable declaration.
+    private mutating func parseFancyVariableDeclaration() -> ASTExpression {
+        let variable: ASTExpression
+        
+        if current.isType(.LET) {
+            let begin = current.begin
+            advance()
+            
+            let name = parseName()
+            let type: ASTExpression?
+            if current.isType(.COLON) {
+                advance()
+                type = parseType()
+            } else if next.isType(.ASSIGNMENT) && (current.isType(.IDENTIFIER) || isType(current)) {
+                let missing = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'")
+                type = combine(parseType(), missing)
+            } else {
+                type = nil
+            }
+            variable = ASTVariableDefinition(begin: begin, end: type?.end ?? name.end, modifiers: [], type: type, name: name)
+        } else {
+            let type = parseType()
+            let name = parseName()
+            
+            variable = ASTVariableDefinition(begin: type.begin, end: name.end, modifiers: [], type: type, name: name)
+        }
+        
+        let toReturn: ASTExpression
+        if current.isType(.ASSIGNMENT) {
+            advance()
+            toReturn = ASTOperation(lhs: variable, rhs: parseExpression(), operatorType: .ASSIGNMENT)
+        } else {
+            toReturn = variable
+        }
+        return toReturn
     }
     
     /// Parses an `if` statement. It can optionally be followed by
@@ -509,6 +567,7 @@ struct Parser {
     ///
     /// - Returns: The parsed expression.
     private mutating func parseExpression() -> ASTExpression {
+        // TODO: Implement
         fatalError()
     }
     

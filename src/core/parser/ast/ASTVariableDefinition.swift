@@ -23,7 +23,7 @@ class ASTVariableDefinition: ASTExpression {
     /// The modifiers of this variable.
     let modifiers: [ASTExpression]
     /// The type of this variable.
-    let returnType: ASTExpression
+    let returnType: ASTExpression?
     /// The name of this variable.
     let name: ASTExpression
     
@@ -37,7 +37,7 @@ class ASTVariableDefinition: ASTExpression {
     init(begin:     Int,
          end:       Int,
          modifiers: [ASTExpression],
-         type:      ASTExpression,
+         type:      ASTExpression?,
          name:      ASTExpression) {
         self.modifiers  = modifiers
         self.returnType = type
@@ -52,8 +52,10 @@ class ASTVariableDefinition: ASTExpression {
         modifiers.forEach { buffer.append("\($0.describe(indentation + 4))\n") }
         
         let indent = String(repeating: " ", count: indentation)
-        buffer.append("\(indent)type:\n")
-        buffer.append("\(returnType.describe(indentation + 4))\n")
+        if let returnType {
+            buffer.append("\(indent)type:\n")
+            buffer.append("\(returnType.describe(indentation + 4))\n")
+        }
         buffer.append("\(indent)name:\n")
         buffer.append("\(name.describe(indentation + 4))")
         
@@ -63,7 +65,7 @@ class ASTVariableDefinition: ASTExpression {
     override func visit(_ visitor: ASTVisitor) {
         if visitor.maybeVisit(self) {
             modifiers.forEach { $0.visit(visitor) }
-            returnType.visit(visitor)
+            returnType?.visit(visitor)
             name.visit(visitor)
         }
     }
