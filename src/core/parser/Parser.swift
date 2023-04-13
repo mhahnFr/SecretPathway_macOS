@@ -168,7 +168,7 @@ struct Parser {
     ///
     /// - Parameter token: The token to be checked.
     /// - Returns: Whether the given token should stop a parsing loop.
-    private mutating func isStopToken(_ token: Token) -> Bool {
+    private func isStopToken(_ token: Token) -> Bool {
         token.isType(.EOF, .RIGHT_PAREN, .RIGHT_BRACKET, .RIGHT_CURLY, .COLON, .SEMICOLON,
                      .ASSIGNMENT, .ASSIGNMENT_PLUS, .ASSIGNMENT_STAR, .ASSIGNMENT_MINUS,
                      .ASSIGNMENT_SLASH, .ASSIGNMENT_PERCENT, .ELSE, .WHILE, .CATCH)
@@ -178,7 +178,7 @@ struct Parser {
     ///
     /// - Parameter token: The token to be checked.
     /// - Returns: Whether the given token represents an operator.
-    private mutating func isOperator(_ token: Token) -> Bool {
+    private func isOperator(_ token: Token) -> Bool {
         token.isType(.DOT, .ARROW, .PIPE, .LEFT_SHIFT, .RIGHT_SHIFT, .DOUBLE_QUESTION, .QUESTION,
                      .PLUS, .MINUS, .STAR, .SLASH, .PERCENT, .LESS, .LESS_OR_EQUAL, .GREATER, .IS,
                      .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET)
