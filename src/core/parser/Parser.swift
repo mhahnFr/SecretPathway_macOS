@@ -49,6 +49,15 @@ struct Parser {
         next     = tokenizer.nextToken()
     }
     
+    /// Advances the stream by the given count of tokens.
+    ///
+    /// - Parameter count: The count of tokens to advance.
+    private mutating func advance(count: Int) {
+        for _ in 0 ..< count {
+            advance()
+        }
+    }
+    
     /// Parses a string expression. Multiple following strings
     /// are concatenated.
     ///
@@ -211,7 +220,59 @@ struct Parser {
     ///
     /// - Returns: The parsed parameter definitions.
     private mutating func parseParameterDefinitions() -> [ASTExpression] {
-        fatalError()
+        var toReturn: [ASTExpression] = []
+        
+        if !current.isType(.RIGHT_PAREN) {
+            var stop = false
+            repeat {
+                if current.isType(.ELLIPSIS) || next.isType(.RIGHT_PAREN, .LEFT_CURLY) {
+                    toReturn.append(ASTEllipsis(current))
+                    if next.isType(.LEFT_CURLY) {
+                        toReturn.append(ASTMissing(begin: current.end, end: next.begin, message: "Expected ')'"))
+                        advance()
+                    } else {
+                        advance(count: 2)
+                    }
+                    break
+                }
+                
+                let type = parseType()
+                
+                let name: ASTExpression
+                if !current.isType(.IDENTIFIER) {
+                    if current.isType(.COMMA, .RIGHT_PAREN) {
+                        name = combine(ASTName(begin: previous.end, end: current.begin),
+                                       ASTMissing(begin: previous.end, end: current.begin, message: "Parameter's name missing"))
+                    } else {
+                        name = combine(ASTName(begin: current.begin, end: current.end),
+                                       ASTWrong(token: current, message: "Expected parameter's name"))
+                        advance()
+                    }
+                } else {
+                    name = ASTName(token: current)
+                    advance()
+                }
+                
+                toReturn.append(ASTParameter(type: type, name: name))
+                
+                if current.isType(.RIGHT_PAREN, .LEFT_CURLY) {
+                    stop = true
+                    if current.isType(.LEFT_CURLY) {
+                        toReturn.append(ASTMissing(begin: previous.end, end: current.begin, message: "Expected ')'"))
+                    } else {
+                        advance()
+                    }
+                } else if !current.isType(.COMMA) {
+                    toReturn.append(ASTMissing(begin: previous.end, end: current.begin, message: "Expected ','"))
+                } else {
+                    advance()
+                }
+            } while !stop && !current.isType(.EOF)
+        } else {
+            advance()
+        }
+        
+        return toReturn
     }
     
     /// Returns whether the given token is a stop token.
