@@ -165,11 +165,33 @@ struct Parser {
         return c
     }
     
+    /// Returns whether the given token represents a modifier.
+    ///
+    /// - Parameter token: The token to be checked.
+    /// - Returns: Whether the given token represents a modifier.
+    private func isModifier(_ token: Token) -> Bool {
+        token.isType(.PRIVATE, .PROTECTED, .PUBLIC, .DEPRECATED, .OVERRIDE, .NOSAVE)
+    }
+    
     /// Parses a modifier list.
     ///
     /// - Returns: The parsed modifiers.
     private mutating func parseModifiers() -> [ASTExpression] {
-        fatalError()
+        var toReturn: [ASTExpression] = []
+        
+        while !current.isType(.EOF) {
+            if isModifier(current) {
+                toReturn.append(ASTModifier(token: current))
+            } else if isModifier(next) /* || isType(next) */ {
+                toReturn.append(combine(ASTModifier(begin: current.begin, end: current.end),
+                                        ASTWrong(token: current, message: "Expected a modifier")))
+            } else {
+                break
+            }
+            advance()
+        }
+        
+        return toReturn
     }
     
     /// Parses a type.

@@ -21,7 +21,7 @@
 /// This class represents a modifier as an AST node.
 class ASTModifier: ASTExpression {
     /// The represented modifier.
-    let modifier: TokenType
+    let modifier: TokenType?
     
     /// Constructs this AST node using the given token.
     ///
@@ -32,7 +32,17 @@ class ASTModifier: ASTExpression {
         super.init(begin: token.begin, end: token.end, type: .MODIFIER)
     }
     
+    /// Constructs this AST node using the given bounds.
+    ///
+    /// - Parameter begin: The beginning position.
+    /// - Parameter end: The end position.
+    init(begin: Int, end: Int) {
+        self.modifier = nil
+        
+        super.init(begin: begin, end: end, type: .MODIFIER)
+    }
+    
     override func describe(_ indentation: Int) -> String {
-        super.describe(indentation) + " \(modifier)"
+        super.describe(indentation) + " \(modifier?.rawValue ?? "<Missing>")"
     }
 }
