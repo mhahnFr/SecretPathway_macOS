@@ -449,7 +449,49 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the full statement.
     private mutating func parseFor() -> ASTExpression {
-        fatalError()
+        var parts: [ASTExpression] = []
+        let begin = current.begin
+        
+        advance()
+        
+        if !current.isType(.LEFT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+        } else {
+            advance()
+        }
+        var variable = parseMaybeVariable()
+        if variable != nil {
+            if current.isType(.COLON) {
+                advance()
+                let expression = parseExpression()
+                if !current.isType(.RIGHT_PAREN) {
+                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                } else {
+                    advance()
+                }
+                let loop = ASTForEach(begin: begin, variable: variable!, rangeExpression: expression, body: parseInstruction())
+                if !parts.isEmpty {
+                    return combine(loop, parts)
+                }
+                return loop
+            } else {
+                variable = assertSemicolon(for: variable!)
+            }
+        }
+        let initExpression = variable ?? assertSemicolon(for: parseExpression())
+        let condition      = assertSemicolon(for: parseExpression())
+        let after          = parseExpression()
+        
+        if !current.isType(.RIGHT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+        } else {
+            advance()
+        }
+        let loop = ASTFor(begin: begin, initExpression: initExpression, condition: condition, afterExpression: after, body: parseInstruction())
+        if !parts.isEmpty {
+            return combine(loop, parts)
+        }
+        return loop
     }
     
     /// Parses a `switch` statement.
