@@ -498,7 +498,65 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the full statement.
     private mutating func parseSwitch() -> ASTExpression {
-        fatalError()
+        let begin = current.begin
+        
+        advance()
+        
+        let variable = parseParenthesizedExpression()
+        
+        let part: ASTExpression?
+        if !current.isType(.LEFT_CURLY) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'")
+        } else {
+            part = nil
+            advance()
+        }
+        
+        let defCase  = ASTEmpty(previous.end, current.begin)
+        var lastCase: ASTExpression = defCase
+        var lastCaseExpressions: [ASTExpression] = []
+        var cases: [ASTExpression] = []
+        
+        while !current.isType(.RIGHT_CURLY) && !isStopToken(current) {
+            if current.isType(.CASE) {
+                if lastCase !== defCase || !lastCaseExpressions.isEmpty {
+                    cases.append(ASTCase(caseStatement: lastCase, expressions: lastCaseExpressions))
+                }
+                
+                advance()
+                
+                lastCase = parseExpression()
+                if !current.isType(.COLON) {
+                    lastCase = combine(lastCase, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
+                } else {
+                    advance()
+                }
+                lastCaseExpressions = []
+            } else if current.isType(.DEFAULT) {
+                cases.append(ASTCase(caseStatement: lastCase, expressions: lastCaseExpressions))
+                
+                lastCase = ASTDefault(current)
+                advance()
+                if !current.isType(.COLON) {
+                    lastCase = combine(lastCase, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
+                } else {
+                    advance()
+                }
+                lastCaseExpressions = []
+            } else {
+                lastCaseExpressions.append(parseInstruction())
+            }
+        }
+        if lastCase !== defCase || !lastCaseExpressions.isEmpty {
+            cases.append(ASTCase(caseStatement: lastCase, expressions: lastCaseExpressions))
+        }
+        
+        advance()
+        let toReturn = ASTSwitch(begin: begin, end: previous.end, variableExpression: variable, cases: cases)
+        if let part {
+            return combine(toReturn, part)
+        }
+        return toReturn
     }
     
     /// Parses a `do-while` statement.
