@@ -434,7 +434,14 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the full `while` statement.
     private mutating func parseWhile() -> ASTExpression {
-        fatalError()
+        let begin = current.begin
+        
+        advance()
+        
+        let condition = parseParenthesizedExpression()
+        let body      = parseInstruction()
+        
+        return ASTWhile(begin: begin, condition: condition, body: body)
     }
     
     /// Parses a `for` statement. `foreach` loops are parsed by this
