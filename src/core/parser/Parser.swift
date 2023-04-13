@@ -96,7 +96,15 @@ struct Parser {
     ///
     /// - Returns: The parsed statement.
     private mutating func parseInclude() -> ASTExpression {
-        fatalError()
+        advance()
+        
+        if !current.isType(.STRING) {
+            return ASTInclude(begin: previous.begin, end: current.begin, included:
+                   ASTMissing(begin: previous.end, end: current.begin, message: "Expected a string literal"))
+        }
+        let begin   = previous.begin
+        let strings = parseStrings()
+        return ASTInclude(begin: begin, end: previous.end, included: strings)
     }
     
     /// Parses a `class` definition.
