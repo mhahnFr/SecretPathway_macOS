@@ -780,12 +780,87 @@ struct Parser {
         return toReturn
     }
     
+    /// Parses a simple expression.
+    ///
+    /// - Parameter priority: The priority of the statement.
+    /// - Returns: The AST representation of the simple expression.
+    private mutating func parseSimpleExpression(priority: Int) -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    /// Parses an operation.
+    ///
+    /// - Parameter priority: The priority used to arse the operation.
+    /// - Returns: The AST representation of the operation.
+    private mutating func parseOperation(priority: Int) -> ASTExpression? {
+        // TODO: Implement
+        fatalError()
+    }
+    
     /// Parses a normal expression.
     ///
     /// - Returns: The parsed expression.
     private mutating func parseExpression() -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        return parseExpression(priority: 99)
+    }
+    
+    /// Parses a normal expression,
+    ///
+    /// - Returns: The parsed expression.
+    private mutating func parseExpression(priority: Int) -> ASTExpression {
+        let lhs: ASTExpression
+        
+        if current.isType(.AMPERSAND) {
+            if !next.isType(.IDENTIFIER) {
+                lhs = ASTUnaryOperation(begin: current.begin, operatorType: .AMPERSAND,
+                                        identifier: combine(ASTName(begin: current.end, end: next.begin),
+                                                            ASTMissing(begin: current.end, end: next.begin, message: "Missing identifier")))
+            } else {
+                advance()
+                lhs = ASTUnaryOperation(begin: previous.begin, operatorType: .AMPERSAND, identifier: ASTName(token: current))
+                advance()
+            }
+        } else if current.isType(.STAR) {
+            advance()
+            lhs = ASTUnaryOperation(begin: previous.begin, operatorType: .STAR, identifier: parseExpression(priority: 1))
+        } else if priority >= 2 && current.isType(.PLUS, .MINUS, .SIZEOF, .NOT) {
+            let copy = current
+            advance()
+            if copy.isType(.SIZEOF) && current.isType(.LEFT_PAREN) {
+                advance()
+            }
+            let expression = parseExpression(priority: 1)
+            if copy.isType(.SIZEOF) && current.isType(.RIGHT_PAREN) {
+                advance()
+            }
+            lhs = ASTUnaryOperation(begin: previous.begin, operatorType: copy.type, identifier: expression)
+            
+            if copy.isType(.PLUS) {
+                return lhs
+            }
+        } else {
+            lhs = parseSimpleExpression(priority: priority)
+        }
+        
+        var previousExpression = lhs;
+        var lastToken = Parser.startToken
+        while isOperator(current) && !isStopToken(current) {
+            if current == lastToken {
+                previousExpression = combine(previousExpression, ASTWrong(token: current, message: "Unexpected token 3"))
+                advance()
+                continue
+            } else {
+                lastToken = current
+            }
+            let opType = current.type
+            if let rhs = parseOperation(priority: priority) {
+                previousExpression = ASTOperation(lhs: previousExpression, rhs: rhs, operatorType: opType)
+            } else {
+                break
+            }
+        }
+        return previousExpression
     }
     
     /// Parses a variable definition.
