@@ -611,7 +611,46 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the full statement.
     private mutating func parseTryCatch() -> ASTExpression {
-        fatalError()
+        var parts: [ASTExpression] = []
+        let begin = current.begin
+        
+        advance()
+        
+        let toTry = parseInstruction()
+        if !current.isType(.CATCH) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing 'catch'"))
+        } else {
+            advance()
+        }
+        
+        let exception: ASTExpression?
+        if current.isType(.LEFT_PAREN, .RIGHT_PAREN) {
+            if !current.isType(.LEFT_PAREN) {
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            } else {
+                advance()
+            }
+            if !current.isType(.RIGHT_PAREN) {
+                exception = parseFancyVariableDeclaration()
+                if !current.isType(.RIGHT_PAREN) {
+                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                } else {
+                    advance()
+                }
+            } else {
+                exception = nil
+                advance()
+            }
+        } else {
+            exception = nil
+        }
+        let caught = parseInstruction()
+        
+        let tryCatch = ASTTryCatch(begin: begin, tryExpression: toTry, catchExression: caught, exceptionVariable: exception)
+        if !parts.isEmpty {
+            return combine(tryCatch, parts)
+        }
+        return tryCatch
     }
     
     /// Parses an instruction.
