@@ -563,7 +563,26 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the full `do-while` statement.
     private mutating func parseDo() -> ASTExpression {
-        fatalError()
+        let begin = current.begin
+        
+        advance()
+        
+        let instruction = parseInstruction()
+        
+        let part: ASTExpression?
+        if !current.isType(.WHILE) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing 'while'")
+        } else {
+            part = nil
+            advance()
+        }
+        let condition = parseParenthesizedExpression()
+        
+        let loop = ASTWhile(begin: begin, condition: condition, body: instruction)
+        if let part {
+            return combine(loop, part)
+        }
+        return loop
     }
     
     /// Parses a `break` statement.
