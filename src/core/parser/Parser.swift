@@ -589,14 +589,18 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the statement.
     private mutating func parseBreak() -> ASTExpression {
-        fatalError()
+        let b = ASTBreak(token: current)
+        advance()
+        return assertSemicolon(for: b)
     }
     
     /// Parses a `continue` statement.
     ///
     /// - Returns: The AST representation of the statement.
     private mutating func parseContinue() -> ASTExpression {
-        fatalError()
+        let c = ASTContinue(current)
+        advance()
+        return assertSemicolon(for: c)
     }
     
     /// Parses a `return` statement.
