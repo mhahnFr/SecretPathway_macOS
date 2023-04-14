@@ -603,7 +603,16 @@ struct Parser {
     ///
     /// - Returns: The AST representation of the full statement.
     private mutating func parseReturn() -> ASTExpression {
-        fatalError()
+        let toReturn: ASTExpression
+        
+        advance()
+        if !current.isType(.SEMICOLON) {
+            toReturn = ASTReturn(begin: previous.begin, returned: parseExpression(), end: previous.end)
+        } else {
+            toReturn = ASTReturn(begin: previous.begin, returned: nil, end: current.end)
+        }
+        
+        return toReturn
     }
     
     /// Parses a `try-catch` block. The catch block can have a
