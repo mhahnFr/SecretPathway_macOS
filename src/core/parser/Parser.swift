@@ -785,6 +785,116 @@ struct Parser {
     /// - Parameter priority: The priority of the statement.
     /// - Returns: The AST representation of the simple expression.
     private mutating func parseSimpleExpression(priority: Int) -> ASTExpression {
+        let toReturn: ASTExpression
+        
+        switch current.type {
+        case .IDENTIFIER:
+            switch next.type {
+            case .LEFT_PAREN:
+                let name = ASTName(token: current)
+                advance(count: 2)
+                
+                let arguments = parseCallArguments(until: .RIGHT_PAREN)
+                
+                let part: ASTExpression?
+                if !current.isType(.RIGHT_PAREN) {
+                    part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'")
+                } else {
+                    part = nil
+                    advance()
+                }
+                let f = ASTFunctionCall(name: name, arguments: arguments, end: previous.end)
+                if let part {
+                    toReturn = combine(f, part)
+                } else {
+                    toReturn = f
+                }
+                
+            case .ASSIGNMENT,
+                 .ASSIGNMENT_PLUS,
+                 .ASSIGNMENT_STAR,
+                 .ASSIGNMENT_MINUS,
+                 .ASSIGNMENT_SLASH,
+                 .ASSIGNMENT_PERCENT:
+                let name = ASTName(token: current)
+                let type = next.type
+                advance(count: 2)
+                toReturn = ASTOperation(lhs: name, rhs: parseExpression(), operatorType: type)
+                
+            case .INCREMENT,
+                 .DECREMENT:
+                advance()
+                toReturn = ASTUnaryOperation(begin: previous.begin, operatorType: current.type, identifier: ASTName(token: previous))
+                advance()
+                
+            default:
+                toReturn = ASTName(token: current)
+                advance()
+            }
+            
+        case .SCOPE: toReturn = ASTUnaryOperation(begin: current.begin, operatorType: .SCOPE, identifier: parseFunctionCall())
+            
+        case .STAR:
+            advance()
+            toReturn = ASTUnaryOperation(begin: previous.begin, operatorType: previous.type, identifier: parseExpression(priority: 1))
+            
+        case .TRUE, .FALSE: toReturn = ASTBool(token: current);      advance()
+        case .NIL:          toReturn = ASTNil(token: current);       advance()
+        case .THIS:         toReturn = ASTThis(token: current);      advance()
+        case .SYMBOL:       toReturn = ASTSymbol(token: current);    advance()
+        case .INTEGER:      toReturn = ASTInteger(token: current);   advance()
+        case .CHARACTER:    toReturn = ASTCharacter(token: current); advance()
+        case .ELLIPSIS,
+             .RANGE,
+             .DOT:          toReturn = parseEllipsis()
+        case .NEW:          toReturn = parseNew()
+        case .STRING:       toReturn = parseStrings()
+        case .LEFT_CURLY:   toReturn = parseArray()
+        case .LEFT_BRACKET: toReturn = parseMapping()
+            
+        case .LEFT_PAREN:
+            advance()
+            
+            let cast = parseMaybeCast(priority: priority)
+            if let cast {
+                toReturn = cast
+            } else {
+                let expression = parseExpression()
+                if !current.isType(.RIGHT_PAREN) {
+                    toReturn = combine(expression, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                } else {
+                    advance()
+                    toReturn = expression
+                }
+            }
+                        
+        default: toReturn = ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression")
+        }
+        
+        return toReturn
+    }
+    
+    private mutating func parseEllipsis() -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    private mutating func parseNew() -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    private mutating func parseArray() -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    private mutating func parseMapping() -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    private mutating func parseMaybeCast(priority: Int) -> ASTExpression? {
         // TODO: Implement
         fatalError()
     }
