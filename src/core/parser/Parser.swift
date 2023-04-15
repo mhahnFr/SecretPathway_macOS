@@ -887,9 +887,44 @@ struct Parser {
         return ellipsis
     }
     
+    /// Parses a new statement.
+    ///
+    /// - Returns: The AST representation of the full new statement.
     private mutating func parseNew() -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        advance()
+        
+        var parts: [ASTExpression] = []
+        let begin = previous.begin
+        
+        if !current.isType(.LEFT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+        } else {
+            advance()
+        }
+        let instancingExpression = parseExpression()
+        
+        let arguments: [ASTExpression]?
+        if !current.isType(.RIGHT_PAREN) {
+            if !current.isType(.COMMA) {
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
+            } else {
+                advance()
+            }
+            arguments = parseCallArguments(until: .RIGHT_PAREN)
+            if !current.isType(.RIGHT_PAREN) {
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+            } else {
+                advance()
+            }
+        } else {
+            arguments = nil
+            advance()
+        }
+        let result = ASTNew(begin: begin, end: previous.end, instancingExpression: instancingExpression, arguments: arguments)
+        if !parts.isEmpty {
+            return combine(result, parts)
+        }
+        return result
     }
     
     private mutating func parseArray() -> ASTExpression {
