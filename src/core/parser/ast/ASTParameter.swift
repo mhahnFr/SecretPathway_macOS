@@ -22,7 +22,7 @@
 /// as an AST node.
 class ASTParameter: ASTExpression {
     /// The declared type of this parameter.
-    let type: ASTExpression
+    let declaredType: ASTExpression
     /// The declared name of this parameter.
     let name: ASTExpression
     
@@ -32,22 +32,22 @@ class ASTParameter: ASTExpression {
     /// - Parameter name: The declared name.
     init(type: ASTExpression,
          name: ASTExpression) {
-        self.type = type
-        self.name = name
+        self.declaredType = type
+        self.name         = name
         
         super.init(begin: type.begin, end: name.end, type: .PARAMETER)
     }
     
     override func describe(_ indentation: Int) -> String {
         "\(super.describe(indentation)) type:\n"               +
-        "\(type.describe(indentation + 4))\n"                  +
+        "\(declaredType.describe(indentation + 4))\n"                  +
         "\(String(repeating: " ", count: indentation))name:\n" +
         name.describe(indentation + 4)
     }
     
     override func visit(_ visitor: ASTVisitor) {
         if visitor.maybeVisit(self) {
-            type.visit(visitor)
+            declaredType.visit(visitor)
             name.visit(visitor)
         }
     }
