@@ -799,9 +799,30 @@ struct Parser {
         fatalError()
     }
     
+    /// Parses a ternary.
+    ///
+    /// - Returns: The AST representation of the ternary.
     private mutating func parseTernary() -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        advance()
+        
+        let truePart = parseExpression(priority: 12)
+        
+        let part: ASTExpression?
+        if !current.isType(.COLON) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'")
+        } else {
+            part = nil
+            advance()
+        }
+        
+        let falsePart = parseExpression(priority: 12)
+        
+        let toReturn = ASTOperation(lhs: truePart, rhs: falsePart, operatorType: .COLON)
+        
+        if let part {
+            return combine(toReturn, part)
+        }
+        return toReturn
     }
     
     /// Parses an operation.
