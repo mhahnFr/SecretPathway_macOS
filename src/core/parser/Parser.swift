@@ -789,9 +789,47 @@ struct Parser {
         fatalError()
     }
     
-    private mutating func parseFunctionCall() -> ASTExpression {
-        // TODO: Implement
+    /// Parses the comma separated call arguments until the given end type
+    /// is reached.
+    ///
+    /// - Parameter type: The end type.
+    /// - Returns: A list with the AST representations of the parsed arguments.
+    private mutating func parseCallArguments(until type: TokenType) -> [ASTExpression] {
         fatalError()
+    }
+    
+    /// Parses a function call.
+    ///
+    /// - Returns: The AST representation of the function call.
+    private mutating func parseFunctionCall() -> ASTExpression {
+        let toReturn: ASTExpression
+        
+        var parts: [ASTExpression] = []
+        
+        advance()
+        
+        let name = parseName()
+        
+        if !current.isType(.LEFT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+        } else {
+            advance()
+        }
+        
+        let arguments = parseCallArguments(until: .RIGHT_PAREN)
+        
+        if !current.isType(.RIGHT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+        } else {
+            advance()
+        }
+        
+        toReturn = ASTFunctionCall(name: name, arguments: arguments, end: previous.end)
+        
+        if !parts.isEmpty {
+            return combine(toReturn, parts)
+        }
+        return toReturn
     }
     
     /// Parses a subscript expression.
