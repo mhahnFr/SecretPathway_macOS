@@ -927,9 +927,28 @@ struct Parser {
         return result
     }
     
+    /// Parses an array expression.
+    ///
+    /// - Returns: The AST representation of the array expression.
     private mutating func parseArray() -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        let begin = current.begin
+        advance()
+        
+        let args = parseCallArguments(until: .RIGHT_CURLY)
+        
+        let part: ASTExpression?
+        if !current.isType(.RIGHT_CURLY) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'")
+        } else {
+            part = nil
+            advance()
+        }
+        
+        let array = ASTArray(begin: begin, end: previous.end, content: args)
+        if let part {
+            return combine(array, part)
+        }
+        return array
     }
     
     private mutating func parseMapping() -> ASTExpression {
