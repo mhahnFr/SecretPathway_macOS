@@ -24,7 +24,7 @@ struct Parser {
     private static let startToken = Token(begin: 0, type: .EOF, end: 0)
     /// The tokenizer splitting the source code.
     private var tokenizer: Tokenizer
-    /// The token that was previously in the stream..
+    /// The token that was previously in the stream.
     private var previous: Token
     /// The token currently in the stream.
     private var current: Token
@@ -978,17 +978,10 @@ struct Parser {
         return nil
     }
     
-    /// Parses a normal expression.
-    ///
-    /// - Returns: The parsed expression.
-    private mutating func parseExpression() -> ASTExpression {
-        return parseExpression(priority: 99)
-    }
-    
     /// Parses a normal expression,
     ///
     /// - Returns: The parsed expression.
-    private mutating func parseExpression(priority: Int) -> ASTExpression {
+    private mutating func parseExpression(priority: Int = 99) -> ASTExpression {
         let lhs: ASTExpression
         
         if current.isType(.AMPERSAND) {
@@ -1104,7 +1097,7 @@ struct Parser {
     ///
     /// - Parameter end: The end token type.
     /// - Returns: The read expressions.
-    private mutating func parse(end: TokenType) -> [ASTExpression] {
+    private mutating func parse(end: TokenType = .EOF) -> [ASTExpression] {
         var expressions: [ASTExpression] = []
         
         var lastToken = Parser.startToken
@@ -1120,13 +1113,5 @@ struct Parser {
         }
         
         return expressions
-    }
-    
-    /// Parses the source code until the end of the source code
-    /// is reached.
-    ///
-    /// - Returns: The read expressions.
-    public mutating func parse() -> [ASTExpression] {
-        return parse(end: .EOF)
     }
 }
