@@ -951,9 +951,28 @@ struct Parser {
         return array
     }
     
+    /// Parses a mapping expression.
+    ///
+    /// - Returns: The AST representation of the mapping expression.
     private mutating func parseMapping() -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        let begin = current.begin
+        advance()
+        
+        let args = parseCallArguments(until: .RIGHT_BRACKET)
+        
+        let part: ASTExpression?
+        if !current.isType(.RIGHT_BRACKET) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")
+        } else {
+            part = nil
+            advance()
+        }
+        
+        let mapping = ASTMapping(begin: begin, end: previous.end, content: args)
+        if let part {
+            return combine(mapping, part)
+        }
+        return mapping
     }
     
     private mutating func parseMaybeCast(priority: Int) -> ASTExpression? {
