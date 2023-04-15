@@ -789,13 +789,68 @@ struct Parser {
         fatalError()
     }
     
+    private mutating func parseFunctionCall() -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    private mutating func parseSubscript(priority: Int) -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
+    private mutating func parseTernary() -> ASTExpression {
+        // TODO: Implement
+        fatalError()
+    }
+    
     /// Parses an operation.
     ///
     /// - Parameter priority: The priority used to arse the operation.
     /// - Returns: The AST representation of the operation.
     private mutating func parseOperation(priority: Int) -> ASTExpression? {
-        // TODO: Implement
-        fatalError()
+        if priority >= 1 && current.isType(.DOT, .ARROW) {
+            return parseFunctionCall()
+        } else if current.isType(.LEFT_BRACKET) {
+            return parseSubscript(priority: priority)
+        } else if priority >= 13 && current.isType(.QUESTION) {
+            return parseTernary()
+        } else if priority >= 13 && current.isType(.DOUBLE_QUESTION) {
+            advance()
+            return parseExpression(priority: 12)
+        } else if priority >= 12 && current.isType(.OR) {
+            advance()
+            return parseExpression(priority: 11)
+        } else if priority >= 11 && current.isType(.AND) {
+            advance()
+            return parseExpression(priority: 10)
+        } else if priority >= 10 && current.isType(.PIPE) {
+            advance()
+            return parseExpression(priority: 9)
+        } else if priority >= 8 && current.isType(.AMPERSAND) {
+            advance()
+            return parseExpression(priority: 7)
+        } else if priority >= 5 && current.isType(.LEFT_SHIFT, .RIGHT_SHIFT) {
+            advance()
+            return parseExpression(priority: 4)
+        } else if priority >= 7 && current.isType(.EQUALS, .NOT_EQUAL) {
+            advance()
+            return parseExpression(priority: 6)
+        } else if priority >= 6 && current.isType(.LESS, .LESS_OR_EQUAL, .GREATER, .GREATER_OR_EQUAL) {
+            advance()
+            return parseExpression(priority: 6)
+        } else if priority >= 4 && current.isType(.MINUS, .PLUS) {
+            advance()
+            return parseExpression(priority: 3)
+        } else if priority >= 3 && current.isType(.SLASH, .PERCENT, .STAR) {
+            advance()
+            return parseExpression(priority: 2)
+        } else if priority >= 2 && current.isType(.IS) {
+            advance()
+            return parseType()
+        }
+        
+        return nil
     }
     
     /// Parses a normal expression.
