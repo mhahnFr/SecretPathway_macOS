@@ -975,9 +975,43 @@ struct Parser {
         return mapping
     }
     
+    /// Parses a cast statement if the streamed token represent one.
+    /// Returns `nil` if the next tokens do not represent a cast
+    /// statement.
+    ///
+    /// - Parameter priority: The priority to be used to parse the statement.
+    /// - Returns: Either the AST representation of the cast expression or `nil`
     private mutating func parseMaybeCast(priority: Int) -> ASTExpression? {
-        // TODO: Implement
-        fatalError()
+        if (next.isType(.RIGHT_PAREN) && (isType(current) || current.isType(.IDENTIFIER))) ||
+            (isType(current) && next.isType(.LEFT_PAREN, .LEFT_BRACKET, .RIGHT_BRACKET, .STAR)) {
+            return parseCast(priority: priority)
+        }
+        return nil
+    }
+    
+    /// Parses a cast statment.
+    ///
+    /// - Parameter priority: The priority to be used to parse the statement.
+    /// - Returns: The AST representation of the cast statement.
+    private mutating func parseCast(priority: Int) -> ASTExpression {
+        let begin = current.begin
+        let type  = parseType()
+        
+        let part: ASTExpression?
+        if !current.isType(.RIGHT_PAREN) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'")
+        } else {
+            part = nil
+            advance()
+        }
+        
+        let expression = parseExpression(priority: priority)
+        let cast       = ASTCast(begin: begin, castType: type, castExpression: expression)
+        
+        if let part {
+            return combine(cast, part)
+        }
+        return cast
     }
     
     /// Parses the comma separated call arguments until the given end type
