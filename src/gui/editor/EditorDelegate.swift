@@ -51,9 +51,11 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     internal func updateTextView(_ textView: NSTextView) {}
     
     internal func initTextView(_ textView: NSTextView) {
-        textView.font      = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
-        textView.textColor = .textColor
-        textView.delegate  = self
+        textView.font        = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
+        textView.textColor   = .textColor
+        textView.delegate    = self
+        textView.allowsUndo  = true
+        textView.usesFindBar = true
         
         textView.isAutomaticQuoteSubstitutionEnabled  = false
         textView.isAutomaticDataDetectionEnabled      = false
