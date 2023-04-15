@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import SwiftUI
@@ -27,7 +26,7 @@ struct AboutView: View {
             Text("The **\(Constants.APP_NAME)**")
             Text("Version **\(Constants.VERSION_STRING)**")
             Spacer()
-            Text("© Copyright 2022 mhahnFr (https://www.github.com/mhahnFr)")
+            Text("© Copyright 2022 - 2023 mhahnFr (https://www.github.com/mhahnFr)")
             Text("Licensed under the terms of the **GPL 3.0**.")
             Text("More information: https://www.github.com/mhahnFr/SecretPathway_macOS")
         }.padding()
