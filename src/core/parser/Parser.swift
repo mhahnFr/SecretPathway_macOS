@@ -874,9 +874,17 @@ struct Parser {
         return toReturn
     }
     
+    /// Parses an ellipsis.
+    ///
+    /// - Returns: The AST representation of the read ellipsis.
     private mutating func parseEllipsis() -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        let ellipsis = ASTEllipsis(current)
+        
+        advance()
+        if !previous.isType(.ELLIPSIS) {
+            return combine(ellipsis, ASTWrong(token: previous, message: "Expected '...'"))
+        }
+        return ellipsis
     }
     
     private mutating func parseNew() -> ASTExpression {
