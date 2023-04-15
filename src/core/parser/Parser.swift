@@ -795,7 +795,29 @@ struct Parser {
     /// - Parameter type: The end type.
     /// - Returns: A list with the AST representations of the parsed arguments.
     private mutating func parseCallArguments(until type: TokenType) -> [ASTExpression] {
-        fatalError()
+        var list: [ASTExpression] = []
+        
+        var lastToken = Parser.startToken
+        while !current.isType(type) && !isStopToken(current) {
+            if current == lastToken {
+                list.append(ASTWrong(token: current, message: "Unexpected token 4"))
+                advance()
+                continue
+            } else {
+                lastToken = current
+            }
+            list.append(parseExpression())
+            if !current.isType(.COMMA, type) {
+                list.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
+            } else if current.isType(.COMMA) {
+                advance()
+            }
+        }
+        if previous.isType(.COMMA) {
+            list.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression"))
+        }
+        
+        return list
     }
     
     /// Parses a function call.
