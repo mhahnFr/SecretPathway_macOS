@@ -794,9 +794,53 @@ struct Parser {
         fatalError()
     }
     
+    /// Parses a subscript expression.
+    ///
+    /// - Parameter priority: The prioritiy used to parse the statement.
+    /// - Returns: The AST representation of the subscript.
     private mutating func parseSubscript(priority: Int) -> ASTExpression {
-        // TODO: Implement
-        fatalError()
+        let toReturn: ASTExpression
+        
+        advance()
+        
+        let expression = parseExpression()
+        if current.isType(.RANGE) {
+            advance()
+            let rhs = parseExpression()
+            
+            let result = ASTOperation(lhs: expression, rhs: rhs, operatorType: .RANGE)
+            if !current.isType(.RIGHT_BRACKET) {
+                toReturn = ASTSubscript(expression: combine(result, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")))
+            } else {
+                advance()
+                toReturn = ASTSubscript(expression: result)
+            }
+        } else {
+            let part: ASTExpression?
+            if !current.isType(.RIGHT_BRACKET) {
+                part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")
+            } else {
+                advance()
+                part = nil
+            }
+            
+            let result: ASTExpression
+            if let part {
+                result = combine(ASTSubscript(expression: expression), part)
+            } else {
+                result = ASTSubscript(expression: expression)
+            }
+            
+            if current.isType(.ASSIGNMENT) {
+                advance()
+                let rhs = parseExpression(priority: priority)
+                toReturn = ASTOperation(lhs: result, rhs: rhs, operatorType: .ASSIGNMENT)
+            } else {
+                toReturn = result
+            }
+        }
+        
+        return toReturn
     }
     
     /// Parses a ternary.
