@@ -59,6 +59,7 @@ struct Tokenizer {
         else if stream.peek("{")   { return Token(begin: stream.index, type: .LEFT_CURLY,         end: stream.skip())  }
         else if stream.peek("}")   { return Token(begin: stream.index, type: .RIGHT_CURLY,        end: stream.skip())  }
         else if stream.peek("...") { return Token(begin: stream.index, type: .ELLIPSIS,           end: stream.skip(3)) }
+        else if stream.peek("..")  { return Token(begin: stream.index, type: .RANGE,              end: stream.skip(2)) }
         else if stream.peek(".")   { return Token(begin: stream.index, type: .DOT,                end: stream.skip())  }
         else if stream.peek(",")   { return Token(begin: stream.index, type: .COMMA,              end: stream.skip())  }
         else if stream.peek("::")  { return Token(begin: stream.index, type: .SCOPE,              end: stream.skip(2)) }
