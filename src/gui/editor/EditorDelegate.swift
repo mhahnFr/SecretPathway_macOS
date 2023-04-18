@@ -113,10 +113,16 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
             
             token = tokenizer.nextToken()
         }
-/*        Task(priority: .background) {
+        Task(priority: .background) {
+            print("Begin parsing")
             let interpreter = Interpreter() // loader
-            let ast         = Parser(text: textStorage.string).parse()
-            let context     = interpreter.createContext(for: ast)
+            var parser      = Parser(text: textStorage.string)
+            let ast         = parser.parse()
+            print("End parsing")
+            for node in ast {
+                print(node.describe(0))
+            }
+            /*let context     = interpreter.createContext(for: ast)
             let highlights 	= interpreter.highlights
             
             for range in highlights {
@@ -126,7 +132,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
             }
             for token in comments {
                 textStorage.setAttributes(theme.styleFor(tokenType: token.type).native, range: NSMakeRange(token.begin, token.end - token.begin))
-            }
-        }*/
+            }*/
+        }
     }
 }
