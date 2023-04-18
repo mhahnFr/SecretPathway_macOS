@@ -58,13 +58,14 @@
 		BFC6891C29BD11E5001E51C1 /* ASTEllipsis.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891B29BD11E5001E51C1 /* ASTEllipsis.swift */; };
 		BFC6891E29BD1258001E51C1 /* ASTEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891D29BD1258001E51C1 /* ASTEmpty.swift */; };
 		BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */; };
+		BFD5A14329EF0C1D009E5409 /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5A14229EF0C1D009E5409 /* Interpreter.swift */; };
+		BFD5A14529EF107C009E5409 /* ASTFunctionDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD5A14429EF107C009E5409 /* ASTFunctionDefinition.swift */; };
 		BFD9049D29252289006B728B /* ConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9049C29252289006B728B /* ConnectionError.swift */; };
 		BFD9B0CC2923CFF500E59D00 /* ConnectionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */; };
 		BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0CE2923DE7500E59D00 /* ConnectionListener.swift */; };
 		BFD9B0D32923F58900E59D00 /* DialogDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0D22923F58900E59D00 /* DialogDelegate.swift */; };
 		BFD9B0D52923F59700E59D00 /* DialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0D42923F59700E59D00 /* DialogView.swift */; };
 		BFD9B0D72923FBE800E59D00 /* Dialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD9B0D62923FBE800E59D00 /* Dialog.swift */; };
-		BFDC6CC929D8C02600884DF0 /* ASTFunctionDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDC6CC829D8C02600884DF0 /* ASTFunctionDefinition.swift */; };
 		BFDCA77729AD1C5D005B8AA9 /* ASTArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDCA77629AD1C5D005B8AA9 /* ASTArray.swift */; };
 		BFDCA77929AD226F005B8AA9 /* ASTBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDCA77829AD226F005B8AA9 /* ASTBlock.swift */; };
 		BFDCA77B29AD2569005B8AA9 /* ASTBool.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDCA77A29AD2569005B8AA9 /* ASTBool.swift */; };
@@ -151,13 +152,14 @@
 		BFC6891B29BD11E5001E51C1 /* ASTEllipsis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTEllipsis.swift; sourceTree = "<group>"; };
 		BFC6891D29BD1258001E51C1 /* ASTEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTEmpty.swift; sourceTree = "<group>"; };
 		BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptDelegate.swift; sourceTree = "<group>"; };
+		BFD5A14229EF0C1D009E5409 /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
+		BFD5A14429EF107C009E5409 /* ASTFunctionDefinition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASTFunctionDefinition.swift; sourceTree = "<group>"; };
 		BFD9049C29252289006B728B /* ConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionError.swift; sourceTree = "<group>"; };
 		BFD9B0CB2923CFF500E59D00 /* ConnectionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionRecord.swift; sourceTree = "<group>"; };
 		BFD9B0CE2923DE7500E59D00 /* ConnectionListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListener.swift; sourceTree = "<group>"; };
 		BFD9B0D22923F58900E59D00 /* DialogDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogDelegate.swift; sourceTree = "<group>"; };
 		BFD9B0D42923F59700E59D00 /* DialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogView.swift; sourceTree = "<group>"; };
 		BFD9B0D62923FBE800E59D00 /* Dialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
-		BFDC6CC829D8C02600884DF0 /* ASTFunctionDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ASTFunctionDefinition.swift; path = src/core/parser/ast/ASTFunctionDefinition.swift; sourceTree = SOURCE_ROOT; };
 		BFDCA77629AD1C5D005B8AA9 /* ASTArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTArray.swift; sourceTree = "<group>"; };
 		BFDCA77829AD226F005B8AA9 /* ASTBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTBlock.swift; sourceTree = "<group>"; };
 		BFDCA77A29AD2569005B8AA9 /* ASTBool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTBool.swift; sourceTree = "<group>"; };
@@ -284,9 +286,18 @@
 		BFD5A14029EF0BE7009E5409 /* lpc */ = {
 			isa = PBXGroup;
 			children = (
+				BFD5A14129EF0C10009E5409 /* interpreter */,
 				BF2DAAD02965DC590063F91C /* parser */,
 			);
 			path = lpc;
+			sourceTree = "<group>";
+		};
+		BFD5A14129EF0C10009E5409 /* interpreter */ = {
+			isa = PBXGroup;
+			children = (
+				BFD5A14229EF0C1D009E5409 /* Interpreter.swift */,
+			);
+			path = interpreter;
 			sourceTree = "<group>";
 		};
 		BFD5AB26291AABA300890CE6 /* gui */ = {
@@ -415,7 +426,7 @@
 		BFFD268629A69647002998E8 /* ast */ = {
 			isa = PBXGroup;
 			children = (
-				BFDC6CC829D8C02600884DF0 /* ASTFunctionDefinition.swift */,
+				BFD5A14429EF107C009E5409 /* ASTFunctionDefinition.swift */,
 				BFFD268729A69663002998E8 /* ASTExpression.swift */,
 				BFFD268929A69759002998E8 /* ASTType.swift */,
 				BFFD268B29A69C18002998E8 /* ASTInclude.swift */,
@@ -576,6 +587,7 @@
 				BF8BDAD529D4B26F00763C81 /* ASTInteger.swift in Sources */,
 				BF92225129E5DA30001085B9 /* ASTWhile.swift in Sources */,
 				BF5C0F3C29E7435A007F49BA /* ASTSwitch.swift in Sources */,
+				BFD5A14529EF107C009E5409 /* ASTFunctionDefinition.swift in Sources */,
 				BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */,
 				BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */,
 				BFDCA77F29AD26C9005B8AA9 /* ASTCase.swift in Sources */,
@@ -603,6 +615,7 @@
 				BF92224F29E5D8CB001085B9 /* ASTUnaryOperation.swift in Sources */,
 				BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */,
 				BFDCA77729AD1C5D005B8AA9 /* ASTArray.swift in Sources */,
+				BFD5A14329EF0C1D009E5409 /* Interpreter.swift in Sources */,
 				BFE2DB8229A7EE69003E2BFF /* ASTMissing.swift in Sources */,
 				BFDCA77B29AD2569005B8AA9 /* ASTBool.swift in Sources */,
 				BFE06F26296DAA24004A3C1F /* JSONStyle.swift in Sources */,
@@ -619,7 +632,6 @@
 				BFB6CE2929D490E6004A49F2 /* ASTThis.swift in Sources */,
 				BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */,
 				BF92225329E5DC38001085B9 /* ASTReturn.swift in Sources */,
-				BFDC6CC929D8C02600884DF0 /* ASTFunctionDefinition.swift in Sources */,
 				BFFD268E29A69C29002998E8 /* ASTInheritance.swift in Sources */,
 				BF551CB929AE8029004D1CFE /* ASTClass.swift in Sources */,
 			);
