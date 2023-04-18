@@ -281,6 +281,14 @@
 			path = spp;
 			sourceTree = "<group>";
 		};
+		BFD5A14029EF0BE7009E5409 /* lpc */ = {
+			isa = PBXGroup;
+			children = (
+				BF2DAAD02965DC590063F91C /* parser */,
+			);
+			path = lpc;
+			sourceTree = "<group>";
+		};
 		BFD5AB26291AABA300890CE6 /* gui */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,7 +317,7 @@
 		BFD5AB28291AAC1500890CE6 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				BF2DAAD02965DC590063F91C /* parser */,
+				BFD5A14029EF0BE7009E5409 /* lpc */,
 				BF2285F1294CBA6B0079EC8D /* protocols */,
 				BFD9B0CD2923DE6000E59D00 /* net */,
 				BF11297F2854EBDC00EACD21 /* Settings.swift */,
