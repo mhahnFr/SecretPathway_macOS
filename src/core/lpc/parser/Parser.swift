@@ -774,6 +774,7 @@ struct Parser {
         if !current.isType(.SEMICOLON) {
             toReturn = combine(expression, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
         } else {
+            advance()
             toReturn = expression
         }
         
