@@ -1322,7 +1322,7 @@ struct Parser {
     ///
     /// - Parameter end: The end token type.
     /// - Returns: The read expressions.
-    private mutating func parse(end: TokenType = .EOF) -> [ASTExpression] {
+    mutating func parse(end: TokenType = .EOF) -> [ASTExpression] {
         var expressions: [ASTExpression] = []
         
         var lastToken = Parser.startToken

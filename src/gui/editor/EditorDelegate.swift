@@ -100,11 +100,33 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// Performs the highlighting of the text.
     private func highlight() {
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
+        
+        var comments: [Token] = []
+        
         var token = tokenizer.nextToken()
         while token.type != .EOF {            
             textStorage.setAttributes(theme.styleFor(tokenType: token.type).native, range: NSMakeRange(token.begin, token.end - token.begin))
             
+            if token.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
+                comments.append(token)
+            }
+            
             token = tokenizer.nextToken()
         }
+/*        Task(priority: .background) {
+            let interpreter = Interpreter() // loader
+            let ast         = Parser(text: textStorage.string).parse()
+            let context     = interpreter.createContext(for: ast)
+            let highlights 	= interpreter.highlights
+            
+            for range in highlights {
+                if let style = theme.styleFor(tokenType: range.type) {
+                    textStorage.setAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
+                }
+            }
+            for token in comments {
+                textStorage.setAttributes(theme.styleFor(tokenType: token.type).native, range: NSMakeRange(token.begin, token.end - token.begin))
+            }
+        }*/
     }
 }
