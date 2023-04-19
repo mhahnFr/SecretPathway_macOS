@@ -220,10 +220,13 @@ struct Parser {
                     } else {
                         advance()
                     }
+                    variadic = true
                     break
+                } else if current.isType(.RIGHT_PAREN) {
+                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type"))
+                } else {
+                    paramTypes.append(parseType())
                 }
-                
-                let type = parseType()
                 
                 if current.isType(.RIGHT_PAREN) {
                     advance()
