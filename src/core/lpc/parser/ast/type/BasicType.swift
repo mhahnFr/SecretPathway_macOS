@@ -18,12 +18,33 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents a basic type as an AST node.
 class BasicType: AbstractType {
+    /// The optional type file.
     let typeFile: ASTStrings?
+    /// The represented type.
+    let representedType: TokenType
     
-    init(begin: Int, end: Int, typeFile: ASTStrings?) {
-        self.typeFile = typeFile
+    /// Constructs this AST node using the given information.
+    ///
+    /// - Parameter end: The end position.
+    /// - Parameter representedType: The token of the type.
+    /// - Parameter typeFile: The optional type file.
+    init(representedType: Token, end: Int, typeFile: ASTStrings?) {
+        self.typeFile        = typeFile
+        self.representedType = representedType.type
         
-        super.init(begin: begin, end: end, type: .TYPE)
+        super.init(begin: representedType.begin, end: end, type: .TYPE)
+    }
+    
+    override func describe(_ indentation: Int) -> String {
+        "\(super.describe(indentation)) type: \(representedType)\n" +
+        "\(typeFile?.describe(indentation + 4) ?? "")"
+    }
+    
+    override func visit(_ visitor: ASTVisitor) {
+        if visitor.maybeVisit(self) {
+            typeFile?.visit(visitor)
+        }
     }
 }
