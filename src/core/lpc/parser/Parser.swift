@@ -370,7 +370,7 @@ struct Parser {
         if !current.isType(.RIGHT_PAREN) {
             var stop = false
             repeat {
-                if current.isType(.ELLIPSIS) || next.isType(.RIGHT_PAREN, .LEFT_CURLY) {
+                if current.isType(.ELLIPSIS) && next.isType(.RIGHT_PAREN, .LEFT_CURLY) {
                     toReturn.append(ASTEllipsis(current))
                     if next.isType(.LEFT_CURLY) {
                         toReturn.append(ASTMissing(begin: current.end, end: next.begin, message: "Expected ')'"))
@@ -378,6 +378,10 @@ struct Parser {
                     } else {
                         advance(count: 2)
                     }
+                    break
+                } else if current.isType(.RIGHT_PAREN) {
+                    toReturn.append(ASTMissing(begin: previous.end, end: current.end, message: "Missing parameter"))
+                    advance()
                     break
                 }
                 
@@ -1105,6 +1109,7 @@ struct Parser {
     /// - Parameter priority: The priority to be used to parse the statement.
     /// - Returns: Either the AST representation of the cast expression or `nil`
     private mutating func parseMaybeCast(priority: Int) -> ASTExpression? {
+        // TODO: type<"">
         if (next.isType(.RIGHT_PAREN) && (isType(current) || current.isType(.IDENTIFIER))) ||
             (isType(current) && next.isType(.LEFT_PAREN, .LEFT_BRACKET, .RIGHT_BRACKET, .STAR)) {
             return parseCast(priority: priority)
