@@ -24,9 +24,9 @@ enum ASTType {
     case COMBINATION,
     /// Represents a function definition.
     FUNCTION_DEFINITION,
-    /// Represents an include statement.
+    /// Represents an `include` statement.
     AST_INCLUDE,
-    /// Represents an inherit statement.
+    /// Represents an `inherit` statement.
     AST_INHERITANCE,
     /// Represents a missing AST node.
     MISSING,
@@ -46,11 +46,11 @@ enum ASTType {
     MODIFIER,
     /// Represents a block of code.
     BLOCK,
-    /// Represents a break.
+    /// Represents a `break`.
     AST_BREAK,
-    /// Represents a continue.
+    /// Represents a `continue`.
     AST_CONTINUE,
-    /// Represents a return statement.
+    /// Represents a `return` statement.
     AST_RETURN,
     /// Represents a unary operator.
     UNARY_OPERATOR,
@@ -58,13 +58,13 @@ enum ASTType {
     OPERATION,
     /// Represents a function call.
     FUNCTION_CALL,
-    /// Represents a new expression.
+    /// Represents a `new` expression.
     AST_NEW,
     /// Represents a cast expression.
     CAST,
-    /// Represents a "this" expression.
+    /// Represents a `this` expression.
     AST_THIS,
-    /// Represents a nil expression.
+    /// Represents a `nil` expression.
     AST_NIL,
     /// Represents an integer expression.
     AST_INTEGER,
@@ -80,27 +80,27 @@ enum ASTType {
     AST_MAPPING,
     /// Represents a subscript expression.
     SUBSCRIPT,
-    /// Represents a {@code if} statement.
+    /// Represents an `if` statement.
     AST_IF,
-    /// Represents a {@code while} statement.
+    /// Represents a `while` statement.
     AST_WHILE,
-    /// Represents a {@code do while} statement.
+    /// Represents a `do while` statement.
     DO_WHILE,
-    /// Represents a regular {@code for} loop.
+    /// Represents a regular `for` loop.
     AST_FOR,
-    /// Represents a {@code foreach} statement.
+    /// Represents a `foreach` statement.
     AST_FOREACH,
     /// Represents an empty statement.
     EMPTY,
-    /// Represents a {@code try catch} statement.
+    /// Represents a `try catch` statement.
     TRY_CATCH,
-    /// Represents a {@code default} case.
+    /// Represents a `default` case.
     AST_DEFAULT,
     /// Represents a switch case statement.
     AST_CASE,
-    /// Represents a switch statement.
+    /// Represents a `switch` statement.
     AST_SWITCH,
-    /// Represents a class statement.
+    /// Represents a `class` statement.
     AST_CLASS,
     /// Represents a character.
     AST_CHARACTER,
@@ -109,5 +109,7 @@ enum ASTType {
     /// Represents an operator identifier.
     OPERATOR_NAME,
     /// Represents a string concatenation.
-    STRINGS
+    STRINGS,
+    /// Represents an array type.
+    ARRAY_TYPE
 }

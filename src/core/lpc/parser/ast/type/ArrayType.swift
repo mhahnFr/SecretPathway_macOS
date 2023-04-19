@@ -18,12 +18,28 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents an array type as an AST node.
 class ArrayType: AbstractType {
-    let underlyingType: AbstractType
+    /// The type of the content of this array.
+    let underlyingType: ASTExpression
     
-    init(underlyingType: AbstractType, end: Int) {
+    /// Constructs this AST node using the given information.
+    ///
+    /// - Parameter underlyingType: The underlying type.
+    /// - Parameter end: The end position.
+    init(underlyingType: ASTExpression, end: Int) {
         self.underlyingType = underlyingType
         
-        super.init(begin: underlyingType.begin, end: end, type: .TYPE)
+        super.init(begin: underlyingType.begin, end: end, type: .ARRAY_TYPE)
+    }
+    
+    override func describe(_ indentation: Int) -> String {
+        "\(super.describe(indentation)) underlying type:\n\(underlyingType.describe(indentation + 4))"
+    }
+    
+    override func visit(_ visitor: ASTVisitor) {
+        if visitor.maybeVisit(self) {
+            underlyingType.visit(visitor)
+        }
     }
 }
