@@ -52,6 +52,10 @@
 		BFB6CE2B29D49177004A49F2 /* ASTNil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6CE2A29D49177004A49F2 /* ASTNil.swift */; };
 		BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC2AE88296D6AF600592450 /* SPTheme.swift */; };
 		BFC2AE8B296D6B0200592450 /* DefaultTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC2AE8A296D6B0200592450 /* DefaultTheme.swift */; };
+		BFC5140929F01F5C00382D64 /* AbstractType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5140829F01F5C00382D64 /* AbstractType.swift */; };
+		BFC5140B29F01FA600382D64 /* FunctionReferenceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5140A29F01FA600382D64 /* FunctionReferenceType.swift */; };
+		BFC5140D29F01FDA00382D64 /* ArrayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5140C29F01FDA00382D64 /* ArrayType.swift */; };
+		BFC5140F29F0200300382D64 /* BasicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5140E29F0200300382D64 /* BasicType.swift */; };
 		BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891529BD0F32001E51C1 /* ASTCombination.swift */; };
 		BFC6891829BD10E5001E51C1 /* ASTContinue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891729BD10E5001E51C1 /* ASTContinue.swift */; };
 		BFC6891A29BD1177001E51C1 /* ASTDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC6891929BD1177001E51C1 /* ASTDefault.swift */; };
@@ -146,6 +150,10 @@
 		BFB6CE2A29D49177004A49F2 /* ASTNil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTNil.swift; sourceTree = "<group>"; };
 		BFC2AE88296D6AF600592450 /* SPTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPTheme.swift; sourceTree = "<group>"; };
 		BFC2AE8A296D6B0200592450 /* DefaultTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultTheme.swift; sourceTree = "<group>"; };
+		BFC5140829F01F5C00382D64 /* AbstractType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbstractType.swift; sourceTree = "<group>"; };
+		BFC5140A29F01FA600382D64 /* FunctionReferenceType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionReferenceType.swift; sourceTree = "<group>"; };
+		BFC5140C29F01FDA00382D64 /* ArrayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayType.swift; sourceTree = "<group>"; };
+		BFC5140E29F0200300382D64 /* BasicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicType.swift; sourceTree = "<group>"; };
 		BFC6891529BD0F32001E51C1 /* ASTCombination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTCombination.swift; sourceTree = "<group>"; };
 		BFC6891729BD10E5001E51C1 /* ASTContinue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTContinue.swift; sourceTree = "<group>"; };
 		BFC6891929BD1177001E51C1 /* ASTDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTDefault.swift; sourceTree = "<group>"; };
@@ -281,6 +289,17 @@
 				BF91617C294E400E00C8B967 /* SPPPlugin.swift */,
 			);
 			path = spp;
+			sourceTree = "<group>";
+		};
+		BFC5140729F01F4300382D64 /* type */ = {
+			isa = PBXGroup;
+			children = (
+				BFC5140829F01F5C00382D64 /* AbstractType.swift */,
+				BFC5140A29F01FA600382D64 /* FunctionReferenceType.swift */,
+				BFC5140C29F01FDA00382D64 /* ArrayType.swift */,
+				BFC5140E29F0200300382D64 /* BasicType.swift */,
+			);
+			path = type;
 			sourceTree = "<group>";
 		};
 		BFD5A14029EF0BE7009E5409 /* lpc */ = {
@@ -426,6 +445,7 @@
 		BFFD268629A69647002998E8 /* ast */ = {
 			isa = PBXGroup;
 			children = (
+				BFC5140729F01F4300382D64 /* type */,
 				BFD5A14429EF107C009E5409 /* ASTFunctionDefinition.swift */,
 				BFFD268729A69663002998E8 /* ASTExpression.swift */,
 				BFFD268929A69759002998E8 /* ASTType.swift */,
@@ -559,6 +579,7 @@
 				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
 				BFE44D0929EB0975001C86FB /* ASTNew.swift in Sources */,
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
+				BFC5140D29F01FDA00382D64 /* ArrayType.swift in Sources */,
 				BF92224B29E5D6EC001085B9 /* ASTModifier.swift in Sources */,
 				BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
@@ -569,6 +590,7 @@
 				BFFD268C29A69C18002998E8 /* ASTInclude.swift in Sources */,
 				BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */,
 				BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */,
+				BFC5140B29F01FA600382D64 /* FunctionReferenceType.swift in Sources */,
 				BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */,
 				BF92224D29E5D7D7001085B9 /* ASTSymbol.swift in Sources */,
 				BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */,
@@ -624,12 +646,14 @@
 				BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */,
 				BF2DAAD52965DC870063F91C /* TokenType.swift in Sources */,
 				BFE2926429DB2B8A00185467 /* ASTVariableDefinition.swift in Sources */,
+				BFC5140F29F0200300382D64 /* BasicType.swift in Sources */,
 				BFD9049D29252289006B728B /* ConnectionError.swift in Sources */,
 				BFD9B0CC2923CFF500E59D00 /* ConnectionRecord.swift in Sources */,
 				BFE06F28296DAC88004A3C1F /* JSONColor.swift in Sources */,
 				BF5C0F4229E7473D007F49BA /* ASTIf.swift in Sources */,
 				BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */,
 				BFB6CE2929D490E6004A49F2 /* ASTThis.swift in Sources */,
+				BFC5140929F01F5C00382D64 /* AbstractType.swift in Sources */,
 				BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */,
 				BF92225329E5DC38001085B9 /* ASTReturn.swift in Sources */,
 				BFFD268E29A69C29002998E8 /* ASTInheritance.swift in Sources */,
