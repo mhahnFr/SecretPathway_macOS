@@ -194,35 +194,88 @@ struct Parser {
         return toReturn
     }
     
-    /// Parses an array type.
-    ///
-    /// - Returns: The parsed array type.
-    private mutating func parseArrayType() -> ASTExpression {
-        /*
-         * object[]
-         * object[][]
-         * object*
-         * object**
-         */
-        fatalError()
-    }
-    
     /// Parses a function reference type.
     ///
     /// - Returns: The parsed function reference type.
-    private mutating func parseFunctionReferenceType() -> ASTExpression {
-        /*
-         * object()
-         * object(object, ...)
-         * object()()
-         */
-        fatalError()
+    private mutating func parseFunctionReferenceType(returnType: ASTExpression) -> ASTExpression {
+        var paramTypes: [ASTExpression] = []
+        var parts: [ASTExpression] = []
+        var variadic = false
+        
+        if !current.isType(.LEFT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+        } else {
+            advance()
+        }
+        
+        if !current.isType(.RIGHT_PAREN) {
+            repeat {
+                if current.isType(.DOT, .RANGE, .ELLIPSIS) {
+                    if !current.isType(.ELLIPSIS) {
+                        parts.append(ASTWrong(token: current, message: "Expected '...'"))
+                    }
+                    advance()
+                    if !current.isType(.RIGHT_PAREN) {
+                        parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                    } else {
+                        advance()
+                    }
+                    break
+                }
+                
+                let type = parseType()
+                
+                if current.isType(.RIGHT_PAREN) {
+                    advance()
+                    break
+                } else if !current.isType(.COMMA) {
+                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
+                } else {
+                    advance()
+                }
+            } while !current.isType(.EOF)
+        } else {
+            advance()
+        }
+        
+        let toReturn = FunctionReferenceType(returnType: returnType, parameterTypes: paramTypes, variadic: variadic, end: previous.end)
+        return recurr(type: parts.isEmpty ? toReturn : combine(toReturn, parts))
     }
     
-    /// Parses a basic type.
+    private mutating func parseArrayType(underlying: ASTExpression) -> ASTExpression {
+        let part: ASTExpression?
+        if current.isType(.LEFT_BRACKET) && !next.isType(.RIGHT_BRACKET) {
+            advance()
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")
+        } else if current.isType(.RIGHT_BRACKET) {
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '['")
+            advance()
+        } else if current.isType(.LEFT_BRACKET) && next.isType(.RIGHT_BRACKET) {
+            advance(count: 2)
+            part = nil
+        } else {
+            advance()
+            part = nil
+        }
+        let toReturn = ArrayType(underlyingType: underlying, end: previous.end)
+        if let part {
+            return recurr(type: combine(toReturn, part))
+        }
+        return recurr(type: toReturn)
+    }
+    
+    private mutating func recurr(type: ASTExpression) -> ASTExpression {
+        switch current.type {
+        case .LEFT_PAREN: return parseFunctionReferenceType(returnType: type)
+        case .LEFT_BRACKET, .RIGHT_BRACKET, .STAR: return parseArrayType(underlying: type)
+        default: return type
+        }
+    }
+    
+    /// Parses a type.
     ///
-    /// - Returns: The parsed basic type.
-    private mutating func parseBasicType() -> ASTExpression {
+    /// - Returns: The parsed type.
+    private mutating func parseType() -> ASTExpression {
         var parts: [ASTExpression] = []
         let begin = current.begin
         
@@ -238,8 +291,6 @@ struct Parser {
             type = current.type
             advance()
         }
-        
-        advance()
         
         let toReturn: ASTExpression
         if current.isType(.LESS, .GREATER, .STRING) {
@@ -267,26 +318,7 @@ struct Parser {
             toReturn = BasicType(begin: begin, representedType: type, end: previous.end, typeFile: nil)
         }
         
-        if !parts.isEmpty {
-            return combine(toReturn, parts)
-        }
-        return toReturn
-    }
-    
-    /// Parses a type.
-    ///
-    /// - Returns: The parsed type.
-    private mutating func parseType() -> ASTExpression {
-        switch next.type {
-        case .LEFT_BRACKET,
-             .RIGHT_BRACKET,
-             .STAR:         return parseArrayType()
-            
-        case .LEFT_PAREN,
-             .RIGHT_PAREN:  return parseFunctionReferenceType()
-            
-        default:            return parseBasicType()
-        }
+        return recurr(type: parts.isEmpty ? toReturn : combine(toReturn, parts))
     }
     
     /// Parses a name.
