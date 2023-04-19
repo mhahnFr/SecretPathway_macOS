@@ -194,12 +194,56 @@ struct Parser {
         return toReturn
     }
     
+    /// Parses an array type.
+    ///
+    /// - Returns: The parsed array type.
+    private mutating func parseArrayType() -> ASTExpression {
+        /*
+         * object[]
+         * object[][]
+         * object*
+         * object**
+         */
+        fatalError()
+    }
+    
+    /// Parses a function reference type.
+    ///
+    /// - Returns: The parsed function reference type.
+    private mutating func parseFunctionReferenceType() -> ASTExpression {
+        /*
+         * object()
+         * object(object, ...)
+         * object()()
+         */
+        fatalError()
+    }
+    
+    /// Parses a basic type.
+    ///
+    /// - Returns: The parsed basic type.
+    private mutating func parseBasicType() -> ASTExpression {
+        /*
+         * object
+         * object<"secure/base">
+         */
+        fatalError()
+    }
+    
     /// Parses a type.
     ///
     /// - Returns: The parsed type.
     private mutating func parseType() -> ASTExpression {
-        // TODO: Implement type system
-        fatalError()
+        switch next.type {
+        case .LEFT_BRACKET,
+             .RIGHT_BRACKET,
+             .STAR:         return parseArrayType()
+            
+        case .LEFT_PAREN,
+             .RIGHT_PAREN:  return parseFunctionReferenceType()
+            
+        default:            return parseBasicType()
+        }
     }
     
     /// Parses a name.
