@@ -30,7 +30,9 @@ class BasicType: AbstractType {
     /// - Parameter end: The end position.
     /// - Parameter representedType: The token of the type.
     /// - Parameter typeFile: The optional type file.
-    init(representedType: Token, end: Int, typeFile: ASTStrings?) {
+    init(representedType: Token,
+         end:             Int,
+         typeFile:        ASTStrings?) {
         self.typeFile        = typeFile
         self.representedType = representedType.type
         

@@ -33,10 +33,13 @@ class FunctionReferenceType: AbstractType {
     /// - Parameter parameterTypes: The types of the parameters of the referenced function.
     /// - Parameter variadic: Indicates whether the referenced function has variadic arguments.
     /// - Parameter end: The end position.
-    init(returnType: ASTExpression, parameterTypes: [ASTExpression], variadic: Bool = false, end: Int) {
-        self.returnType = returnType
+    init(returnType:     ASTExpression,
+         parameterTypes: [ASTExpression],
+         variadic:       Bool = false,
+         end:            Int) {
+        self.returnType     = returnType
         self.parameterTypes = parameterTypes
-        self.variadic = variadic
+        self.variadic       = variadic
         
         super.init(begin: returnType.begin, end: end, type: .FUNCTION_REFERENCE)
     }
