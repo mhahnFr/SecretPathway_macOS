@@ -196,6 +196,7 @@ struct Parser {
     
     /// Parses a function reference type.
     ///
+    /// - Parameter returnType: The already parsed return type.
     /// - Returns: The parsed function reference type.
     private mutating func parseFunctionReferenceType(returnType: ASTExpression) -> ASTExpression {
         var paramTypes: [ASTExpression] = []
@@ -245,6 +246,10 @@ struct Parser {
         return recurr(type: parts.isEmpty ? toReturn : combine(toReturn, parts))
     }
     
+    /// Parses an array type.
+    ///
+    /// - Parameter underlying: The already parsed underlying type.
+    /// - Returns: The parsed array type.
     private mutating func parseArrayType(underlying: ASTExpression) -> ASTExpression {
         let part: ASTExpression?
         if current.isType(.LEFT_BRACKET) && !next.isType(.RIGHT_BRACKET) {
@@ -267,6 +272,10 @@ struct Parser {
         return recurr(type: toReturn)
     }
     
+    /// Enters recursive type parsing if necessary.
+    ///
+    /// - Parameter type: The already parsed type.
+    /// - Returns: The recursively parsed type or the given type.
     private mutating func recurr(type: ASTExpression) -> ASTExpression {
         switch current.type {
         case .LEFT_PAREN: return parseFunctionReferenceType(returnType: type)
