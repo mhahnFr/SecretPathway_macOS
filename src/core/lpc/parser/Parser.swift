@@ -223,11 +223,54 @@ struct Parser {
     ///
     /// - Returns: The parsed basic type.
     private mutating func parseBasicType() -> ASTExpression {
-        /*
-         * object
-         * object<"secure/base">
-         */
-        fatalError()
+        var parts: [ASTExpression] = []
+        let begin = current.begin
+        
+        let type: TokenType?
+        if !isType(current) && !current.isType(.LESS, .GREATER, .STRING) {
+            parts.append(ASTWrong(token: current, message: "Expected a type"))
+            type = nil
+            advance()
+        } else if !isType(current) && current.isType(.LESS, .GREATER, .STRING) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type"))
+            type = nil
+        } else {
+            type = current.type
+            advance()
+        }
+        
+        advance()
+        
+        let toReturn: ASTExpression
+        if current.isType(.LESS, .GREATER, .STRING) {
+            // Has type file
+            if !current.isType(.LESS) {
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '<'"))
+            } else {
+                advance()
+            }
+            let stringPart: ASTExpression?
+            if !current.isType(.STRING) {
+                stringPart = nil
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing string literal"))
+            } else {
+                stringPart = parseStrings()
+            }
+            if !current.isType(.GREATER) {
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '>'"))
+            } else {
+                advance()
+            }
+            toReturn = BasicType(begin: begin, representedType: type, end: previous.end, typeFile: stringPart)
+        } else {
+            // Just a single type
+            toReturn = BasicType(begin: begin, representedType: type, end: previous.end, typeFile: nil)
+        }
+        
+        if !parts.isEmpty {
+            return combine(toReturn, parts)
+        }
+        return toReturn
     }
     
     /// Parses a type.

@@ -21,26 +21,28 @@
 /// This class represents a basic type as an AST node.
 class BasicType: AbstractType {
     /// The optional type file.
-    let typeFile: ASTStrings?
+    let typeFile: ASTExpression?
     /// The represented type.
-    let representedType: TokenType
+    let representedType: TokenType?
     
     /// Constructs this AST node using the given information.
     ///
+    /// - Parameter begin: The beginning position.
     /// - Parameter end: The end position.
-    /// - Parameter representedType: The token of the type.
+    /// - Parameter representedType: The type.
     /// - Parameter typeFile: The optional type file.
-    init(representedType: Token,
+    init(begin:           Int,
+         representedType: TokenType?,
          end:             Int,
-         typeFile:        ASTStrings?) {
+         typeFile:        ASTExpression?) {
         self.typeFile        = typeFile
-        self.representedType = representedType.type
+        self.representedType = representedType
         
-        super.init(begin: representedType.begin, end: end, type: .TYPE)
+        super.init(begin: begin, end: end, type: .TYPE)
     }
     
     override func describe(_ indentation: Int) -> String {
-        "\(super.describe(indentation)) type: \(representedType)\n" +
+        "\(super.describe(indentation)) type: \(representedType?.rawValue ?? "<unknown>")\n" +
         "\(typeFile?.describe(indentation + 4) ?? "")"
     }
     
