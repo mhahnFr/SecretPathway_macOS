@@ -105,7 +105,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         
         var token = tokenizer.nextToken()
         while token.type != .EOF {            
-            textStorage.setAttributes(theme.styleFor(tokenType: token.type).native, range: NSMakeRange(token.begin, token.end - token.begin))
+            textStorage.setAttributes((theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
             
             if token.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
                 comments.append(token)

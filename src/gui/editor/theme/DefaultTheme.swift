@@ -23,7 +23,7 @@ import AppKit
 /// Represents the default syntax highlighting theme.
 struct DefaultTheme: SPTheme {
     /// The mapping with the styles.
-    private let styles: [TokenType: SPStyle]
+    private let styles: [HighlightType: SPStyle]
     
     /// Initializes this theme.
     init() {
@@ -126,7 +126,7 @@ struct DefaultTheme: SPTheme {
         ]
     }
     
-    func styleFor(tokenType: TokenType) -> SPStyle {
-        return styles[tokenType] ?? SPStyle()
+    func styleFor(type: HighlightType) -> SPStyle? {
+        return styles[type]
     }
 }

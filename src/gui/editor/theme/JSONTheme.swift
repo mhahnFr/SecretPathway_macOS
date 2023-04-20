@@ -27,16 +27,16 @@ struct JSONTheme: SPTheme, Codable {
     let tokenStyles: [String: String]
     
     /// A mapping with the token types and the appropriate style.
-    private var cached: [TokenType: SPStyle] = [:]
+    private var cached: [HighlightType: SPStyle] = [:]
     
     private enum CodingKeys: CodingKey {
         case styles, tokenStyles
     }
     
-    mutating internal func styleFor(tokenType: TokenType) -> SPStyle {
+    mutating internal func styleFor(type: HighlightType) -> SPStyle? {
         if cached.isEmpty { validate() }
         
-        return cached[tokenType] ?? SPStyle()
+        return cached[type]
     }
     
     /// Finds and returns the style identified by the given name.
@@ -56,7 +56,7 @@ struct JSONTheme: SPTheme, Codable {
     /// Validiates and caches the inormation in this theme.
     mutating func validate() {
         for (typeName, styleName) in tokenStyles {
-            if let type = TokenType(rawValue: typeName), let style = findStyleBy(name: styleName) {
+            if let type = HighlightType(rawValue: typeName), let style = findStyleBy(name: styleName) {
                 cached[type] = style.native
             }
         }
