@@ -29,7 +29,7 @@ struct EditorView: View {
         VStack {
             NSTextViewBridge(length: 0, fontSize: settings.fontSize, delegate: delegate)
             VStack {
-                Text("Status").frame(maxWidth: .infinity, alignment: .leading)
+                Text(delegate.statusText).frame(maxWidth: .infinity, alignment: .leading)
                 HStack {
                     Toggle("Syntax Highlighting", isOn: $delegate.syntaxHighlighting).frame(maxWidth: .infinity, alignment: .leading)
                     Button("Close") {

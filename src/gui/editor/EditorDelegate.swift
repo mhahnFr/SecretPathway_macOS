@@ -28,6 +28,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
     }
+    @Published private(set) var statusText = ""
     
     /// The closure called when the user clicks on the "Close" button.
     var onClose: (() -> Void)?
@@ -36,6 +37,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
+    
+    private var highlights: [Highlight] = []
     
     /// Attempts to restore the theme used for the editor.
     ///
@@ -74,6 +77,23 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         }
     }
     
+    internal func textViewDidChangeSelection(_ notification: Notification) {
+        guard let textView = notification.object as? NSTextView,
+              let range = textView.selectedRanges.first as? NSRange
+        else { return }
+        
+        updateStatus(range.location)
+    }
+    
+    func updateStatus(_ location: Int) {
+        for highlight in highlights {
+            if location >= highlight.begin && location <= highlight.end,
+                let highlight = highlight as? MessagedHighlight {
+                statusText = highlight.message
+            }
+        }
+    }
+    
     /// Saves the text by sending a message to the server.
     func saveText() {
         // TODO: Save the text
@@ -99,6 +119,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     
     /// Performs the highlighting of the text.
     private func highlight() {
+        textStorage.setAttributes(SPStyle().native, range: NSRange(0 ..< textStorage.length)) // TODO: Flickering
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
         
         var comments: [Token] = []
@@ -119,17 +140,18 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
             var parser      = Parser(text: textStorage.string)
             let ast         = parser.parse()
             let context     = interpreter.createContext(for: ast)
-            let highlights 	= interpreter.highlights
+            self.highlights = interpreter.highlights
             
             DispatchQueue.main.async {
-                for range in highlights {
+                for range in self.highlights {
                     if let style = self.theme.styleFor(type: range.type) {
-                        self.textStorage.setAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
+                        self.textStorage.addAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
                     }
                 }
                 for token in roTokens {
                     self.textStorage.setAttributes((self.theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
                 }
+                // TODO: Update status
             }
         }
     }
