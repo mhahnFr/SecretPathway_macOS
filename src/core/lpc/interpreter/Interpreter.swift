@@ -42,6 +42,20 @@ class Interpreter: ASTVisitor {
         var highlight = true
         
         switch expression.type {
+        case .MISSING:
+            highlights.append(MessagedHighlight(begin:   expression.begin,
+                                                end:     expression.end,
+                                                type:    ASTType.MISSING,
+                                                message: (expression as! ASTMissing).message))
+            highlight = false
+            
+        case .WRONG:
+            highlights.append(MessagedHighlight(begin:   expression.begin,
+                                                end:     expression.end,
+                                                type:    ASTType.WRONG,
+                                                message: (expression as! ASTWrong).message))
+            highlight = false
+            
         default: currentType = InterpreterType.void
         }
         if highlight {
@@ -49,16 +63,16 @@ class Interpreter: ASTVisitor {
         }
     }
     
-    internal func visitType(_ type: ASTType) -> Bool {
-        type != .BLOCK               &&
-        type != .FUNCTION_DEFINITION &&
-        type != .VARIABLE_DEFINITION &&
-        type != .OPERATION           &&
-        type != .CAST                &&
-        type != .UNARY_OPERATOR      &&
-        type != .AST_IF              &&
-        type != .AST_RETURN          &&
-        type != .FUNCTION_REFERENCE  &&
-        type != .FUNCTION_CALL
-    }
+//    internal func visitType(_ type: ASTType) -> Bool {
+//        type != .BLOCK               &&
+//        type != .FUNCTION_DEFINITION &&
+//        type != .VARIABLE_DEFINITION &&
+//        type != .OPERATION           &&
+//        type != .CAST                &&
+//        type != .UNARY_OPERATOR      &&
+//        type != .AST_IF              &&
+//        type != .AST_RETURN          &&
+//        type != .FUNCTION_REFERENCE  &&
+//        type != .FUNCTION_CALL
+//    }
 }

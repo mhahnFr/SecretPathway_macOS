@@ -113,26 +113,24 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
             
             token = tokenizer.nextToken()
         }
+        let roTokens = comments
         Task(priority: .background) {
-            print("Begin parsing")
             let interpreter = Interpreter() // loader
             var parser      = Parser(text: textStorage.string)
             let ast         = parser.parse()
-            print("End parsing")
-            for node in ast {
-                print(node.describe(0))
-            }
-            /*let context     = interpreter.createContext(for: ast)
+            let context     = interpreter.createContext(for: ast)
             let highlights 	= interpreter.highlights
             
-            for range in highlights {
-                if let style = theme.styleFor(tokenType: range.type) {
-                    textStorage.setAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
+            DispatchQueue.main.async {
+                for range in highlights {
+                    if let style = self.theme.styleFor(type: range.type) {
+                        self.textStorage.setAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
+                    }
+                }
+                for token in roTokens {
+                    self.textStorage.setAttributes((self.theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
                 }
             }
-            for token in comments {
-                textStorage.setAttributes(theme.styleFor(tokenType: token.type).native, range: NSMakeRange(token.begin, token.end - token.begin))
-            }*/
         }
     }
 }

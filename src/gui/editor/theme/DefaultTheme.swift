@@ -35,6 +35,7 @@ struct DefaultTheme: SPTheme {
         let comment = SPStyle(italic: true, foreground: .gray)
         let op      = SPStyle()
         let const   = SPStyle(foreground: NSColor(red: 0.671, green: 0.627, blue: 0.012, alpha: 1))
+        let red = SPStyle(background: .red)
         styles = [
             .IDENTIFIER: id,
             
@@ -122,7 +123,10 @@ struct DefaultTheme: SPTheme {
             .ASSIGNMENT_STAR:    op,
             .ASSIGNMENT_MINUS:   op,
             .ASSIGNMENT_SLASH:   op,
-            .ASSIGNMENT_PERCENT: op
+            .ASSIGNMENT_PERCENT: op,
+            
+            .MISSING: red,
+            .WRONG: red
         ]
     }
     
