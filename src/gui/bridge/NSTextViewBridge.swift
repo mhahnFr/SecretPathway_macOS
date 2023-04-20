@@ -24,6 +24,8 @@ import SwiftUI
 
 /// This structure bridges a NSTextView from the AppKit into SwiftUI.
 struct NSTextViewBridge: NSViewRepresentable {
+    typealias NSViewType = NSScrollView
+    
     /// The length of the content text used as trigger.
     var length: Int
     /// The font size that should be used by this view.
@@ -31,7 +33,7 @@ struct NSTextViewBridge: NSViewRepresentable {
     /// An optional delegate that can provide additional functionality.
     weak var delegate: TextViewBridgeDelegate?
     
-    func makeNSView(context: Context) -> some NSView {
+    func makeNSView(context: Self.Context) -> NSViewType {
         let toReturn = NSTextView.scrollableTextView()
         let textView = toReturn.documentView as! NSTextView
 
@@ -40,8 +42,8 @@ struct NSTextViewBridge: NSViewRepresentable {
         return toReturn
     }
     
-    func updateNSView(_ nsView: NSViewType, context: Context) {
-        let textView = (nsView as! NSScrollView).documentView as! NSTextView
+    func updateNSView(_ nsView: NSViewType, context: Self.Context) {
+        let textView = nsView.documentView as! NSTextView
         
         delegate?.updateTextView(textView)
     }
