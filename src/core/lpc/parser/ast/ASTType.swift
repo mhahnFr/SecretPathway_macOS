@@ -19,7 +19,7 @@
  */
 
 /// This enumeration contains the possible types of AST nodes.
-enum ASTType {
+enum ASTType: HighlightType {
     /// Represents a combination of AST nodes.
     case COMBINATION,
     /// Represents a function definition.
