@@ -1118,9 +1118,9 @@ struct Parser {
     /// - Parameter priority: The priority to be used to parse the statement.
     /// - Returns: Either the AST representation of the cast expression or `nil`
     private mutating func parseMaybeCast(priority: Int) -> ASTExpression? {
-        // TODO: type<"">
         if (next.isType(.RIGHT_PAREN) && (isType(current) || current.isType(.IDENTIFIER))) ||
-            (isType(current) && next.isType(.LEFT_PAREN, .LEFT_BRACKET, .RIGHT_BRACKET, .STAR)) {
+            (isType(current) && next.isType(.LEFT_PAREN, .LEFT_BRACKET, .RIGHT_BRACKET, .STAR)) ||
+            (isType(current) && next.isType(.LESS, .STRING, .GREATER)) {
             return parseCast(priority: priority)
         }
         return nil
