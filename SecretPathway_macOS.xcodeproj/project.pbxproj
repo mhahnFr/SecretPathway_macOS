@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF0D297429F1AE2900AB4E87 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297329F1AE2900AB4E87 /* Context.swift */; };
+		BF0D297729F1AECA00AB4E87 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297629F1AECA00AB4E87 /* Highlight.swift */; };
+		BF0D297929F1B0CA00AB4E87 /* ASTHighlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297829F1B0CA00AB4E87 /* ASTHighlight.swift */; };
+		BF0D297D29F1B29F00AB4E87 /* HighlightType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297C29F1B29F00AB4E87 /* HighlightType.swift */; };
+		BF0D297F29F1B4CB00AB4E87 /* InterpreterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297E29F1B4CB00AB4E87 /* InterpreterType.swift */; };
 		BF1129802854EBDC00EACD21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11297F2854EBDC00EACD21 /* Settings.swift */; };
 		BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */; };
 		BF2DAAD32965DC7B0063F91C /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DAAD22965DC7B0063F91C /* Token.swift */; };
@@ -105,6 +110,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF0D297329F1AE2900AB4E87 /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		BF0D297629F1AECA00AB4E87 /* Highlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highlight.swift; sourceTree = "<group>"; };
+		BF0D297829F1B0CA00AB4E87 /* ASTHighlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTHighlight.swift; sourceTree = "<group>"; };
+		BF0D297C29F1B29F00AB4E87 /* HighlightType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HighlightType.swift; sourceTree = "<group>"; };
+		BF0D297E29F1B4CB00AB4E87 /* InterpreterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterType.swift; sourceTree = "<group>"; };
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelnetPlugin.swift; sourceTree = "<group>"; };
 		BF2DAAD22965DC7B0063F91C /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -216,6 +226,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF0D297529F1AEBD00AB4E87 /* highlights */ = {
+			isa = PBXGroup;
+			children = (
+				BF0D297629F1AECA00AB4E87 /* Highlight.swift */,
+				BF0D297829F1B0CA00AB4E87 /* ASTHighlight.swift */,
+				BF0D297C29F1B29F00AB4E87 /* HighlightType.swift */,
+			);
+			path = highlights;
+			sourceTree = "<group>";
+		};
 		BF2285F1294CBA6B0079EC8D /* protocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -314,7 +334,10 @@
 		BFD5A14129EF0C10009E5409 /* interpreter */ = {
 			isa = PBXGroup;
 			children = (
+				BF0D297529F1AEBD00AB4E87 /* highlights */,
 				BFD5A14229EF0C1D009E5409 /* Interpreter.swift */,
+				BF0D297E29F1B4CB00AB4E87 /* InterpreterType.swift */,
+				BF0D297329F1AE2900AB4E87 /* Context.swift */,
 			);
 			path = interpreter;
 			sourceTree = "<group>";
@@ -571,6 +594,7 @@
 				BF5C0F3E29E744FE007F49BA /* ASTSubscript.swift in Sources */,
 				BFC2AE8B296D6B0200592450 /* DefaultTheme.swift in Sources */,
 				BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */,
+				BF0D297429F1AE2900AB4E87 /* Context.swift in Sources */,
 				BFDCA77D29AD2634005B8AA9 /* ASTBreak.swift in Sources */,
 				BFD9B0D32923F58900E59D00 /* DialogDelegate.swift in Sources */,
 				BFB6CE2729D48ED6004A49F2 /* ASTForEach.swift in Sources */,
@@ -584,6 +608,7 @@
 				BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */,
+				BF0D297929F1B0CA00AB4E87 /* ASTHighlight.swift in Sources */,
 				BFC6891829BD10E5001E51C1 /* ASTContinue.swift in Sources */,
 				BFE2926E29DB442500185467 /* ASTStrings.swift in Sources */,
 				BFE06F24296DA5B9004A3C1F /* JSONTheme.swift in Sources */,
@@ -593,6 +618,7 @@
 				BFC5140B29F01FA600382D64 /* FunctionReferenceType.swift in Sources */,
 				BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */,
 				BF92224D29E5D7D7001085B9 /* ASTSymbol.swift in Sources */,
+				BF0D297F29F1B4CB00AB4E87 /* InterpreterType.swift in Sources */,
 				BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */,
 				BFDCA77929AD226F005B8AA9 /* ASTBlock.swift in Sources */,
 				BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */,
@@ -644,7 +670,9 @@
 				BFE2DB7E29A7E466003E2BFF /* ASTVisitor.swift in Sources */,
 				BFC6891A29BD1177001E51C1 /* ASTDefault.swift in Sources */,
 				BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */,
+				BF0D297D29F1B29F00AB4E87 /* HighlightType.swift in Sources */,
 				BF2DAAD52965DC870063F91C /* TokenType.swift in Sources */,
+				BF0D297729F1AECA00AB4E87 /* Highlight.swift in Sources */,
 				BFE2926429DB2B8A00185467 /* ASTVariableDefinition.swift in Sources */,
 				BFC5140F29F0200300382D64 /* BasicType.swift in Sources */,
 				BFD9049D29252289006B728B /* ConnectionError.swift in Sources */,

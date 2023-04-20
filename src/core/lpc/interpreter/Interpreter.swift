@@ -19,7 +19,46 @@
  */
 
 class Interpreter: ASTVisitor {
-    func visit(_ expression: ASTExpression) {
-        // TODO: Implement
+    private(set) var highlights: [Highlight]
+    
+    private var current: Context
+    private var currentType: TypeProto
+    
+    init() {
+        self.highlights  = []
+        self.current     = Context()
+        self.currentType = InterpreterType.any
+    }
+    
+    func createContext(for ast: [ASTExpression]) -> Context {
+        highlights = []
+        current    = Context()
+        
+        ast.forEach { $0.visit(self) }
+        return current
+    }
+    
+    internal func visit(_ expression: ASTExpression) {
+        var highlight = true
+        
+        switch expression.type {
+        default: currentType = InterpreterType.void
+        }
+        if highlight {
+            highlights.append(ASTHighlight(node: expression))
+        }
+    }
+    
+    internal func visitType(_ type: ASTType) -> Bool {
+        type != .BLOCK               &&
+        type != .FUNCTION_DEFINITION &&
+        type != .VARIABLE_DEFINITION &&
+        type != .OPERATION           &&
+        type != .CAST                &&
+        type != .UNARY_OPERATOR      &&
+        type != .AST_IF              &&
+        type != .AST_RETURN          &&
+        type != .FUNCTION_REFERENCE  &&
+        type != .FUNCTION_CALL
     }
 }
