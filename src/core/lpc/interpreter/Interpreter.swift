@@ -61,6 +61,17 @@ class Interpreter: ASTVisitor {
         return nil
     }
     
+    private func maybeWrongVoid(_ type: AbstractType) {
+        if let t = type as? BasicType,
+           let actualType = t.representedType,
+           actualType == .VOID {
+            highlights.append(MessagedHighlight(begin:   type.begin,
+                                                end:     type.end,
+                                                type:    .TYPE_MISMATCH,
+                                                message: "'void' not allowed here"))
+        }
+    }
+    
     internal func visit(_ expression: ASTExpression) {
         var highlight = true
         
@@ -83,6 +94,24 @@ class Interpreter: ASTVisitor {
             let c = expression as! ASTCast
             c.castExpression.visit(self)
             currentType = cast(type: AbstractType.self, c.castType)! as TypeProto
+            
+        case .VARIABLE_DEFINITION:
+            let varDefinition = expression as! ASTVariableDefinition
+            
+            let type: AbstractType
+            if let t = varDefinition.returnType,
+                let unwrapped = cast(type: AbstractType.self, t) {
+                type = unwrapped
+            } else {
+                type = InterpreterType.any
+            }
+            
+            current.addIdentifier(begin: varDefinition.begin,
+                                  name:  cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>",
+                                  type: type,
+                                  .VARIABLE_DEFINITION)
+            maybeWrongVoid(type)
+            currentType = type
             
         default: currentType = InterpreterType.void
         }

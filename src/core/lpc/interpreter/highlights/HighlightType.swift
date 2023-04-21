@@ -114,6 +114,7 @@ enum HighlightType: String {
     /// Represents an array type.
     ARRAY_TYPE
     
+    /// The token types.
     case EOF,
     
     IDENTIFIER, INTEGER, STRING, CHARACTER, SYMBOL,
@@ -142,4 +143,6 @@ enum HighlightType: String {
     
     COMMENT_BLOCK, COMMENT_LINE
 
+    /// The interpretation highlight types.
+    case TYPE_MISMATCH
 }
