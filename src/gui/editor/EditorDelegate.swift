@@ -85,13 +85,20 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         updateStatus(range.location)
     }
     
+    /// Updates the status text for the given cursor location.
+    ///
+    /// - Parameter location: The location for which to retrieve the status text.
     func updateStatus(_ location: Int) {
+        var set = false
+        
         for highlight in highlights {
             if location >= highlight.begin && location <= highlight.end,
                 let highlight = highlight as? MessagedHighlight {
                 statusText = highlight.message
+                set = true
             }
         }
+        if !set { statusText = "" }
     }
     
     /// Saves the text by sending a message to the server.
