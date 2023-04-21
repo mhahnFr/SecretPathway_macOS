@@ -38,6 +38,29 @@ class Interpreter: ASTVisitor {
         return current
     }
     
+    private func unwrap<T>(combination: ASTCombination, type: T.Type) -> T? {
+        var toReturn: T? = nil
+        
+        for expression in combination.expressions {
+            if let casted = expression as? T {
+                toReturn = casted
+            } else {
+                expression.visit(self)
+            }
+        }
+        
+        return toReturn
+    }
+    
+    private func cast<T>(type: T.Type, _ expression: ASTExpression) -> T? {
+        if let casted = expression as? T {
+            return casted
+        } else if let combination = expression as? ASTCombination {
+            return unwrap(combination: combination, type: type)
+        }
+        return nil
+    }
+    
     internal func visit(_ expression: ASTExpression) {
         var highlight = true
         
@@ -56,6 +79,11 @@ class Interpreter: ASTVisitor {
                                                 message: (expression as! ASTWrong).message))
             highlight = false
             
+        case .CAST:
+            let c = expression as! ASTCast
+            c.castExpression.visit(self)
+            currentType = cast(type: AbstractType.self, c.castType)! as TypeProto
+            
         default: currentType = InterpreterType.void
         }
         if highlight {
@@ -63,16 +91,16 @@ class Interpreter: ASTVisitor {
         }
     }
     
-//    internal func visitType(_ type: ASTType) -> Bool {
-//        type != .BLOCK               &&
-//        type != .FUNCTION_DEFINITION &&
-//        type != .VARIABLE_DEFINITION &&
-//        type != .OPERATION           &&
-//        type != .CAST                &&
-//        type != .UNARY_OPERATOR      &&
-//        type != .AST_IF              &&
-//        type != .AST_RETURN          &&
-//        type != .FUNCTION_REFERENCE  &&
-//        type != .FUNCTION_CALL
-//    }
+    internal func visitType(_ type: ASTType) -> Bool {
+        type != .BLOCK               &&
+        type != .FUNCTION_DEFINITION &&
+        type != .VARIABLE_DEFINITION &&
+        type != .OPERATION           &&
+        type != .CAST                &&
+        type != .UNARY_OPERATOR      &&
+        type != .AST_IF              &&
+        type != .AST_RETURN          &&
+        type != .FUNCTION_REFERENCE  &&
+        type != .FUNCTION_CALL
+    }
 }
