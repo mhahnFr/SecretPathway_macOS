@@ -18,18 +18,20 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class interprets parsed LPC source code.
 class Interpreter: ASTVisitor {
-    private(set) var highlights: [Highlight]
+    /// The highlights generated from an AST.
+    private(set) var highlights: [Highlight] = []
     
-    private var current: Context
-    private var currentType: TypeProto
+    /// The currently used context object.
+    private var current = Context()
+    /// The return type of the lastly interpreted expression.
+    private var currentType: TypeProto = InterpreterType.any
     
-    init() {
-        self.highlights  = []
-        self.current     = Context()
-        self.currentType = InterpreterType.any
-    }
-    
+    /// Creates and returns a context object for the given AST.
+    ///
+    /// - Parameter ast: The AST to be interpreted.
+    /// - Returns: The interpretation context.
     func createContext(for ast: [ASTExpression]) -> Context {
         highlights = []
         current    = Context()
@@ -38,6 +40,12 @@ class Interpreter: ASTVisitor {
         return current
     }
     
+    /// Unwraps the given ASTCombination.
+    ///
+    /// - Parameters:
+    ///   - combination: The ASTCombination to be unwrapped.
+    ///   - type: The type of the desired AST node.
+    /// - Returns: The AST node of the given type found in the combination or `nil`.
     private func unwrap<T>(combination: ASTCombination, type: T.Type) -> T? {
         var toReturn: T? = nil
         
@@ -52,6 +60,14 @@ class Interpreter: ASTVisitor {
         return toReturn
     }
     
+    /// Casts the given expression to the given type.
+    ///
+    /// If the given expression is an ASTCombination, it is unwrapped.
+    ///
+    /// - Parameters:
+    ///   - type: The desired type.
+    ///   - expression: The expression to maybe unwrap.
+    /// - Returns: The unwrapped expression or `nil`, if the given type did not match.
     private func cast<T>(type: T.Type, _ expression: ASTExpression) -> T? {
         if let casted = expression as? T {
             return casted
@@ -61,6 +77,9 @@ class Interpreter: ASTVisitor {
         return nil
     }
     
+    /// Adds a type mismatch highlight if the given type represents `void`.
+    ///
+    /// - Parameter type: The type expression to be checked.
     private func maybeWrongVoid(_ type: AbstractType) {
         if let t = type as? BasicType,
            let actualType = t.representedType,
