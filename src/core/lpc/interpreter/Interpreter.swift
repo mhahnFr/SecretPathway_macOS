@@ -91,6 +91,35 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    private func visitParams(of function: ASTFunctionDefinition) -> [Definition] {
+        var parameters: [Definition] = []
+        
+        for parameter in function.parameters {
+            if parameter.type == .MISSING {
+                highlights.append(MessagedHighlight(begin:   parameter.begin,
+                                                    end:     parameter.end,
+                                                    type:    .MISSING,
+                                                    message: (parameter as! ASTMissing).message))
+            } else if parameter.type != .AST_ELLIPSIS,
+                      let param = cast(type: ASTParameter.self, parameter),
+                      let type  = cast(type: AbstractType.self, param.declaredType) {
+                type.visit(self)
+                maybeWrongVoid(type)
+                
+                parameters.append(Definition(begin:      param.begin,
+                                             returnType: type,
+                                             name:       cast(type: ASTName.self, param.name)?.name ?? "<< unknown >>",
+                                             kind:       .PARAMETER))
+            }
+        }
+        
+        return parameters
+    }
+    
+    private func visitBlock(_ block: ASTBlock) {
+        block.body.forEach { $0.visit(self) }
+    }
+    
     internal func visit(_ expression: ASTExpression) {
         var highlight = true
         
@@ -131,6 +160,25 @@ class Interpreter: ASTVisitor {
                                   .VARIABLE_DEFINITION)
             maybeWrongVoid(type)
             currentType = type
+            
+        case .FUNCTION_DEFINITION:
+            let function         = expression as! ASTFunctionDefinition
+            let block            = function.body
+            let paramExpressions = function.parameters
+            
+            let retType = cast(type: AbstractType.self, function.returnType)!
+            retType.visit(self)
+            let params  = visitParams(of: function)
+            
+            current = current.addFunction(begin:      function.begin,
+                                          scopeBegin: block.begin,
+                                          name:       cast(type: ASTName.self,      function.name)!,
+                                          returnType: cast(type: AbstractType.self, function.returnType)!,
+                                          parameters: params,
+                                          variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
+            visitBlock(cast(type: ASTBlock.self, block)!)
+            current = current.popScope(end: expression.end)!
+            currentType = InterpreterType.void
             
         default: currentType = InterpreterType.void
         }
