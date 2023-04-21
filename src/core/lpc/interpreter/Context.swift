@@ -41,6 +41,18 @@ class Context: Instruction {
         self.parent = parent
     }
     
+    func pushScope(begin: Int) -> Context {
+        let newContext = Context(begin: begin, parent: self)
+        instructions[begin] = newContext
+        return newContext
+    }
+    
+    func popScope(end: Int) -> Context? {
+        self.end = end
+        
+        return parent
+    }
+    
     /// Adds a named identifier to this context.
     ///
     /// - Parameters:
