@@ -63,4 +63,23 @@ class Context: Instruction {
     func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType) {
         instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
     }
+    
+    func addFunction(begin:      Int,
+                     scopeBegin: Int,
+                     name:       ASTName,
+                     returnType: TypeProto,
+                     parameters: [Definition],
+                     variadic: Bool) -> Context {
+        instructions[begin] = FunctionDefinition(begin:      begin,
+                                                 name:       name.name ?? "<< unknown >>",
+                                                 returnType: returnType,
+                                                 parameters: parameters,
+                                                 variadic:   variadic)
+        
+        let newContext = pushScope(begin: scopeBegin)
+        parameters.forEach {
+            newContext.addIdentifier(begin: $0.begin, name: $0.name, type: $0.returnType, $0.kind)
+        }
+        return newContext
+    }
 }
