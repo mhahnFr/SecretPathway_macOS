@@ -91,6 +91,10 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Visits the parameters declarations of the given function declaration.
+    ///
+    /// - Parameter function: The declared function whose parameters to visit.
+    /// - Returns: The definitions created from the declared parameters.
     private func visitParams(of function: ASTFunctionDefinition) -> [Definition] {
         var parameters: [Definition] = []
         
@@ -116,6 +120,9 @@ class Interpreter: ASTVisitor {
         return parameters
     }
     
+    /// Visits a block.
+    ///
+    /// - Parameter block: The block to be visited.
     private func visitBlock(_ block: ASTBlock) {
         block.body.forEach { $0.visit(self) }
     }
@@ -125,6 +132,10 @@ class Interpreter: ASTVisitor {
         nil
     }
     
+    /// Adds the context of the file represented by the given string nodes
+    /// to the current context.
+    ///
+    /// - Parameter file: The strings representing the file name.
     private func addIncluding(file: ASTStrings) {
         if let context = createContext(for: file) {
             current.included.append(context)
@@ -136,6 +147,10 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Adds the context of the file represented by the given string nodes
+    /// as super context to the current context.
+    ///
+    /// - Parameter file: The strings representing the file name.
     private func addInheriting(from file: ASTStrings) {
         if let context = createContext(for: file) {
             current.inherited.append(context)
@@ -147,6 +162,13 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Visits the given function call.
+    ///
+    /// The parameter count and their types are checked against their definition.
+    ///
+    /// - Parameters:
+    ///   - function: The function to be visited.
+    ///   - id: The definition to check against.
     private func visitFunctionCall(function: ASTFunctionCall, id: FunctionDefinition) {
         let arguments = function.arguments
         var tooManyBegin: Int?
@@ -182,6 +204,14 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Visits the given function call.
+    ///
+    /// The types are checked against te given definitions.
+    ///
+    /// - Parameters:
+    ///   - function: The function call to be visited.
+    ///   - ids: The definition candidates.
+    /// - Returns: The return type of the matching function definition, `nil` if no definition matches.
     private func visitFunctionCall(function: ASTFunctionCall, ids: [Definition]) -> TypeProto? {
         for id in ids {
             if let fd = id as? FunctionDefinition,
