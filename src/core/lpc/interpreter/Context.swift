@@ -41,12 +41,20 @@ class Context: Instruction {
         self.parent = parent
     }
     
+    /// Pushes this scope.
+    ///
+    /// - Parameter begin: The beginning position of the subscope.
+    /// - Returns: The subscope context object.
     func pushScope(begin: Int) -> Context {
         let newContext = Context(begin: begin, parent: self)
         instructions[begin] = newContext
         return newContext
     }
     
+    /// Pops this scope if possible.
+    ///
+    /// - Parameter end: The end position of this scope context.
+    /// - Returns: The parent scope context object.
     func popScope(end: Int) -> Context? {
         self.end = end
         
@@ -64,6 +72,17 @@ class Context: Instruction {
         instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
     }
     
+    /// Adds a function to this scope. The given parameters are
+    /// added to the subcontext of the added function definition.
+    ///
+    /// - Parameters:
+    ///   - begin: The beginning position of the function definition.
+    ///   - scopeBegin: The beginning position of the function's scope.
+    ///   - name: The name of the function.
+    ///   - returnType: The return type of the function.
+    ///   - parameters: The parameter definitions.
+    ///   - variadic: Indicates whether the function has variadic parameters.
+    /// - Returns: The subscope context object of the function's body.
     func addFunction(begin:      Int,
                      scopeBegin: Int,
                      name:       ASTName,
