@@ -294,6 +294,32 @@ class Interpreter: ASTVisitor {
                 }
             }
             
+        case .NAME:
+            let name = expression as! ASTName
+            if let n = name.name {
+                let identifiers = current.getIdentifiers(name: n, pos: name.begin)
+                if let first = identifiers.first {
+                    highlights.append(Highlight(begin: expression.begin,
+                                                end:   expression.end,
+                                                type:  first.kind))
+                    currentType = first.returnType
+                } else {
+                    if n.starts(with: "$") {
+                        highlights.append(MessagedHighlight(begin:   name.begin,
+                                                            end:     name.end,
+                                                            type:    .NOT_FOUND_BUILTIN,
+                                                            message: "Built-in not found"))
+                    } else {
+                        highlights.append(MessagedHighlight(begin:   name.begin,
+                                                            end:     name.end,
+                                                            type:    .NOT_FOUND,
+                                                            message: "Identifier not found"))
+                    }
+                    currentType = InterpreterType.any
+                }
+                highlight = false
+            }
+            
         default: currentType = InterpreterType.void
         }
         if highlight {
