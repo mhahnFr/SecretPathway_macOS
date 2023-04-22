@@ -29,6 +29,10 @@ class Context: Instruction {
     private(set) var instructions: [Int: Instruction] = [:]
     
     var end = 0
+    /// The included context objects.
+    var included: [Context] = []
+    /// The inherited context objects.
+    var inherited: [Context] = []
     
     /// Constructs this context using the optional beginning position
     /// and the optional parent context.

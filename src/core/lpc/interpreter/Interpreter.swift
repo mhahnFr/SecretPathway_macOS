@@ -120,6 +120,33 @@ class Interpreter: ASTVisitor {
         block.body.forEach { $0.visit(self) }
     }
     
+    private func createContext(for: ASTStrings) -> Context? {
+        // TODO: Implement
+        nil
+    }
+    
+    private func addIncluding(file: ASTStrings) {
+        if let context = createContext(for: file) {
+            current.included.append(context)
+        } else {
+            highlights.append(MessagedHighlight(begin:   file.begin,
+                                                end:     file.end,
+                                                type:    .ERROR,
+                                                message: "Could not resolve inclusion"))
+        }
+    }
+    
+    private func addInheriting(from file: ASTStrings) {
+        if let context = createContext(for: file) {
+            current.inherited.append(context)
+        } else {
+            highlights.append(MessagedHighlight(begin:   file.begin,
+                                                end:     file.end,
+                                                type:    .ERROR,
+                                                message: "Could not resolve inheritance"))
+        }
+    }
+    
     internal func visit(_ expression: ASTExpression) {
         var highlight = true
         
@@ -179,6 +206,28 @@ class Interpreter: ASTVisitor {
             visitBlock(cast(type: ASTBlock.self, block)!)
             current = current.popScope(end: expression.end)!
             currentType = InterpreterType.void
+            
+        case .BLOCK:
+            current = current.pushScope(begin: expression.begin)
+            visitBlock(expression as! ASTBlock)
+            current = current.popScope(end: expression.end)!
+            currentType = InterpreterType.void
+            
+        case .AST_INCLUDE:
+            addIncluding(file: cast(type: ASTStrings.self, (expression as! ASTInclude).included)!)
+            
+        case .AST_INHERITANCE:
+            let inheritance = expression as! ASTInheritance
+            
+            if let inherited = inheritance.inherited {
+                addInheriting(from: cast(type: ASTStrings.self, inherited)!)
+            } else {
+                highlight = false
+                highlights.append(MessagedHighlight(begin:   inheritance.begin,
+                                                    end:     inheritance.end,
+                                                    type:    .WARNING,
+                                                    message: "Inheriting from nothing"))
+            }
             
         default: currentType = InterpreterType.void
         }
