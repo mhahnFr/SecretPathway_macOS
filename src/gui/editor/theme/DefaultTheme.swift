@@ -33,9 +33,12 @@ struct DefaultTheme: SPTheme {
         let id      = SPStyle(foreground: NSColor(red: 0.702, green: 0.043, blue: 0.749, alpha: 1))
         let flow    = SPStyle(foreground: NSColor(red: 0.086, green: 0.459, blue: 0.02,  alpha: 1))
         let comment = SPStyle(italic: true, foreground: .gray)
-        let op      = SPStyle()
         let const   = SPStyle(foreground: NSColor(red: 0.671, green: 0.627, blue: 0.012, alpha: 1))
-        let red = SPStyle(background: .red)
+        let warning = SPStyle(underlined: true, foreground: NSColor(red: 0.75, green: 0.75, blue: 0, alpha: 1))
+        let error   = SPStyle(bold: true, foreground: .red)
+        let error2  = SPStyle(underlined: true, foreground: .red)
+        let error3  = SPStyle(foreground: .red)
+        let missing = SPStyle(background: NSColor(red: 1, green: 0.5098, blue: 0.5098, alpha: 1))
         styles = [
             .IDENTIFIER: id,
             
@@ -94,39 +97,17 @@ struct DefaultTheme: SPTheme {
             .COMMENT_LINE:  comment,
             .COMMENT_BLOCK: comment,
             
-            .EQUALS:             op,
-            .NOT_EQUAL:          op,
-            .LESS:               op,
-            .LESS_OR_EQUAL:      op,
-            .GREATER:            op,
-            .GREATER_OR_EQUAL:   op,
-            .OR:                 op,
-            .AND:                op,
-            .NOT:                op,
-            .ASSIGNMENT:         op,
-            .ARROW:              op,
-            .P_ARROW:            op,
-            .AMPERSAND:          op,
-            .PIPE:               op,
-            .LEFT_SHIFT:         op,
-            .RIGHT_SHIFT:        op,
-            .DOUBLE_QUESTION:    op,
-            .QUESTION:           op,
-            .INCREMENT:          op,
-            .DECREMENT:          op,
-            .PLUS:               op,
-            .MINUS:              op,
-            .STAR:               op,
-            .SLASH:              op,
-            .PERCENT:            op,
-            .ASSIGNMENT_PLUS:    op,
-            .ASSIGNMENT_STAR:    op,
-            .ASSIGNMENT_MINUS:   op,
-            .ASSIGNMENT_SLASH:   op,
-            .ASSIGNMENT_PERCENT: op,
+            .WARNING:           warning,
+            .NOT_FOUND_BUILTIN: warning,
             
-            .MISSING: red,
-            .WRONG: red
+            .WRONG: error,
+            
+            .ERROR:         error2,
+            .TYPE_MISMATCH: error2,
+            
+            .NOT_FOUND: error3,
+            
+            .MISSING: missing
         ]
     }
     

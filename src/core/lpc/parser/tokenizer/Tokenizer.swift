@@ -78,7 +78,6 @@ struct Tokenizer {
         else if stream.peek("!")   { return Token(begin: stream.index, type: .NOT,                end: stream.skip())  }
         else if stream.peek("=")   { return Token(begin: stream.index, type: .ASSIGNMENT,         end: stream.skip())  }
         else if stream.peek("->")  { return Token(begin: stream.index, type: .ARROW,              end: stream.skip(2)) }
-        else if stream.peek("|->") { return Token(begin: stream.index, type: .P_ARROW,            end: stream.skip(3)) }
         else if stream.peek("&")   { return Token(begin: stream.index, type: .AMPERSAND,          end: stream.skip())  }
         else if stream.peek("|")   { return Token(begin: stream.index, type: .PIPE,               end: stream.skip())  }
         else if stream.peek("??")  { return Token(begin: stream.index, type: .DOUBLE_QUESTION,    end: stream.skip(2)) }
