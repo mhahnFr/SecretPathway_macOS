@@ -105,4 +105,45 @@ class Context: Instruction {
         }
         return newContext
     }
+    
+    func getSuperIdentifiers(name: String) -> [Definition] {
+        if let parent {
+            return parent.getSuperIdentifiers(name: name)
+        }
+        
+        for context in inherited {
+            let identifiers = context.getIdentifiers(name: name, pos: Int.max)
+            if !identifiers.isEmpty {
+                return identifiers
+            }
+        }
+        return []
+    }
+    
+    func getIdentifiers(name: String, pos: Int) -> [Definition] {
+        var definitions: [Definition] = []
+        for (begin, instruction) in instructions {
+            if begin < pos,
+               let definition = instruction as? Definition,
+               definition.name == name {
+                definitions.append(definition)
+            }
+        }
+        if !definitions.isEmpty {
+            return definitions
+        }
+        
+        if let parent {
+            return parent.getIdentifiers(name: name, pos: pos)
+        }
+        
+        for incl in included {
+            let identifiers = incl.getIdentifiers(name: name, pos: Int.max)
+            if !identifiers.isEmpty {
+                return identifiers
+            }
+        }
+        
+        return getSuperIdentifiers(name: name)
+    }
 }

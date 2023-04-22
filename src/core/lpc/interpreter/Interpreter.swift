@@ -288,9 +288,9 @@ class Interpreter: ASTVisitor {
             let name = cast(type: ASTName.self, fc.name)!
             name.visit(self)
             if let n = name.name {
-                let ids = current.getIdentifier(name: n, name.begin)
+                let ids = current.getIdentifiers(name: n, pos: name.begin)
                 if !ids.isEmpty {
-                    currentType = visitFunctionCall(function: fc, ids: ids)
+                    currentType = visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.any
                 }
             }
             
