@@ -19,7 +19,18 @@
  */
 
 protocol TypeProto {
+    var string: String { get }
     
+    func isAssignable(from other: TypeProto) -> Bool
+}
+
+// TODO: Properly implement!
+extension TypeProto {
+    var string: String { "Not implemented!" }
+    
+    func isAssignable(from other: TypeProto) -> Bool {
+        false
+    }
 }
 
 typealias AbstractType = TypeProto & ASTExpression

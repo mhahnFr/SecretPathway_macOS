@@ -147,6 +147,59 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    private func visitFunctionCall(function: ASTFunctionCall, id: FunctionDefinition) {
+        let arguments = function.arguments
+        var tooManyBegin: Int?
+        var it = id.parameters.makeIterator()
+        var lastArg: ASTExpression?
+        
+        for argument in arguments {
+            lastArg = argument
+            argument.visit(self)
+            
+            if let next = it.next() {
+                if !next.returnType.isAssignable(from: currentType) {
+                    highlights.append(MessagedHighlight(begin: argument.begin, end: argument.end, type: .TYPE_MISMATCH, message: "\(next.returnType.string) is not assignable from \(currentType.string)"))
+                }
+            } else {
+                if !id.variadic && tooManyBegin == nil {
+                    tooManyBegin = argument.begin
+                }
+            }
+        }
+        
+        if let tooManyBegin {
+            highlights.append(MessagedHighlight(begin:   tooManyBegin,
+                                                end:     arguments.last!.end,
+                                                type:    .ERROR,
+                                                message: "Expected \(id.parameters.count) arguments, got \(arguments.count)"))
+        }
+        if it.next() != nil {
+            highlights.append(MessagedHighlight(begin:   lastArg?.end ?? function.begin,
+                                                end:     function.end,
+                                                type:    .ERROR,
+                                                message: "Expected \(id.parameters.count) arguments, got \(arguments.count)"))
+        }
+    }
+    
+    private func visitFunctionCall(function: ASTFunctionCall, ids: [Definition]) -> TypeProto? {
+        for id in ids {
+            if let fd = id as? FunctionDefinition,
+               fd.parameters.count == function.arguments.count || fd.variadic {
+                // TODO: Check types
+                visitFunctionCall(function: function, id: fd)
+                return fd.returnType
+            }
+        }
+        for id in ids {
+            if let fd = id as? FunctionDefinition {
+                visitFunctionCall(function: function, id: fd)
+                return fd.returnType
+            }
+        }
+        return nil
+    }
+    
     internal func visit(_ expression: ASTExpression) {
         var highlight = true
         
@@ -227,6 +280,18 @@ class Interpreter: ASTVisitor {
                                                     end:     inheritance.end,
                                                     type:    .WARNING,
                                                     message: "Inheriting from nothing"))
+            }
+            
+        case .FUNCTION_CALL:
+            let fc = expression as! ASTFunctionCall
+            
+            let name = cast(type: ASTName.self, fc.name)!
+            name.visit(self)
+            if let n = name.name {
+                let ids = current.getIdentifier(name: n, name.begin)
+                if !ids.isEmpty {
+                    currentType = visitFunctionCall(function: fc, ids: ids)
+                }
             }
             
         default: currentType = InterpreterType.void
