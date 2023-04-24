@@ -230,6 +230,22 @@ class Interpreter: ASTVisitor {
         return nil
     }
     
+    private func visitSuperFunc(_ operation: ASTUnaryOperation) {
+        let f = cast(type: ASTFunctionCall.self, operation.identifier)!
+        
+        if let n = cast(type: ASTName.self, f.name)?.name {
+            let ids = current.getSuperIdentifiers(name: n)
+            if ids.isEmpty {
+                highlights.append(MessagedHighlight(begin:   operation.begin,
+                                                    end:     operation.end,
+                                                    type:    .NOT_FOUND,
+                                                    message: "Identifier not found"))
+            } else {
+                currentType = visitFunctionCall(function: f, ids: ids) ?? InterpreterType.any
+            }
+        }
+    }
+    
     internal func visit(_ expression: ASTExpression) {
         var highlight = true
         
@@ -349,6 +365,16 @@ class Interpreter: ASTVisitor {
                 }
                 highlight = false
             }
+            
+        case .UNARY_OPERATOR:
+            let operation = expression as! ASTUnaryOperation
+            
+            if operation.operatorType == .SCOPE {
+                visitSuperFunc(operation)
+            } else {
+                operation.identifier.visit(self)
+            }
+            
             
         default: currentType = InterpreterType.void
         }
