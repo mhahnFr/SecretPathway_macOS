@@ -230,10 +230,12 @@ class Interpreter: ASTVisitor {
         return nil
     }
     
+    /// Visits the given unary operation as a super send.
+    ///
+    /// - Parameter operation: The operation to be visited.
     private func visitSuperFunc(_ operation: ASTUnaryOperation) {
-        let f = cast(type: ASTFunctionCall.self, operation.identifier)!
-        
-        if let n = cast(type: ASTName.self, f.name)?.name {
+        if let f = cast(type: ASTFunctionCall.self, operation.identifier),
+           let n = cast(type: ASTName.self, f.name)?.name {
             let ids = current.getSuperIdentifiers(name: n)
             if ids.isEmpty {
                 highlights.append(MessagedHighlight(begin:   operation.begin,
