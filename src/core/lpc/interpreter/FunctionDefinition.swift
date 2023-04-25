@@ -25,15 +25,10 @@ class FunctionDefinition: Definition {
     var string: String {
         var buffer = "\(name)("
         
-        for (i, parameter) in parameters.enumerated() {
-            let typeString: String
-//            if let rt = parameter.returnType, let s = rt.string {
-//                typeString = s
-//            } else {
-                typeString = "<< unknown >>"
-//            }
-            buffer.append("\(typeString) \(parameter.name)")
-            if i + 1 < parameters.count || variadic {
+        let last = parameters.last
+        parameters.forEach {
+            buffer.append("\($0.returnType.string) \($0.name)")
+            if $0 !== last || variadic {
                 buffer.append(", ")
             }
         }
