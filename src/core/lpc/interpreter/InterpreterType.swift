@@ -26,6 +26,7 @@ class InterpreterType: BasicType {
     static let int    = InterpreterType(type: .INT_KEYWORD)
     static let bool   = InterpreterType(type: .BOOL)
     static let void   = InterpreterType(type: .VOID)
+    static let char   = InterpreterType(type: .CHAR_KEYWORD)
     
     init(type: TokenType) {
         super.init(begin: 0, representedType: type, end: 0, typeFile: nil)

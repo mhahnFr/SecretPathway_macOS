@@ -471,6 +471,18 @@ class Interpreter: ASTVisitor {
             }
             currentType = InterpreterType.any
             
+        case .AST_NEW:             currentType = InterpreterType.object // TODO: Load
+        case .ARRAY, .AST_MAPPING: currentType = InterpreterType.any    // TODO: Substitiute
+
+        case .AST_STRING,
+             .STRINGS:       currentType = InterpreterType.string
+        case .AST_THIS:      currentType = InterpreterType.object
+        case .AST_INTEGER:   currentType = InterpreterType.int
+        case .AST_NIL:       currentType = InterpreterType.object
+        case .AST_SYMBOL:    currentType = InterpreterType.symbol
+        case .AST_BOOL:      currentType = InterpreterType.bool
+        case .AST_CHARACTER: currentType = InterpreterType.char
+            
         default: currentType = InterpreterType.void
         }
         if highlight {
