@@ -423,6 +423,20 @@ class Interpreter: ASTVisitor {
             default:                          currentType = InterpreterType.void
             }
             
+        case .AST_IF:
+            let i         = expression as! ASTIf
+            let condition = i.condition
+            
+            condition.visit(self)
+            if !InterpreterType.bool.isAssignable(from: currentType) {
+                highlights.append(MessagedHighlight(begin:   condition.begin,
+                                                    end:     condition.end,
+                                                    type:    .TYPE_MISMATCH,
+                                                    message: "Condition should be a boolean expression"))
+            }
+            i.instruction.visit(self)
+            i.elseInstruction?.visit(self)
+            
         default: currentType = InterpreterType.void
         }
         if highlight {
