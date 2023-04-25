@@ -146,4 +146,24 @@ class Context: Instruction {
         
         return getSuperIdentifiers(name: name)
     }
+    
+    func queryEnclosingFunction() -> FunctionDefinition? {
+        guard let parent else { return nil }
+        
+        var lowerbound: Int?
+        for key in parent.instructions.keys {
+            if key < begin {
+                lowerbound = key
+            } else {
+                break
+            }
+        }
+        
+        if let lowerbound,
+           let definition = parent.instructions[lowerbound] as? FunctionDefinition {
+            return definition
+        } else {
+            return parent.queryEnclosingFunction()
+        }
+    }
 }

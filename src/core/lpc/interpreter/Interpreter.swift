@@ -437,6 +437,24 @@ class Interpreter: ASTVisitor {
             i.instruction.visit(self)
             i.elseInstruction?.visit(self)
             
+        case .AST_RETURN:
+            let ret      = expression as! ASTReturn
+            let returned = ret.returned
+            
+            if let returned {
+                returned.visit(self)
+            } else {
+                currentType = InterpreterType.void
+            }
+            
+            if let enclosing = current.queryEnclosingFunction(),
+               !enclosing.returnType.isAssignable(from: currentType) {
+                highlights.append(MessagedHighlight(begin:   ret.begin,
+                                                    end:     ret.end,
+                                                    type:   .TYPE_MISMATCH,
+                                                    message: "\(enclosing.returnType.string) is not assignable from \(currentType.string)"))
+            }
+            
         default: currentType = InterpreterType.void
         }
         if highlight {
