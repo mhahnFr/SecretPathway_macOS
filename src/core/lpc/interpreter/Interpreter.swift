@@ -386,6 +386,7 @@ class Interpreter: ASTVisitor {
             
             if operation.operatorType == .ARROW ||
                operation.operatorType == .DOT {
+                // TODO: Load if possible
                 _ = cast(type: ASTFunctionCall.self, rhs)
             } else {
                 rhs.visit(self)
@@ -454,6 +455,21 @@ class Interpreter: ASTVisitor {
                                                     type:   .TYPE_MISMATCH,
                                                     message: "\(enclosing.returnType.string) is not assignable from \(currentType.string)"))
             }
+            
+        case .FUNCTION_REFERENCE:
+            // TODO: Unwrap and check for void in parameter types
+            break
+         
+        case .AST_ELLIPSIS:
+            let enclosing = current.queryEnclosingFunction()
+            if enclosing == nil || !enclosing!.variadic {
+                highlights.append(MessagedHighlight(begin:   expression.begin,
+                                                    end:     expression.end,
+                                                    type:    .ERROR,
+                                                    message: "Enclosing function is not variadic"))
+                highlight = false
+            }
+            currentType = InterpreterType.any
             
         default: currentType = InterpreterType.void
         }
