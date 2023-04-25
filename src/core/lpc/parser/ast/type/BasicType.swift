@@ -25,6 +25,17 @@ class BasicType: AbstractType {
     /// The represented type.
     let representedType: TokenType?
     
+    var string: String {
+        if let representedType {
+            let typeString = TypeHelper.tokenTypeString(representedType)
+            if let file = (typeFile as? ASTStrings)?.value {
+                return "\(typeString)<\"\(file)\">"
+            }
+            return "\(typeString)"
+        }
+        return "<< unknown >>"
+    }
+    
     /// Constructs this AST node using the given information.
     ///
     /// - Parameter begin: The beginning position.

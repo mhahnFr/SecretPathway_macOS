@@ -27,6 +27,32 @@ class FunctionReferenceType: AbstractType {
     /// Indicates whether the referenced function has variadic parameters.
     let variadic: Bool
     
+    var string: String {
+        var buffer = ""
+        
+        if let returnType = TypeHelper.unwrap(returnType) {
+            buffer.append("\(returnType.string)")
+        } else {
+            buffer.append("<< unknown >>")
+        }
+        buffer.append("(")
+        let last = parameterTypes.last
+        parameterTypes.forEach {
+            if let type = TypeHelper.unwrap($0) {
+                buffer.append("\(type.string)")
+            } else {
+                buffer.append("<< unknown >>")
+            }
+            if $0 !== last || variadic {
+                buffer.append(", ")
+            }
+        }
+        if variadic { buffer.append("...") }
+        buffer.append(")")
+        
+        return buffer
+    }
+    
     /// Constructs this AST node using the given information.
     ///
     /// - Parameter returnType: The return type of the referenced function.

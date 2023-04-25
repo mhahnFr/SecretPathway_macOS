@@ -23,6 +23,13 @@ class ArrayType: AbstractType {
     /// The type of the content of this array.
     let underlyingType: ASTExpression
     
+    var string: String {
+        if let underlying = TypeHelper.unwrap(underlyingType) {
+            return "\(underlying.string)[]"
+        }
+        return "<< unknown >> []"
+    }
+    
     /// Constructs this AST node using the given information.
     ///
     /// - Parameter underlyingType: The underlying type.
