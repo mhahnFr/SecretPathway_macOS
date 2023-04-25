@@ -89,4 +89,9 @@ class FunctionReferenceType: AbstractType {
             parameterTypes.forEach { $0.visit(visitor) }
         }
     }
+    
+    func isAssignable(from other: TypeProto) -> Bool {
+        // TODO: Implement
+        false
+    }
 }

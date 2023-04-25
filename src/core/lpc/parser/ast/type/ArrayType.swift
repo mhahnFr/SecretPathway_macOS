@@ -49,4 +49,9 @@ class ArrayType: AbstractType {
             underlyingType.visit(visitor)
         }
     }
+    
+    func isAssignable(from other: TypeProto) -> Bool {
+        // TODO: Implement
+        false
+    }
 }

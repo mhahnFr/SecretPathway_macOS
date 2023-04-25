@@ -62,4 +62,29 @@ class BasicType: AbstractType {
             typeFile?.visit(visitor)
         }
     }
+    
+    func isAssignable(from other: TypeProto) -> Bool {
+        guard let representedType else { return false }
+        
+        if representedType == .ANY {
+            if let o = other as? BasicType, o.representedType == .VOID {
+                return false
+            }
+            return true
+        }
+        guard let o = other as? BasicType else { return false }
+        if representedType == .OBJECT ||
+           representedType == .STRING ||
+           representedType == .SYMBOL_KEYWORD {
+            return o.representedType == .OBJECT ||
+                   o.representedType == .STRING ||
+                   o.representedType == .SYMBOL_KEYWORD
+        } else if representedType == .BOOL ||
+                  representedType == .INT_KEYWORD {
+            return o.representedType == .INT_KEYWORD ||
+                   o.representedType == .BOOL
+        }
+        // TODO: Check type files
+        return o.representedType == representedType
+    }
 }
