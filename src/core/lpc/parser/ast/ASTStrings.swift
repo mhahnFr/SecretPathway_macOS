@@ -23,6 +23,19 @@ class ASTStrings: ASTExpression {
     /// The list with the actual strings.
     let strings: [ASTExpression]
     
+    /// The concatenated strings.
+    var value: String {
+        var buffer = ""
+        
+        strings.forEach {
+            if let s = $0 as? ASTString {
+                buffer.append(s.value)
+            }
+        }
+        
+        return buffer
+    }
+    
     /// Constructs this AST node using the given strings.
     ///
     /// - Parameter strings: The strings.
