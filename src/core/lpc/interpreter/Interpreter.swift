@@ -377,6 +377,51 @@ class Interpreter: ASTVisitor {
                 operation.identifier.visit(self)
             }
             
+        case .OPERATION:
+            let operation = expression as! ASTOperation
+            let rhs       = operation.rhs
+            operation.lhs.visit(self)
+            
+            let lhsType = currentType
+            
+            if operation.operatorType == .ARROW ||
+               operation.operatorType == .DOT {
+                _ = cast(type: ASTFunctionCall.self, rhs)
+            } else {
+                rhs.visit(self)
+            }
+            if operation.operatorType == .ASSIGNMENT &&
+               !lhsType.isAssignable(from: currentType) {
+                highlights.append(MessagedHighlight(begin:   rhs.begin,
+                                                    end:     rhs.end,
+                                                    type:    .TYPE_MISMATCH,
+                                                    message: "\(lhsType.string) is not assignable from \(currentType.string)"))
+            }
+            switch operation.operatorType {
+            case .IS,      .AND,
+                 .EQUALS,  .NOT_EQUAL,
+                 .LESS,    .LESS_OR_EQUAL,
+                 .GREATER, .GREATER_OR_EQUAL: currentType = InterpreterType.bool
+                
+            case .RANGE, .ELLIPSIS,
+                 .ARROW, .DOT:                currentType = InterpreterType.any
+                
+            case .ASSIGNMENT,      .OR,
+                 .AMPERSAND,       .PIPE,
+                 .LEFT_SHIFT,      .RIGHT_SHIFT,
+                 .DOUBLE_QUESTION, .QUESTION,
+                 .INCREMENT,       .DECREMENT,
+                 .COLON,           .PLUS,
+                 .MINUS,           .STAR,
+                 .SLASH,           .PERCENT,
+                 .ASSIGNMENT_PLUS,
+                 .ASSIGNMENT_MINUS,
+                 .ASSIGNMENT_STAR,
+                 .ASSIGNMENT_SLASH,
+                 .ASSIGNMENT_PERCENT:         break
+                
+            default:                          currentType = InterpreterType.void
+            }
             
         default: currentType = InterpreterType.void
         }
