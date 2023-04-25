@@ -18,10 +18,18 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This protocol defines the functionality type representations should have.
 protocol TypeProto {
+    /// The string description of this type representation.
     var string: String { get }
     
+    /// Returns whether variables of this type can be assigned
+    /// values of variables of the given other type.
+    ///
+    /// - Parameter other: The type of the right hand side expression.
+    /// - Returns: Whether this type can be assigned from the given one.
     func isAssignable(from other: TypeProto) -> Bool
 }
 
+/// Represents a type definition as an AST node.
 typealias AbstractType = TypeProto & ASTExpression
