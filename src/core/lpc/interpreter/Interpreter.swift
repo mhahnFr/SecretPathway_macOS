@@ -120,13 +120,6 @@ class Interpreter: ASTVisitor {
         return parameters
     }
     
-    /// Visits a block.
-    ///
-    /// - Parameter block: The block to be visited.
-    private func visitBlock(_ block: ASTBlock) {
-        block.body.forEach { $0.visit(self) }
-    }
-    
     private func createContext(for: ASTStrings) -> Context? {
         // TODO: Implement
         nil
@@ -276,8 +269,9 @@ class Interpreter: ASTVisitor {
             
             let type: AbstractType
             if let t = varDefinition.returnType,
-                let unwrapped = cast(type: AbstractType.self, t) {
+               let unwrapped = cast(type: AbstractType.self, t) {
                 type = unwrapped
+                type.visit(self)
             } else {
                 type = InterpreterType.any
             }
@@ -304,13 +298,13 @@ class Interpreter: ASTVisitor {
                                           returnType: cast(type: AbstractType.self, function.returnType)!,
                                           parameters: params,
                                           variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
-            visitBlock(cast(type: ASTBlock.self, block)!)
+            cast(type: ASTBlock.self, block)?.body.forEach { $0.visit(self) }
             current = current.popScope(end: expression.end)!
             currentType = InterpreterType.void
             
         case .BLOCK:
             current = current.pushScope(begin: expression.begin)
-            visitBlock(expression as! ASTBlock)
+            (expression as! ASTBlock).body.forEach { $0.visit(self) }
             current = current.popScope(end: expression.end)!
             currentType = InterpreterType.void
             
@@ -457,9 +451,19 @@ class Interpreter: ASTVisitor {
             }
             
         case .FUNCTION_REFERENCE:
-            // TODO: Unwrap and check for void in parameter types
-            break
+            let funcref = expression as! FunctionReferenceType
+            
+            cast(type: AbstractType.self, funcref.returnType)?.visit(self)
+            funcref.parameterTypes.forEach {
+                if let type = cast(type: AbstractType.self, $0) {
+                    type.visit(self)
+                    maybeWrongVoid(type)
+                }
+            }
          
+        case .ARRAY_TYPE:
+            cast(type: AbstractType.self, (expression as! ArrayType).underlyingType)?.visit(self)
+            
         case .AST_ELLIPSIS:
             let enclosing = current.queryEnclosingFunction()
             if enclosing == nil || !enclosing!.variadic {
@@ -500,6 +504,7 @@ class Interpreter: ASTVisitor {
         type != .AST_IF              &&
         type != .AST_RETURN          &&
         type != .FUNCTION_REFERENCE  &&
+        type != .ARRAY_TYPE          &&
         type != .FUNCTION_CALL
     }
 }
