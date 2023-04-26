@@ -31,5 +31,11 @@ protocol TypeProto {
     func isAssignable(from other: TypeProto) -> Bool
 }
 
+/// This protocol defines the functionality array type representations should have.
+protocol ArrayTypeProto: TypeProto {
+    /// The underlying type.
+    var underlying: TypeProto? { get }
+}
+
 /// Represents a type definition as an AST node.
 typealias AbstractType = TypeProto & ASTExpression
