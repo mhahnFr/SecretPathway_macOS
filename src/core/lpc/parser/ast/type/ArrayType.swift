@@ -19,9 +19,10 @@
  */
 
 /// This class represents an array type as an AST node.
-class ArrayType: AbstractType {
+class ArrayType: AbstractType, ArrayTypeProto {
     /// The type of the content of this array.
     let underlyingType: ASTExpression
+    let underlying: TypeProto?
     
     var string: String {
         if let underlying = TypeHelper.unwrap(underlyingType) {
@@ -36,6 +37,7 @@ class ArrayType: AbstractType {
     /// - Parameter end: The end position.
     init(underlyingType: ASTExpression, end: Int) {
         self.underlyingType = underlyingType
+        self.underlying     = TypeHelper.unwrap(underlyingType)
         
         super.init(begin: underlyingType.begin, end: end, type: .ARRAY_TYPE)
     }
@@ -51,11 +53,13 @@ class ArrayType: AbstractType {
     }
     
     func isAssignable(from other: TypeProto) -> Bool {
-        guard let o          = other as? ArrayType,
-              let underlying = TypeHelper.unwrap(underlyingType),
-              let otherUnder = TypeHelper.unwrap(o.underlyingType)
+        guard let o = other as? ArrayTypeProto,
+              let underlying
         else { return false }
         
-        return underlying.isAssignable(from: otherUnder)
+        if let otherUnder = o.underlying {
+            return underlying.isAssignable(from: otherUnder)
+        }
+        return true
     }
 }

@@ -35,6 +35,7 @@
 		BF5C0F4429E75041007F49BA /* ASTTypeDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F4329E75041007F49BA /* ASTTypeDeclaration.swift */; };
 		BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3532965C95F00DF333D /* EditorView.swift */; };
 		BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3552965CD6900DF333D /* EditorDelegate.swift */; };
+		BF7D3C3929F97E3C008B42AC /* InterpreterArrayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */; };
 		BF821D1529F843360053B00A /* TypeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF821D1429F843360053B00A /* TypeHelper.swift */; };
 		BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF832EC52927FBA000581CDA /* Int2Data.swift */; };
 		BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BDAD229D4B04400763C81 /* ASTFunctionCall.swift */; };
@@ -143,6 +144,7 @@
 		BF5C0F4329E75041007F49BA /* ASTTypeDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTTypeDeclaration.swift; sourceTree = "<group>"; };
 		BF6AF3532965C95F00DF333D /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		BF6AF3552965CD6900DF333D /* EditorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorDelegate.swift; sourceTree = "<group>"; };
+		BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterArrayType.swift; sourceTree = "<group>"; };
 		BF821D1429F843360053B00A /* TypeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeHelper.swift; sourceTree = "<group>"; };
 		BF832EC52927FBA000581CDA /* Int2Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int2Data.swift; sourceTree = "<group>"; };
 		BF8BDAD229D4B04400763C81 /* ASTFunctionCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTFunctionCall.swift; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 				BF2DC08D29F2EF7C00CE0E00 /* Instruction.swift */,
 				BF2DC08F29F2F12B00CE0E00 /* Definition.swift */,
 				BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */,
+				BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */,
 			);
 			path = interpreter;
 			sourceTree = "<group>";
@@ -660,6 +663,7 @@
 				BFEA71BA29A654DE004832AF /* Parser.swift in Sources */,
 				BF0D298329F1C10B00AB4E87 /* MessagedHighlight.swift in Sources */,
 				BF54F64D290D6F410093037F /* AboutView.swift in Sources */,
+				BF7D3C3929F97E3C008B42AC /* InterpreterArrayType.swift in Sources */,
 				BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */,
 				BFC6891E29BD1258001E51C1 /* ASTEmpty.swift in Sources */,
 				BFD9B0D72923FBE800E59D00 /* Dialog.swift in Sources */,
