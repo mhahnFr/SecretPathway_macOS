@@ -18,10 +18,20 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import Foundation
+
 /// This class adds the SecretPathwayProtocol as a plugin.
 class SPPPlugin: ProtocolPlugin {
+    private let sender: ConnectionSender
+    
     /// The buffer for a message in the SPP.
     private var buffer: [UInt8] = []
+    
+    private var fetchList: [UUID: (String, String?)] = [:]
+    
+    init(sender: ConnectionSender) {
+        self.sender = sender
+    }
     
     internal func isBegin(byte: UInt8) -> Bool {
         return byte == 0x2
@@ -39,6 +49,39 @@ class SPPPlugin: ProtocolPlugin {
     
     /// Handles the received SPP message.
     private func processBuffer() {
+        // TODO: Understand messages
         print(String(bytes: buffer, encoding: .ascii) as Any)
+    }
+    
+    private func send(_ message: String) {
+        guard let messageBytes = message.data(using: .utf8) else { return }
+        
+        var sendBytes = Data(capacity: messageBytes.count + 3)
+        
+        sendBytes.append(0x02)
+        sendBytes.append(messageBytes)
+        sendBytes.append(contentsOf: [0x03, ("\n" as Character).asciiValue!])
+        
+        sender.send(data: sendBytes)
+    }
+    
+    func save(file name: String, content: String) {
+        send("file:store:\(name):\(content)")
+    }
+    
+    func compile(file name: String) {
+        send("file:compile:\(name)")
+    }
+    
+    func fetch(file name: String) async -> String? {
+        let id = UUID()
+        fetchList[id] = (name, nil)
+        send("file:fetch:\(name)")
+        while fetchList[id]!.1 == nil {
+            await Task.yield()
+        }
+        let result = fetchList[id]!.1
+        fetchList.removeValue(forKey: id)
+        return result
     }
 }

@@ -53,7 +53,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private(set) weak var window: NSWindow?
 
     /// The protocol abstractions object.
-    private lazy var protocols = Protocols(sender: self, plugins: SPPPlugin(),
+    private lazy var protocols = Protocols(sender: self, plugins: SPPPlugin(sender: self),
                                                                   TelnetPlugin(),
                                                                   ANSIPlugin(self))
     
