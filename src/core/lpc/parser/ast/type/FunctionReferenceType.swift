@@ -91,7 +91,19 @@ class FunctionReferenceType: AbstractType {
     }
     
     func isAssignable(from other: TypeProto) -> Bool {
-        // TODO: Implement
-        false
+        guard let o    = other as? FunctionReferenceType,
+              parameterTypes.count == o.parameterTypes.count,
+              let ret  = TypeHelper.unwrap(returnType),
+              let oRet = TypeHelper.unwrap(o.returnType),
+              ret.isAssignable(from: oRet)
+        else { return false }
+        
+        for i in 0 ..< parameterTypes.count {
+            guard let type  = TypeHelper.unwrap(parameterTypes[i]),
+                  let oType = TypeHelper.unwrap(o.parameterTypes[i]),
+                  type.isAssignable(from: oType)
+            else { return false }
+        }
+        return true
     }
 }

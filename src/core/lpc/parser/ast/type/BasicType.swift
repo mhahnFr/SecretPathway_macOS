@@ -73,6 +73,11 @@ class BasicType: AbstractType {
             return true
         }
         guard let o = other as? BasicType else { return false }
+        if let tf  = (typeFile as? ASTStrings)?.value,
+           let otf = (o.typeFile as? ASTStrings)?.value,
+           tf != otf {
+            return false
+        }
         if representedType == .OBJECT ||
            representedType == .STRING ||
            representedType == .SYMBOL_KEYWORD {
@@ -84,7 +89,6 @@ class BasicType: AbstractType {
             return o.representedType == .INT_KEYWORD ||
                    o.representedType == .BOOL
         }
-        // TODO: Check type files
         return o.representedType == representedType
     }
 }

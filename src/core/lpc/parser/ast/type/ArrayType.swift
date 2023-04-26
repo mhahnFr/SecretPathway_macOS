@@ -51,7 +51,11 @@ class ArrayType: AbstractType {
     }
     
     func isAssignable(from other: TypeProto) -> Bool {
-        // TODO: Implement
-        false
+        guard let o          = other as? ArrayType,
+              let underlying = TypeHelper.unwrap(underlyingType),
+              let otherUnder = TypeHelper.unwrap(o.underlyingType)
+        else { return false }
+        
+        return underlying.isAssignable(from: otherUnder)
     }
 }
