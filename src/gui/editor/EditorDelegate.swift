@@ -37,6 +37,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
+    private weak var view: NSTextView!
     
     private var highlights: [Highlight] = []
     
@@ -69,6 +70,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         textView.isAutomaticSpellingCorrectionEnabled = false
         
         textStorage = textView.textStorage
+        view        = textView
     }
     
     internal func textDidChange(_ notification: Notification) {
@@ -78,17 +80,17 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     }
     
     internal func textViewDidChangeSelection(_ notification: Notification) {
-        guard let textView = notification.object as? NSTextView,
-              let range = textView.selectedRanges.first as? NSRange
-        else { return }
-        
-        updateStatus(range.location)
+        updateStatus()
     }
     
     /// Updates the status text for the given cursor location.
     ///
     /// - Parameter location: The location for which to retrieve the status text.
-    func updateStatus(_ location: Int) {
+    func updateStatus() {
+        guard let range = view.selectedRanges.first as? NSRange else { return }
+        
+        let location = range.location
+        
         var set = false
         
         for highlight in highlights {
@@ -158,7 +160,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
                 for token in roTokens {
                     self.textStorage.setAttributes((self.theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
                 }
-                // TODO: Update status
+                self.updateStatus()
             }
         }
     }
