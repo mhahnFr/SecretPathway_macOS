@@ -27,7 +27,7 @@ class SPPPlugin: ProtocolPlugin {
     /// The buffer for a message in the SPP.
     private var buffer: [UInt8] = []
     
-    private var fetchList: [UUID: (String, String?)] = [:]
+    private var fetchList: [UUID: (file: String, content: String?, error: Bool)] = [:]
     
     init(sender: ConnectionSender) {
         self.sender = sender
@@ -49,8 +49,52 @@ class SPPPlugin: ProtocolPlugin {
     
     /// Handles the received SPP message.
     private func processBuffer() {
-        // TODO: Understand messages
-        print(String(bytes: buffer, encoding: .ascii) as Any)
+        guard let message = String(bytes: buffer, encoding: .utf8),
+              let index = message.firstIndex(of: ":")
+        else { return }
+        
+        let code      = message[..<index]
+        let remainder = message[message.index(after: index)...]
+        
+        switch code {
+        case "promptField": break // TODO: Implement UI commands
+        case "file":        handleFileCommand(remainder)
+        case "editor":      break // sender.openEditor(remainder) // TODO: Implement editor opening
+        default:            print("Unrecognized command: \"\(message)\"")
+        }
+    }
+    
+    private func handleFileCommand(_ message: any StringProtocol) {
+        guard let index = message.firstIndex(of: ":") else { return }
+        
+        let code      = message[..<index]
+        let remainder = message[message.index(after: index)...]
+        switch String(code) {
+        case "fetch": putFetchedFile(remainder)
+        case "error": putErrorFile(remainder)
+        default:      print("Unrecognized file command: \"\(message)\"")
+        }
+    }
+    
+    private func putFetchedFile(_ message: any StringProtocol) {
+        guard let index = message.firstIndex(of: ":") else { return }
+        
+        let name    = message[..<index]
+        let content = message[message.index(after: index)...]
+        
+        setFetchedValue(file: name, value: String(content))
+    }
+    
+    private func putErrorFile(_ message: any StringProtocol) {
+        setFetchedValue(file: message, value: nil, error: true)
+    }
+    
+    private func setFetchedValue(file name: any StringProtocol, value: String?, error: Bool = false) {
+        for (id, (fileName, _, error)) in fetchList {
+            if fileName == name {
+                fetchList.updateValue((fileName, value, error), forKey: id)
+            }
+        }
     }
     
     private func send(_ message: String) {
@@ -75,12 +119,12 @@ class SPPPlugin: ProtocolPlugin {
     
     func fetch(file name: String) async -> String? {
         let id = UUID()
-        fetchList[id] = (name, nil)
+        fetchList[id] = (file: name, content: nil, error: false)
         send("file:fetch:\(name)")
-        while fetchList[id]!.1 == nil {
+        while fetchList[id]!.content == nil && !fetchList[id]!.error {
             await Task.yield()
         }
-        let result = fetchList[id]!.1
+        let result = fetchList[id]!.content
         fetchList.removeValue(forKey: id)
         return result
     }
