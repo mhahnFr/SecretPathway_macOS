@@ -52,12 +52,12 @@ class ASTFunctionCall: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            name.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await name.visit(visitor)
             
             for argument in arguments {
-                argument.visit(visitor)
+                await argument.visit(visitor)
             }
         }
     }

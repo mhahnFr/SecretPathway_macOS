@@ -36,9 +36,9 @@ class ASTSubscript: ASTExpression {
         "\(super.describe(indentation))\n\(expression.describe(indentation + 4))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            expression.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await expression.visit(visitor)
         }
     }
 }

@@ -83,10 +83,10 @@ class FunctionReferenceType: AbstractType {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            returnType.visit(visitor)
-            parameterTypes.forEach { $0.visit(visitor) }
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await returnType.visit(visitor)
+            for param in parameterTypes { await param.visit(visitor) }
         }
     }
     

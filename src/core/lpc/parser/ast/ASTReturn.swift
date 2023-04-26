@@ -40,9 +40,9 @@ class ASTReturn: ASTExpression {
         "\(super.describe(indentation))\n\(returned?.describe(indentation + 4) ?? String(repeating: " ", count: indentation + 4))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self), let returned {
-            returned.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self), let returned {
+            await returned.visit(visitor)
         }
     }
 }

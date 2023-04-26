@@ -58,11 +58,11 @@ class ASTIf: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            condition.visit(visitor)
-            instruction.visit(visitor)
-            elseInstruction?.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await condition.visit(visitor)
+            await instruction.visit(visitor)
+            await elseInstruction?.visit(visitor)
         }
     }
 }

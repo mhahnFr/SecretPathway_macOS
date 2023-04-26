@@ -40,15 +40,15 @@ class ASTParameter: ASTExpression {
     
     override func describe(_ indentation: Int) -> String {
         "\(super.describe(indentation)) type:\n"               +
-        "\(declaredType.describe(indentation + 4))\n"                  +
+        "\(declaredType.describe(indentation + 4))\n"          +
         "\(String(repeating: " ", count: indentation))name:\n" +
         name.describe(indentation + 4)
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            declaredType.visit(visitor)
-            name.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await declaredType.visit(visitor)
+            await name.visit(visitor)
         }
     }
 }

@@ -59,11 +59,11 @@ class ASTTryCatch: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            tryExpression.visit(visitor)
-            exceptionVariable?.visit(visitor)
-            catchExression.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await tryExpression.visit(visitor)
+            await exceptionVariable?.visit(visitor)
+            await catchExression.visit(visitor)
         }
     }
 }

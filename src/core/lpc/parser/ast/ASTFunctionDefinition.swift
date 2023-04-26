@@ -66,13 +66,13 @@ class ASTFunctionDefinition: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            modifiers.forEach { $0.visit(visitor) }
-            returnType.visit(visitor)
-            name.visit(visitor)
-            parameters.forEach { $0.visit(visitor) }
-            body.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            for modifier in modifiers { await modifier.visit(visitor) }
+            await returnType.visit(visitor)
+            await name.visit(visitor)
+            for parameter in parameters { await parameter.visit(visitor) }
+            await body.visit(visitor)
         }
     }
 }

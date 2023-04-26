@@ -38,9 +38,9 @@ class ASTInclude: ASTExpression {
         super.describe(indentation) + " Including:\n\(included.describe(indentation))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            included.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await included.visit(visitor)
         }
     }
 }

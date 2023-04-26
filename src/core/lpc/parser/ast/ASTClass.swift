@@ -74,12 +74,12 @@ class ASTClass: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            name.visit(visitor)
-            inheritance?.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await name.visit(visitor)
+            await inheritance?.visit(visitor)
             for statement in statements {
-                statement.visit(visitor)
+                await statement.visit(visitor)
             }
         }
     }

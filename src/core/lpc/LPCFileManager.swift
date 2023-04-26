@@ -19,7 +19,7 @@
  */
 
 class LPCFileManager {
-    var cachedContexts: [String: Context] = [:]
+    private var cachedContexts: [String: Context] = [:]
     
     func load(file name: String) async -> String? { nil }
     
@@ -33,7 +33,7 @@ class LPCFileManager {
     private func loadAndParseIntern(file name: String) async -> Context? {
         guard let content = await load(file: name) else { return nil }
         var parser  = Parser(text: content)
-        let context = Interpreter().createContext(for: parser.parse())
+        let context = await Interpreter(loader: self).createContext(for: parser.parse())
         cachedContexts[name] = context
         return context
     }

@@ -47,10 +47,10 @@ class ASTWhile: ASTExpression {
         body.describe(indentation + 4)
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            condition.visit(visitor)
-            body.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await condition.visit(visitor)
+            await body.visit(visitor)
         }
     }
 }

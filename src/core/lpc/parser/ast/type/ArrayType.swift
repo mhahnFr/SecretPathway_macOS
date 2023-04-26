@@ -46,9 +46,9 @@ class ArrayType: AbstractType, ArrayTypeProto {
         "\(super.describe(indentation)) underlying type:\n\(underlyingType.describe(indentation + 4))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            underlyingType.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await underlyingType.visit(visitor)
         }
     }
     

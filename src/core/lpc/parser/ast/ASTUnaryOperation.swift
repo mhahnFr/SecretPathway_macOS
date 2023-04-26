@@ -41,9 +41,9 @@ class ASTUnaryOperation: ASTExpression {
         "\(super.describe(indentation)) \(operatorType)\n\(identifier.describe(indentation + 4))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            identifier.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await identifier.visit(visitor)
         }
     }
 }

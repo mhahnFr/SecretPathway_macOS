@@ -43,10 +43,10 @@ class ASTCast: ASTExpression {
         castExpression.describe(indentation + 4)
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            castType.visit(visitor)
-            castExpression.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await castType.visit(visitor)
+            await castExpression.visit(visitor)
         }
     }
 }

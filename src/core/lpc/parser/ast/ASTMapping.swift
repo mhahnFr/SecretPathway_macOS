@@ -44,9 +44,9 @@ class ASTMapping: ASTExpression {
         return "\(buffer)\(String(repeating: " ", count: indentation))]"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            content.forEach { $0.visit(visitor) }
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            for expression in content { await expression.visit(visitor) }
         }
     }
 }

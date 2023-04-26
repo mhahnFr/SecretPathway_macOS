@@ -51,10 +51,12 @@ class ASTNew: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            instancingExpression.visit(visitor)
-            arguments?.forEach { $0.visit(visitor) }
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await instancingExpression.visit(visitor)
+            if let arguments {
+                for argument in arguments { await argument.visit(visitor) }
+            }
         }
     }
 }

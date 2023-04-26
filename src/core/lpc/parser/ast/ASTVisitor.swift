@@ -23,7 +23,7 @@ protocol ASTVisitor {
     /// Visits the given expression.
     ///
     /// - Parameter expression: The expression to be visited.
-    func visit(_ expression: ASTExpression)
+    func visit(_ expression: ASTExpression) async
     
     /// Returns whether the given type should be visited
     /// in depth.
@@ -37,17 +37,18 @@ protocol ASTVisitor {
     ///
     /// - Parameter expression: The expression to be visited.
     /// - Returns: Whether to visit contained nodes.
-    func maybeVisit(_ expression: ASTExpression) -> Bool
+    func maybeVisit(_ expression: ASTExpression) async -> Bool
 }
 
 /// This extension implements a default behaviour for the AST visitor.
 extension ASTVisitor {
+    
     func visitType(_ type: ASTType) -> Bool {
         return true
     }
     
-    func maybeVisit(_ expression: ASTExpression) -> Bool {
-        visit(expression)
+    func maybeVisit(_ expression: ASTExpression) async -> Bool {
+        await visit(expression)
         return visitType(expression.type)
     }
 }

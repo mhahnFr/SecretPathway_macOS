@@ -55,11 +55,11 @@ class ASTForEach: ASTExpression {
                body.describe(indentation)
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            variable.visit(visitor)
-            rangeExpression.visit(visitor)
-            body.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await variable.visit(visitor)
+            await rangeExpression.visit(visitor)
+            await body.visit(visitor)
         }
     }
 }

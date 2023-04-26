@@ -46,10 +46,10 @@ class ASTOperation: ASTExpression {
         "\(rhs.describe(indentation + 4))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            lhs.visit(visitor)
-            rhs.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await lhs.visit(visitor)
+            await rhs.visit(visitor)
         }
     }
 }

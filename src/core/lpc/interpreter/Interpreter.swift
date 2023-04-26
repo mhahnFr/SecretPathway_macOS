@@ -23,20 +23,26 @@ class Interpreter: ASTVisitor {
     /// The highlights generated from an AST.
     private(set) var highlights: [Highlight] = []
     
+    private let loader: LPCFileManager
+    
     /// The currently used context object.
     private var current = Context()
     /// The return type of the lastly interpreted expression.
     private var currentType: TypeProto = InterpreterType.any
     
+    init(loader: LPCFileManager) {
+        self.loader = loader
+    }
+    
     /// Creates and returns a context object for the given AST.
     ///
     /// - Parameter ast: The AST to be interpreted.
     /// - Returns: The interpretation context.
-    func createContext(for ast: [ASTExpression]) -> Context {
+    func createContext(for ast: [ASTExpression]) async -> Context {
         highlights = []
         current    = Context()
         
-        ast.forEach { $0.visit(self) }
+        for node in ast { await node.visit(self) }
         return current
     }
     
@@ -46,14 +52,14 @@ class Interpreter: ASTVisitor {
     ///   - combination: The ASTCombination to be unwrapped.
     ///   - type: The type of the desired AST node.
     /// - Returns: The AST node of the given type found in the combination or `nil`.
-    private func unwrap<T>(combination: ASTCombination, type: T.Type) -> T? {
+    private func unwrap<T>(combination: ASTCombination, type: T.Type) async -> T? {
         var toReturn: T? = nil
         
         for expression in combination.expressions {
             if let casted = expression as? T {
                 toReturn = casted
             } else {
-                expression.visit(self)
+                await expression.visit(self)
             }
         }
         
@@ -68,11 +74,11 @@ class Interpreter: ASTVisitor {
     ///   - type: The desired type.
     ///   - expression: The expression to maybe unwrap.
     /// - Returns: The unwrapped expression or `nil`, if the given type did not match.
-    private func cast<T>(type: T.Type, _ expression: ASTExpression) -> T? {
+    private func cast<T>(type: T.Type, _ expression: ASTExpression) async -> T? {
         if let casted = expression as? T {
             return casted
         } else if let combination = expression as? ASTCombination {
-            return unwrap(combination: combination, type: type)
+            return await unwrap(combination: combination, type: type)
         }
         return nil
     }
@@ -95,7 +101,7 @@ class Interpreter: ASTVisitor {
     ///
     /// - Parameter function: The declared function whose parameters to visit.
     /// - Returns: The definitions created from the declared parameters.
-    private func visitParams(of function: ASTFunctionDefinition) -> [Definition] {
+    private func visitParams(of function: ASTFunctionDefinition) async -> [Definition] {
         var parameters: [Definition] = []
         
         for parameter in function.parameters {
@@ -105,32 +111,31 @@ class Interpreter: ASTVisitor {
                                                     type:    .MISSING,
                                                     message: (parameter as! ASTMissing).message))
             } else if parameter.type != .AST_ELLIPSIS,
-                      let param = cast(type: ASTParameter.self, parameter),
-                      let type  = cast(type: AbstractType.self, param.declaredType) {
-                type.visit(self)
+                      let param = await cast(type: ASTParameter.self, parameter),
+                      let type  = await cast(type: AbstractType.self, param.declaredType) {
+                await type.visit(self)
                 maybeWrongVoid(type)
                 
-                parameters.append(Definition(begin:      param.begin,
-                                             returnType: type,
-                                             name:       cast(type: ASTName.self, param.name)?.name ?? "<< unknown >>",
-                                             kind:       .PARAMETER))
+                await parameters.append(Definition(begin:      param.begin,
+                                                   returnType: type,
+                                                   name:       cast(type: ASTName.self, param.name)?.name ?? "<< unknown >>",
+                                                   kind:       .PARAMETER))
             }
         }
         
         return parameters
     }
     
-    private func createContext(for: ASTStrings) -> Context? {
-        // TODO: Implement
-        nil
+    private func createContext(for file: ASTStrings) async -> Context? {
+        return await loader.loadAndParse(file: file.value)
     }
     
     /// Adds the context of the file represented by the given string nodes
     /// to the current context.
     ///
     /// - Parameter file: The strings representing the file name.
-    private func addIncluding(file: ASTStrings) {
-        if let context = createContext(for: file) {
+    private func addIncluding(file: ASTStrings) async {
+        if let context = await createContext(for: file) {
             current.included.append(context)
         } else {
             highlights.append(MessagedHighlight(begin:   file.begin,
@@ -144,8 +149,8 @@ class Interpreter: ASTVisitor {
     /// as super context to the current context.
     ///
     /// - Parameter file: The strings representing the file name.
-    private func addInheriting(from file: ASTStrings) {
-        if let context = createContext(for: file) {
+    private func addInheriting(from file: ASTStrings) async {
+        if let context = await createContext(for: file) {
             current.inherited.append(context)
         } else {
             highlights.append(MessagedHighlight(begin:   file.begin,
@@ -162,7 +167,7 @@ class Interpreter: ASTVisitor {
     /// - Parameters:
     ///   - function: The function to be visited.
     ///   - id: The definition to check against.
-    private func visitFunctionCall(function: ASTFunctionCall, id: FunctionDefinition) {
+    private func visitFunctionCall(function: ASTFunctionCall, id: FunctionDefinition) async {
         let arguments = function.arguments
         var tooManyBegin: Int?
         var it = id.parameters.makeIterator()
@@ -170,7 +175,7 @@ class Interpreter: ASTVisitor {
         
         for argument in arguments {
             lastArg = argument
-            argument.visit(self)
+            await argument.visit(self)
             
             if let next = it.next() {
                 if !next.returnType.isAssignable(from: currentType) {
@@ -205,18 +210,18 @@ class Interpreter: ASTVisitor {
     ///   - function: The function call to be visited.
     ///   - ids: The definition candidates.
     /// - Returns: The return type of the matching function definition, `nil` if no definition matches.
-    private func visitFunctionCall(function: ASTFunctionCall, ids: [Definition]) -> TypeProto? {
+    private func visitFunctionCall(function: ASTFunctionCall, ids: [Definition]) async -> TypeProto? {
         for id in ids {
             if let fd = id as? FunctionDefinition,
                fd.parameters.count == function.arguments.count || fd.variadic {
                 // TODO: Check types
-                visitFunctionCall(function: function, id: fd)
+                await visitFunctionCall(function: function, id: fd)
                 return fd.returnType
             }
         }
         for id in ids {
             if let fd = id as? FunctionDefinition {
-                visitFunctionCall(function: function, id: fd)
+                await visitFunctionCall(function: function, id: fd)
                 return fd.returnType
             }
         }
@@ -226,9 +231,9 @@ class Interpreter: ASTVisitor {
     /// Visits the given unary operation as a super send.
     ///
     /// - Parameter operation: The operation to be visited.
-    private func visitSuperFunc(_ operation: ASTUnaryOperation) {
-        if let f = cast(type: ASTFunctionCall.self, operation.identifier),
-           let n = cast(type: ASTName.self, f.name)?.name {
+    private func visitSuperFunc(_ operation: ASTUnaryOperation) async {
+        if let f = await cast(type: ASTFunctionCall.self, operation.identifier),
+           let n = await cast(type: ASTName.self, f.name)?.name {
             let ids = current.getSuperIdentifiers(name: n)
             if ids.isEmpty {
                 highlights.append(MessagedHighlight(begin:   operation.begin,
@@ -236,12 +241,12 @@ class Interpreter: ASTVisitor {
                                                     type:    .NOT_FOUND,
                                                     message: "Identifier not found"))
             } else {
-                currentType = visitFunctionCall(function: f, ids: ids) ?? InterpreterType.any
+                currentType = await visitFunctionCall(function: f, ids: ids) ?? InterpreterType.any
             }
         }
     }
     
-    internal func visit(_ expression: ASTExpression) {
+    internal func visit(_ expression: ASTExpression) async {
         var highlight = true
         
         switch expression.type {
@@ -261,25 +266,25 @@ class Interpreter: ASTVisitor {
             
         case .CAST:
             let c = expression as! ASTCast
-            c.castExpression.visit(self)
-            currentType = cast(type: AbstractType.self, c.castType)! as TypeProto
+            await c.castExpression.visit(self)
+            currentType = await cast(type: AbstractType.self, c.castType)! as TypeProto
             
         case .VARIABLE_DEFINITION:
             let varDefinition = expression as! ASTVariableDefinition
             
             let type: AbstractType
             if let t = varDefinition.returnType,
-               let unwrapped = cast(type: AbstractType.self, t) {
+               let unwrapped = await cast(type: AbstractType.self, t) {
                 type = unwrapped
-                type.visit(self)
+                await type.visit(self)
             } else {
                 type = InterpreterType.any
             }
             
-            current.addIdentifier(begin: varDefinition.begin,
-                                  name:  cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>",
-                                  type: type,
-                                  .VARIABLE_DEFINITION)
+            await current.addIdentifier(begin: varDefinition.begin,
+                                        name:  cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>",
+                                        type: type,
+                                        .VARIABLE_DEFINITION)
             maybeWrongVoid(type)
             currentType = type
             
@@ -288,34 +293,39 @@ class Interpreter: ASTVisitor {
             let block            = function.body
             let paramExpressions = function.parameters
             
-            let retType = cast(type: AbstractType.self, function.returnType)!
-            retType.visit(self)
-            let params  = visitParams(of: function)
+            let retType = await cast(type: AbstractType.self, function.returnType)!
+            await retType.visit(self)
+            let params  = await visitParams(of: function)
             
-            current = current.addFunction(begin:      function.begin,
-                                          scopeBegin: block.begin,
-                                          name:       cast(type: ASTName.self,      function.name)!,
-                                          returnType: cast(type: AbstractType.self, function.returnType)!,
-                                          parameters: params,
-                                          variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
-            cast(type: ASTBlock.self, block)?.body.forEach { $0.visit(self) }
+            current = await current.addFunction(begin:      function.begin,
+                                                scopeBegin: block.begin,
+                                                name:       cast(type: ASTName.self,      function.name)!,
+                                                returnType: cast(type: AbstractType.self, function.returnType)!,
+                                                parameters: params,
+                                                variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
+            if let block = await cast(type: ASTBlock.self, block) {
+                for expression in block.body {
+                    await expression.visit(self)
+                }
+            }
             current = current.popScope(end: expression.end)!
             currentType = InterpreterType.void
             
         case .BLOCK:
-            current = current.pushScope(begin: expression.begin)
-            (expression as! ASTBlock).body.forEach { $0.visit(self) }
+            current   = current.pushScope(begin: expression.begin)
+            let block = expression as! ASTBlock
+            for expression in block.body { await expression.visit(self) }
             current = current.popScope(end: expression.end)!
             currentType = InterpreterType.void
             
         case .AST_INCLUDE:
-            addIncluding(file: cast(type: ASTStrings.self, (expression as! ASTInclude).included)!)
+            await addIncluding(file: cast(type: ASTStrings.self, (expression as! ASTInclude).included)!)
             
         case .AST_INHERITANCE:
             let inheritance = expression as! ASTInheritance
             
             if let inherited = inheritance.inherited {
-                addInheriting(from: cast(type: ASTStrings.self, inherited)!)
+                await addInheriting(from: cast(type: ASTStrings.self, inherited)!)
             } else {
                 highlight = false
                 highlights.append(MessagedHighlight(begin:   inheritance.begin,
@@ -327,12 +337,12 @@ class Interpreter: ASTVisitor {
         case .FUNCTION_CALL:
             let fc = expression as! ASTFunctionCall
             
-            let name = cast(type: ASTName.self, fc.name)!
-            name.visit(self)
+            let name = await cast(type: ASTName.self, fc.name)!
+            await name.visit(self)
             if let n = name.name {
                 let ids = current.getIdentifiers(name: n, pos: name.begin)
                 if !ids.isEmpty {
-                    currentType = visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.any
+                    currentType = await visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.any
                 }
             }
             
@@ -366,33 +376,33 @@ class Interpreter: ASTVisitor {
             let operation = expression as! ASTUnaryOperation
             
             if operation.operatorType == .SCOPE {
-                visitSuperFunc(operation)
+                await visitSuperFunc(operation)
             } else {
-                operation.identifier.visit(self)
+                await operation.identifier.visit(self)
             }
             
         case .OPERATION:
             let operation = expression as! ASTOperation
             let rhs       = operation.rhs
-            operation.lhs.visit(self)
+            await operation.lhs.visit(self)
             
             let lhsType = currentType
             
             if operation.operatorType == .ARROW ||
                operation.operatorType == .DOT {
-                if let funcCall = cast(type: ASTFunctionCall.self, rhs),
-                   let name     = cast(type: ASTName.self, funcCall.name),
+                if let funcCall = await cast(type: ASTFunctionCall.self, rhs),
+                   let name     = await cast(type: ASTName.self, funcCall.name),
                    let nameStr  = name.name,
                    let type     = lhsType as? BasicType,
                    let file     = type.typeFile as? ASTStrings,
-                   let context  = createContext(for: file) {
+                   let context  = await createContext(for: file) {
                     let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
-                    currentType = visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.any
+                    currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.any
                 } else {
                     currentType = InterpreterType.any
                 }
             } else {
-                rhs.visit(self)
+                await rhs.visit(self)
             }
             if operation.operatorType == .ASSIGNMENT &&
                !lhsType.isAssignable(from: currentType) {
@@ -431,22 +441,22 @@ class Interpreter: ASTVisitor {
             let i         = expression as! ASTIf
             let condition = i.condition
             
-            condition.visit(self)
+            await condition.visit(self)
             if !InterpreterType.bool.isAssignable(from: currentType) {
                 highlights.append(MessagedHighlight(begin:   condition.begin,
                                                     end:     condition.end,
                                                     type:    .TYPE_MISMATCH,
                                                     message: "Condition should be a boolean expression"))
             }
-            i.instruction.visit(self)
-            i.elseInstruction?.visit(self)
+            await i.instruction.visit(self)
+            await i.elseInstruction?.visit(self)
             
         case .AST_RETURN:
             let ret      = expression as! ASTReturn
             let returned = ret.returned
             
             if let returned {
-                returned.visit(self)
+                await returned.visit(self)
             } else {
                 currentType = InterpreterType.void
             }
@@ -462,16 +472,16 @@ class Interpreter: ASTVisitor {
         case .FUNCTION_REFERENCE:
             let funcref = expression as! FunctionReferenceType
             
-            cast(type: AbstractType.self, funcref.returnType)?.visit(self)
-            funcref.parameterTypes.forEach {
-                if let type = cast(type: AbstractType.self, $0) {
-                    type.visit(self)
+            await cast(type: AbstractType.self, funcref.returnType)?.visit(self)
+            for parameter in funcref.parameterTypes {
+                if let type = await cast(type: AbstractType.self, parameter) {
+                    await type.visit(self)
                     maybeWrongVoid(type)
                 }
             }
          
         case .ARRAY_TYPE:
-            cast(type: AbstractType.self, (expression as! ArrayType).underlyingType)?.visit(self)
+            await cast(type: AbstractType.self, (expression as! ArrayType).underlyingType)?.visit(self)
             
         case .AST_ELLIPSIS:
             let enclosing = current.queryEnclosingFunction()
@@ -489,8 +499,8 @@ class Interpreter: ASTVisitor {
         case .ARRAY:
             var substituted: TypeProto?
             
-            (expression as! ASTArray).content.forEach {
-                $0.visit(self)
+            for expression in (expression as! ASTArray).content {
+                await expression.visit(self)
                 if let s = substituted {
                     if !s.isAssignable(from: currentType) {
                         // TODO: Find common super type
@@ -508,7 +518,7 @@ class Interpreter: ASTVisitor {
             }
             
         case .AST_MAPPING:
-            (expression as! ASTMapping).content.forEach { $0.visit(self) }
+            for expression in (expression as! ASTMapping).content { await expression.visit(self) }
             currentType = InterpreterType.mapping
 
         case .AST_STRING,

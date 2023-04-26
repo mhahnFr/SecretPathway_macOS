@@ -62,12 +62,12 @@ class ASTFor: ASTExpression {
                "\(body.describe(indentation + 4))"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            initExpression.visit(visitor)
-            condition.visit(visitor)
-            afterExpression.visit(visitor)
-            body.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await initExpression.visit(visitor)
+            await condition.visit(visitor)
+            await afterExpression.visit(visitor)
+            await body.visit(visitor)
         }
     }
 }

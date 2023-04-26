@@ -57,9 +57,9 @@ class BasicType: AbstractType {
         "\(typeFile?.describe(indentation + 4) ?? "")"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            typeFile?.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await typeFile?.visit(visitor)
         }
     }
     

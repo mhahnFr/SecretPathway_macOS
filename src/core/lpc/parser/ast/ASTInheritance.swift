@@ -38,9 +38,9 @@ class ASTInheritance: ASTExpression {
         super.describe(indentation) + " Inheriting from:\n\(inherited?.describe(indentation + 4) ?? "\(String(repeating: " ", count: indentation + 4))<nothing>")"
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            inherited?.visit(visitor)
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            await inherited?.visit(visitor)
         }
     }
 }

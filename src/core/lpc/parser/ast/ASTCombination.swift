@@ -41,9 +41,9 @@ class ASTCombination: ASTExpression {
         return buffer
     }
     
-    override func visit(_ visitor: ASTVisitor) {
-        if visitor.maybeVisit(self) {
-            expressions.forEach { $0.visit(visitor) }
+    override func visit(_ visitor: ASTVisitor) async {
+        if await visitor.maybeVisit(self) {
+            for expression in expressions { await expression.visit(visitor) }
         }
     }
 }

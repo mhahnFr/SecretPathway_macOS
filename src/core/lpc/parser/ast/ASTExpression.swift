@@ -42,8 +42,8 @@ class ASTExpression {
     /// Visits the given visitor on this node.
     ///
     /// - Parameter visitor: The visitor to be visited.
-    func visit(_ visitor: ASTVisitor) {
-        visitor.visit(self)
+    func visit(_ visitor: ASTVisitor) async {
+        await visitor.visit(self)
     }
     
     /// Creates and returns a description of this node.
