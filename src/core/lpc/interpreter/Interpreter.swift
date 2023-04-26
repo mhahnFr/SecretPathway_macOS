@@ -380,8 +380,17 @@ class Interpreter: ASTVisitor {
             
             if operation.operatorType == .ARROW ||
                operation.operatorType == .DOT {
-                // TODO: Load if possible
-                _ = cast(type: ASTFunctionCall.self, rhs)
+                if let funcCall = cast(type: ASTFunctionCall.self, rhs),
+                   let name     = cast(type: ASTName.self, funcCall.name),
+                   let nameStr  = name.name,
+                   let type     = lhsType as? BasicType,
+                   let file     = type.typeFile as? ASTStrings,
+                   let context  = createContext(for: file) {
+                    let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
+                    currentType = visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.any
+                } else {
+                    currentType = InterpreterType.any
+                }
             } else {
                 rhs.visit(self)
             }
@@ -398,8 +407,7 @@ class Interpreter: ASTVisitor {
                  .LESS,    .LESS_OR_EQUAL,
                  .GREATER, .GREATER_OR_EQUAL: currentType = InterpreterType.bool
                 
-            case .RANGE, .ELLIPSIS,
-                 .ARROW, .DOT:                currentType = InterpreterType.any
+            case .RANGE, .ELLIPSIS:           currentType = InterpreterType.any
                 
             case .ASSIGNMENT,      .OR,
                  .AMPERSAND,       .PIPE,
@@ -409,6 +417,7 @@ class Interpreter: ASTVisitor {
                  .COLON,           .PLUS,
                  .MINUS,           .STAR,
                  .SLASH,           .PERCENT,
+                 .ARROW,           .DOT,
                  .ASSIGNMENT_PLUS,
                  .ASSIGNMENT_MINUS,
                  .ASSIGNMENT_STAR,
@@ -475,7 +484,7 @@ class Interpreter: ASTVisitor {
             }
             currentType = InterpreterType.any
             
-        case .AST_NEW: currentType = InterpreterType.object // TODO: Load
+        case .AST_NEW: currentType = InterpreterType.object // TODO: Load and check arguments, return type -> object<"<file>">
             
         case .ARRAY:
             var substituted: TypeProto?
