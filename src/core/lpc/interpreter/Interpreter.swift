@@ -475,8 +475,32 @@ class Interpreter: ASTVisitor {
             }
             currentType = InterpreterType.any
             
-        case .AST_NEW:             currentType = InterpreterType.object // TODO: Load
-        case .ARRAY, .AST_MAPPING: currentType = InterpreterType.any    // TODO: Substitiute
+        case .AST_NEW: currentType = InterpreterType.object // TODO: Load
+            
+        case .ARRAY:
+            var substituted: TypeProto?
+            
+            (expression as! ASTArray).content.forEach {
+                $0.visit(self)
+                if let s = substituted {
+                    if !s.isAssignable(from: currentType) {
+                        // TODO: Find common super type
+                        substituted = InterpreterType.any
+                    }
+                } else {
+                    substituted = currentType
+                }
+            }
+            
+            if let substituted {
+                currentType = InterpreterArrayType(from: substituted)
+            } else {
+                currentType = InterpreterArrayType.any
+            }
+            
+        case .AST_MAPPING:
+            (expression as! ASTMapping).content.forEach { $0.visit(self) }
+            currentType = InterpreterType.mapping
 
         case .AST_STRING,
              .STRINGS:       currentType = InterpreterType.string
@@ -505,6 +529,8 @@ class Interpreter: ASTVisitor {
         type != .AST_RETURN          &&
         type != .FUNCTION_REFERENCE  &&
         type != .ARRAY_TYPE          &&
+        type != .AST_MAPPING         &&
+        type != .ARRAY               &&
         type != .FUNCTION_CALL
     }
 }

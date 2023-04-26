@@ -19,14 +19,15 @@
  */
 
 class InterpreterType: BasicType {
-    static let any    = InterpreterType(type: .ANY)
-    static let object = InterpreterType(type: .OBJECT)
-    static let string = InterpreterType(type: .STRING_KEYWORD)
-    static let symbol = InterpreterType(type: .SYMBOL_KEYWORD)
-    static let int    = InterpreterType(type: .INT_KEYWORD)
-    static let bool   = InterpreterType(type: .BOOL)
-    static let void   = InterpreterType(type: .VOID)
-    static let char   = InterpreterType(type: .CHAR_KEYWORD)
+    static let any     = InterpreterType(type: .ANY)
+    static let object  = InterpreterType(type: .OBJECT)
+    static let string  = InterpreterType(type: .STRING_KEYWORD)
+    static let symbol  = InterpreterType(type: .SYMBOL_KEYWORD)
+    static let int     = InterpreterType(type: .INT_KEYWORD)
+    static let bool    = InterpreterType(type: .BOOL)
+    static let void    = InterpreterType(type: .VOID)
+    static let char    = InterpreterType(type: .CHAR_KEYWORD)
+    static let mapping = InterpreterType(type: .MAPPING)
     
     init(type: TokenType) {
         super.init(begin: 0, representedType: type, end: 0, typeFile: nil)
