@@ -36,6 +36,9 @@
 		BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3532965C95F00DF333D /* EditorView.swift */; };
 		BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3552965CD6900DF333D /* EditorDelegate.swift */; };
 		BF7D3C3929F97E3C008B42AC /* InterpreterArrayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */; };
+		BF7D3C3B29F99C2F008B42AC /* LPCFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3A29F99C2F008B42AC /* LPCFileManager.swift */; };
+		BF7D3C3D29F99EDD008B42AC /* LocalFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3C29F99EDD008B42AC /* LocalFileManager.swift */; };
+		BF7D3C3F29F99F5E008B42AC /* SPPFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3E29F99F5E008B42AC /* SPPFileManager.swift */; };
 		BF821D1529F843360053B00A /* TypeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF821D1429F843360053B00A /* TypeHelper.swift */; };
 		BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF832EC52927FBA000581CDA /* Int2Data.swift */; };
 		BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BDAD229D4B04400763C81 /* ASTFunctionCall.swift */; };
@@ -145,6 +148,9 @@
 		BF6AF3532965C95F00DF333D /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		BF6AF3552965CD6900DF333D /* EditorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorDelegate.swift; sourceTree = "<group>"; };
 		BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterArrayType.swift; sourceTree = "<group>"; };
+		BF7D3C3A29F99C2F008B42AC /* LPCFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LPCFileManager.swift; sourceTree = "<group>"; };
+		BF7D3C3C29F99EDD008B42AC /* LocalFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileManager.swift; sourceTree = "<group>"; };
+		BF7D3C3E29F99F5E008B42AC /* SPPFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPPFileManager.swift; sourceTree = "<group>"; };
 		BF821D1429F843360053B00A /* TypeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeHelper.swift; sourceTree = "<group>"; };
 		BF832EC52927FBA000581CDA /* Int2Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int2Data.swift; sourceTree = "<group>"; };
 		BF8BDAD229D4B04400763C81 /* ASTFunctionCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTFunctionCall.swift; sourceTree = "<group>"; };
@@ -320,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				BF91617C294E400E00C8B967 /* SPPPlugin.swift */,
+				BF7D3C3E29F99F5E008B42AC /* SPPFileManager.swift */,
 			);
 			path = spp;
 			sourceTree = "<group>";
@@ -339,8 +346,10 @@
 		BFD5A14029EF0BE7009E5409 /* lpc */ = {
 			isa = PBXGroup;
 			children = (
+				BF7D3C3A29F99C2F008B42AC /* LPCFileManager.swift */,
 				BFD5A14129EF0C10009E5409 /* interpreter */,
 				BF2DAAD02965DC590063F91C /* parser */,
+				BF7D3C3C29F99EDD008B42AC /* LocalFileManager.swift */,
 			);
 			path = lpc;
 			sourceTree = "<group>";
@@ -623,6 +632,7 @@
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
 				BFC5140D29F01FDA00382D64 /* ArrayType.swift in Sources */,
 				BF92224B29E5D6EC001085B9 /* ASTModifier.swift in Sources */,
+				BF7D3C3D29F99EDD008B42AC /* LocalFileManager.swift in Sources */,
 				BFFD268829A69663002998E8 /* ASTExpression.swift in Sources */,
 				BFEA07B729043DB500294822 /* SettingsView.swift in Sources */,
 				BFE2926829DB3B4C00185467 /* ASTName.swift in Sources */,
@@ -636,6 +646,8 @@
 				BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */,
 				BFC5140B29F01FA600382D64 /* FunctionReferenceType.swift in Sources */,
 				BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */,
+				BF7D3C3B29F99C2F008B42AC /* LPCFileManager.swift in Sources */,
+				BF7D3C3F29F99F5E008B42AC /* SPPFileManager.swift in Sources */,
 				BF92224D29E5D7D7001085B9 /* ASTSymbol.swift in Sources */,
 				BF0D297F29F1B4CB00AB4E87 /* InterpreterType.swift in Sources */,
 				BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */,
