@@ -31,9 +31,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var recentsMenu: NSMenu!
 
     /// Opens an editor window.
-    private func openEditorWindow() {
+    private func openEditorWindow(loader: LPCFileManager) {
         let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
-        let delegate = EditorDelegate()
+        let delegate = EditorDelegate(loader: loader)
         let content  = EditorView(delegate: delegate)
         delegate.onClose   = { window.performClose(delegate) }
         window.contentView = NSHostingView(rootView: content)
@@ -46,7 +46,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if Settings.shared.editorInlined, let delegate = NSApp.keyWindow?.delegate as? ConnectionDelegate, !delegate.isEditorShowing {
             delegate.showEditor()
         } else {
-            openEditorWindow()
+            // TODO: Ask current window for the file loader
+            openEditorWindow(loader: LocalFileManager())
         }
     }
     

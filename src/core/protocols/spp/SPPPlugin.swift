@@ -22,6 +22,8 @@ import Foundation
 
 /// This class adds the SecretPathwayProtocol as a plugin.
 class SPPPlugin: ProtocolPlugin {
+    var active = false
+    
     private let sender: ConnectionSender
     
     /// The buffer for a message in the SPP.

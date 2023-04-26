@@ -52,8 +52,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The window that is controlled by this delegate instance.
     private(set) weak var window: NSWindow?
 
+    private lazy var sppPlugin = SPPPlugin(sender: self)
     /// The protocol abstractions object.
-    private lazy var protocols = Protocols(sender: self, plugins: SPPPlugin(sender: self),
+    private lazy var protocols = Protocols(sender: self, plugins: sppPlugin,
                                                                   TelnetPlugin(),
                                                                   ANSIPlugin(self))
     
@@ -157,7 +158,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Opens an inlined editor.
     func showEditor() {
         isEditorShowing = true
-        editorDelegate  = EditorDelegate()
+        editorDelegate  = EditorDelegate(loader: sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
+                                                                  : LocalFileManager())
         editorDelegate!.onClose = {
             self.editorDelegate  = nil
             self.isEditorShowing = false

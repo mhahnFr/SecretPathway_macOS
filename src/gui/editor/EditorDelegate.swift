@@ -35,11 +35,17 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// The theme to be used for the syntax highlighting.
     var theme: SPTheme = restoreTheme()
     
+    private let loader: LPCFileManager
+    
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
     private weak var view: NSTextView!
     
     private var highlights: [Highlight] = []
+    
+    init(loader: LPCFileManager) {
+        self.loader = loader
+    }
     
     /// Attempts to restore the theme used for the editor.
     ///
@@ -145,10 +151,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
         }
         let roTokens = comments
         Task(priority: .background) {
-            let interpreter = Interpreter() // loader
+            let interpreter = Interpreter(loader: loader)
             var parser      = Parser(text: textStorage.string)
             let ast         = parser.parse()
-            let context     = interpreter.createContext(for: ast)
+            let context     = await interpreter.createContext(for: ast)
             self.highlights = interpreter.highlights
             
             DispatchQueue.main.async {
