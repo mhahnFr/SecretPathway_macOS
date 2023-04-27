@@ -59,10 +59,18 @@ class SPPPlugin: ProtocolPlugin {
         let remainder = message[message.index(after: index)...]
         
         switch code {
-        case "promptField": break // TODO: Implement UI commands
+        case "promptField": handlePromptCommand(remainder)
         case "file":        handleFileCommand(remainder)
-        case "editor":      break // sender.openEditor(remainder) // TODO: Implement editor opening
+        case "editor":      sender.openEditor(remainder.isEmpty ? nil : remainder)
         default:            print("Unrecognized command: \"\(message)\"")
+        }
+    }
+    
+    private func handlePromptCommand(_ message: any StringProtocol) {
+        switch String(message) {
+        case "normal":   sender.passwordMode = false
+        case "password": sender.passwordMode = true
+        default:         print("Unrecognized prompt command: \"\(message)\"")
         }
     }
     
@@ -92,9 +100,11 @@ class SPPPlugin: ProtocolPlugin {
     }
     
     private func setFetchedValue(file name: any StringProtocol, value: String?, error: Bool = false) {
-        for (id, (fileName, _, error)) in fetchList {
-            if fileName == name {
-                fetchList.updateValue((fileName, value, error), forKey: id)
+        DispatchQueue.main.sync {
+            for (id, (fileName, _, _)) in fetchList {
+                if fileName == name {
+                    fetchList.updateValue((fileName, value, error), forKey: id)
+                }
             }
         }
     }
@@ -119,15 +129,45 @@ class SPPPlugin: ProtocolPlugin {
         send("file:compile:\(name)")
     }
     
+    private func addFetcher(id: UUID, file name: String) {
+        DispatchQueue.main.sync {
+            fetchList[id] = (file: name, content: nil, error: false)
+        }
+    }
+    
+    private func fetcherWaiting(id: UUID) -> Bool {
+        var ret = true
+        
+        DispatchQueue.main.sync {
+            if let fetch = fetchList[id] {
+                ret = fetch.content == nil && !fetch.error
+            }
+        }
+        
+        return ret
+    }
+    
+    private func getFetcher(id: UUID) -> (file: String, content: String?, error: Bool) {
+        var ret = ("", String?.none, true)
+        
+        DispatchQueue.main.sync {
+            if let result = fetchList[id] {
+                ret = result
+                fetchList.removeValue(forKey: id)
+            }
+        }
+        
+        return ret
+    }
+    
     func fetch(file name: String) async -> String? {
         let id = UUID()
-        fetchList[id] = (file: name, content: nil, error: false)
+        addFetcher(id: id, file: name)
         send("file:fetch:\(name)")
-        while fetchList[id]!.content == nil && !fetchList[id]!.error {
+        while fetcherWaiting(id: id) {
             await Task.yield()
         }
-        let result = fetchList[id]!.content
-        fetchList.removeValue(forKey: id)
+        let result = getFetcher(id: id).content
         return result
     }
 }
