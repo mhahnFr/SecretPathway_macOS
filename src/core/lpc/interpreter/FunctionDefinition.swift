@@ -18,8 +18,11 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents a function definition.
 class FunctionDefinition: Definition {
+    /// The definitions of the parameters.
     let parameters: [Definition]
+    /// Indicates whether the represented function can take variadic arguments.
     let variadic: Bool
     
     var string: String {
@@ -38,6 +41,14 @@ class FunctionDefinition: Definition {
         return buffer
     }
     
+    /// Creates a function definition.
+    ///
+    /// - Parameters:
+    ///   - begin: The beginning position.
+    ///   - name: The name.
+    ///   - returnType: The return type.
+    ///   - parameters: The parameter definitions.
+    ///   - variadic: Whether the function can take variadic arguments.
     init(begin:      Int,
          name:       String,
          returnType: TypeProto,
