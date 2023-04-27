@@ -18,9 +18,16 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This structure contains helper functions for differentiating types from
+/// AST nodes.
 struct TypeHelper {
+    /// Private constructor to avoid instances of this class.
     private init() {}
     
+    /// Returns the type string representation of the given token type.
+    ///
+    /// - Parameter type: The token type to be converted.
+    /// - Returns: The string type representation.
     static func tokenTypeString(_ type: TokenType) -> String {
         switch type {
         case .INT_KEYWORD:    return "int"
@@ -31,6 +38,12 @@ struct TypeHelper {
         }
     }
     
+    /// Unwraps the given expression to an AbstractType.
+    ///
+    /// If the given expression is an ASTCombination, it is unwrapped.
+    ///
+    /// - Parameter expression: The expression to convert.
+    /// - Returns: The found AbstractType or `nil` if it is not or does not contain an AbstractType.
     static func unwrap(_ expression: ASTExpression) -> AbstractType? {
         if let direct = expression as? AbstractType {
             return direct
