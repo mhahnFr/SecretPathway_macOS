@@ -91,7 +91,7 @@ class TelnetPlugin: ProtocolPlugin {
     }
     /// An enumeration containing MUD specific additions
     enum MudExtensions: UInt8 {
-        case a = 0
+        case spp = 103
     }
     
     /// Indicates whether the currently received telnet sequence ends with IAC SE.
@@ -106,7 +106,6 @@ class TelnetPlugin: ProtocolPlugin {
     }
     
     internal func process(byte: UInt8, sender: ConnectionSender) -> Bool {
-        print(byte)
         var result = false
         
         defer {
@@ -246,6 +245,12 @@ class TelnetPlugin: ProtocolPlugin {
             default:
                 refuse = true
             }
+        } else if let code = MudExtensions(rawValue: byte) {
+            switch code {
+            case .spp:
+                sendSingle(mode: .DO, function: MudExtensions.spp.rawValue, sender: sender)
+                sender.enableSPP()
+            }
         }
         if (refuse) {
             if previous == .DO {
@@ -271,8 +276,6 @@ class TelnetPlugin: ProtocolPlugin {
         data.append(TelnetFunction.IAC.rawValue)
         data.append(mode.rawValue)
         data.append(function)
-        
-        print("IAC \(mode) \(function)")
         
         sender.send(data: data)
     }
