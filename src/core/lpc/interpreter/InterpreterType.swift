@@ -18,17 +18,31 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents a convenience wrapper for
+/// a basic type.
 class InterpreterType: BasicType {
+    /// Represents the `any` type.
     static let any     = InterpreterType(type: .ANY)
+    /// Represents the `object` type.
     static let object  = InterpreterType(type: .OBJECT)
+    /// Represents the `string` type.
     static let string  = InterpreterType(type: .STRING_KEYWORD)
+    /// Represents the `symbol` type.
     static let symbol  = InterpreterType(type: .SYMBOL_KEYWORD)
+    /// Represents the `int` type.
     static let int     = InterpreterType(type: .INT_KEYWORD)
+    /// Represents the `bool` type.
     static let bool    = InterpreterType(type: .BOOL)
+    /// Represents the `void` type.
     static let void    = InterpreterType(type: .VOID)
+    /// Represents the `char` type.
     static let char    = InterpreterType(type: .CHAR_KEYWORD)
+    /// Represents the `mapping` type.
     static let mapping = InterpreterType(type: .MAPPING)
     
+    /// Wraps the given token type as a basic type.
+    ///
+    /// - Parameter type: The token type to represent as basic type.
     init(type: TokenType) {
         super.init(begin: 0, representedType: type, end: 0, typeFile: nil)
     }
