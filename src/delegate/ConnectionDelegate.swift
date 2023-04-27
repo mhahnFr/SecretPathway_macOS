@@ -74,6 +74,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var unicodeBuffer = Data()
     /// The style currently being used for incoming text.
     internal var currentStyle = SPStyle()
+    internal var passwordMode = false
     
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
@@ -164,6 +165,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             self.editorDelegate  = nil
             self.isEditorShowing = false
         }
+    }
+    
+    internal func enableSPP() {
+        sppPlugin.active = true
+    }
+    
+    internal func openEditor(_ file: (any StringProtocol)?) {
+        // TODO: Implement
     }
     
     /// Handles incoming data.
