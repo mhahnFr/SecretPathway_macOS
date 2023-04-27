@@ -18,7 +18,9 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents an interpretation array type.
 class InterpreterArrayType: ArrayTypeProto {
+    /// Indicates an array without underlying type.
     static let any = InterpreterArrayType(from: nil)
     
     let underlying: TypeProto?
@@ -30,6 +32,9 @@ class InterpreterArrayType: ArrayTypeProto {
         return "any array"
     }
     
+    /// Creates this type using the given underlying type.
+    ///
+    /// - Parameter underlying: The underlying type.
     init(from underlying: TypeProto?) {
         self.underlying = underlying
     }
