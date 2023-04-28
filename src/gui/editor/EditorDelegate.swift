@@ -28,12 +28,17 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
     }
+    /// The status text to be displayed beneath the text.
     @Published private(set) var statusText = ""
     
     /// The closure called when the user clicks on the "Close" button.
     var onClose: (() -> Void)?
     /// The theme to be used for the syntax highlighting.
-    var theme: SPTheme = restoreTheme()
+    var theme = restoreTheme()
+    /// Indicates whether the underlying file manager supports file compilation.
+    var canCompile: Bool {
+        loader.canCompile()
+    }
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
@@ -98,7 +103,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// Updates the status text for the given cursor location.
     ///
     /// - Parameter location: The location for which to retrieve the status text.
-    func updateStatus() {
+    private func updateStatus() {
         guard let range = view.selectedRanges.first as? NSRange else { return }
         
         let location = range.location
@@ -124,6 +129,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// Closes the editor.
     func close() {
         onClose?()
+    }
+    
+    /// Attempts to compile the text.
+    func compile() {
+        guard loader.canCompile() else { return }
+        
+        // TODO: Compile
+        loader.compile(file: "")
     }
     
     /// Toggles the highlighting.

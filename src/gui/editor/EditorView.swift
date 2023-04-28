@@ -34,6 +34,11 @@ struct EditorView: View {
                     Button("Close") {
                         delegate.close()
                     }.keyboardShortcut(.cancelAction)
+                    if delegate.canCompile {
+                        Button("Compile") {
+                            delegate.compile()
+                        }
+                    }
                     Button("Save") {
                         delegate.saveText()
                     }.keyboardShortcut(.return, modifiers: .command)
