@@ -18,9 +18,15 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents an implementation of the LPCFileManager
+/// using the SP protocol.
 class SPPFileManager: LPCFileManager {
+    /// The associated SPP plugin.
     let plugin: SPPPlugin
     
+    /// Initializes this file manager using the given SPP plugin.
+    ///
+    /// - Parameter plugin: The SPP plugin to be used by this manager.
     init(plugin: SPPPlugin) {
         self.plugin = plugin
     }
