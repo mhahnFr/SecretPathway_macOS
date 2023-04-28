@@ -41,8 +41,7 @@ protocol ASTVisitor {
 }
 
 /// This extension implements a default behaviour for the AST visitor.
-extension ASTVisitor {
-    
+extension ASTVisitor {    
     func visitType(_ type: ASTType) -> Bool {
         return true
     }
