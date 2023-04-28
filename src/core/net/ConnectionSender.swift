@@ -26,6 +26,7 @@ protocol ConnectionSender: AnyObject {
     var escapeIAC: Bool { get set }
     /// The charset to be used for encoding strings.
     var charset: String.Encoding { get set }
+    /// Indicates whether to hide user input.
     var passwordMode: Bool { get set }
     
     /// This function is called when a piece of data should be sent.
@@ -33,7 +34,13 @@ protocol ConnectionSender: AnyObject {
     /// - Parameter data: The data that should be sent.
     func send(data: Data)
     
+    /// This function is called when the SPP should be activated.
     func enableSPP()
     
+    /// This function is called when an editor should be opened.
+    ///
+    /// The file given should be displayed by the editor.
+    ///
+    /// - Parameter file: The file to be opened.
     func openEditor(_ file: (any StringProtocol)?)
 }
