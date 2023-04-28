@@ -35,14 +35,20 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// The theme to be used for the syntax highlighting.
     var theme: SPTheme = restoreTheme()
     
+    /// The loader used for fetching files.
     private let loader: LPCFileManager
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
+    /// A reference to the actual text view.
     private weak var view: NSTextView!
     
+    /// The highlights in the text.
     private var highlights: [Highlight] = []
     
+    /// Initializes this delegate using the given file loader.
+    ///
+    /// - Parameter loader: The loader used for loading files.
     init(loader: LPCFileManager) {
         self.loader = loader
     }
