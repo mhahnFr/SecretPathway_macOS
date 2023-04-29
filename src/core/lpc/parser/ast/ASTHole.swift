@@ -18,19 +18,21 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// This class represents a missing expression as an AST node.
-class ASTMissing: ASTHole {
-    /// Initializes this AST node using the given bounds and
-    /// the error message.
-    ///
-    /// - Parameter begin: The beginning position.
-    /// - Parameter end: The end position.
-    /// - Parameter message: The error message.
-    init(begin: Int, end: Int, message: String) {
-        super.init(begin: begin, end: end, message: message, type: .MISSING)
-    }
+/// This class represents a hole in the AST as an AST node.
+class ASTHole: ASTExpression {
+    /// The associated message.
+    let message: String
     
-    override func describe(_ indentation: Int) -> String {
-        super.describe(indentation) + " " + message
+    /// Constructs this AST node using the given information.
+    ///
+    /// - Parameters:
+    ///   - begin: The beginning position.
+    ///   - end: The end position.
+    ///   - message: The associated message.
+    ///   - type: The ASTType.
+    init(begin: Int, end: Int, message: String, type: ASTType) {
+        self.message = message
+        
+        super.init(begin: begin, end: end, type: type)
     }
 }

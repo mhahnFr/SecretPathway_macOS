@@ -23,6 +23,7 @@
 		BF2DC09029F2F12B00CE0E00 /* Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC08F29F2F12B00CE0E00 /* Definition.swift */; };
 		BF2DC09229F2FD6E00CE0E00 /* FunctionDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */; };
 		BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3572632964A206002661B5 /* ANSIPlugin.swift */; };
+		BF54A3F629FDAA6F008E5BC2 /* ASTHole.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */; };
 		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
 		BF551CB729AE7F3D004D1CFE /* ASTCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF551CB629AE7F3D004D1CFE /* ASTCharacter.swift */; };
 		BF551CB929AE8029004D1CFE /* ASTClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF551CB829AE8029004D1CFE /* ASTClass.swift */; };
@@ -134,6 +135,7 @@
 		BF2DC08F29F2F12B00CE0E00 /* Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Definition.swift; sourceTree = "<group>"; };
 		BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDefinition.swift; sourceTree = "<group>"; };
 		BF3572632964A206002661B5 /* ANSIPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIPlugin.swift; sourceTree = "<group>"; };
+		BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTHole.swift; sourceTree = "<group>"; };
 		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		BF551CB629AE7F3D004D1CFE /* ASTCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTCharacter.swift; sourceTree = "<group>"; };
 		BF551CB829AE8029004D1CFE /* ASTClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTClass.swift; sourceTree = "<group>"; };
@@ -539,6 +541,7 @@
 				BF5C0F3F29E745E9007F49BA /* ASTMapping.swift */,
 				BF5C0F4129E7473D007F49BA /* ASTIf.swift */,
 				BFE44D0829EB0975001C86FB /* ASTNew.swift */,
+				BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */,
 			);
 			path = ast;
 			sourceTree = "<group>";
@@ -655,6 +658,7 @@
 				BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */,
 				BFFD268A29A69759002998E8 /* ASTType.swift in Sources */,
 				BFE2926A29DB3CF800185467 /* ASTOperatorName.swift in Sources */,
+				BF54A3F629FDAA6F008E5BC2 /* ASTHole.swift in Sources */,
 				BF94661529294DB00005B2EA /* NSTextViewBridge.swift in Sources */,
 				BF92225529E5DD91001085B9 /* ASTParameter.swift in Sources */,
 				BFDCA78129AD2A4A005B8AA9 /* ASTCast.swift in Sources */,

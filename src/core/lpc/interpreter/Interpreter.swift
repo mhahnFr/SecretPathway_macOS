@@ -309,18 +309,11 @@ class Interpreter: ASTVisitor {
         var highlight = true
         
         switch expression.type {
-        case .MISSING:
+        case .MISSING, .WRONG:
             highlights.append(MessagedHighlight(begin:   expression.begin,
                                                 end:     expression.end,
-                                                type:    ASTType.MISSING,
-                                                message: (expression as! ASTMissing).message))
-            highlight = false
-            
-        case .WRONG:
-            highlights.append(MessagedHighlight(begin:   expression.begin,
-                                                end:     expression.end,
-                                                type:    ASTType.WRONG,
-                                                message: (expression as! ASTWrong).message))
+                                                type:    expression.type,
+                                                message: (expression as! ASTHole).message))
             highlight = false
             
         case .CAST:

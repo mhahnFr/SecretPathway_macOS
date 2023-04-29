@@ -19,19 +19,14 @@
  */
 
 /// This class represents a wrong token as an AST node.
-class ASTWrong: ASTExpression {
-    /// The error message.
-    let message: String
-    
+class ASTWrong: ASTHole {
     /// Initializes this AST node using the represented token and
     /// the error message.
     ///
     /// - Parameter token: The token to be represented.
     /// - Parameter message: The reasoning message.
     init(token: Token, message: String) {
-        self.message = message
-        
-        super.init(begin: token.begin, end: token.end, type: .WRONG)
+        super.init(begin: token.begin, end: token.end, message: message, type: .WRONG)
     }
     
     override func describe(_ indentation: Int) -> String {
