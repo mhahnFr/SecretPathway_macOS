@@ -45,7 +45,15 @@ class InterpreterType: BasicType {
     /// Wraps the given token type as a basic type.
     ///
     /// - Parameter type: The token type to represent as basic type.
-    init(type: TokenType?) {
-        super.init(begin: 0, representedType: type, end: 0, typeFile: nil)
+    /// - Parameter name: The file name for the file annotation.
+    init(type: TokenType?, file name: String? = nil) {
+        var fileStrings = ASTExpression?.none
+        if let name {
+            fileStrings = ASTStrings(strings: [ ASTString(token: Token(begin:  0,
+                                                                       type:   .STRING,
+                                                                       payload: name,
+                                                                       end:     0)) ])
+        }
+        super.init(begin: 0, representedType: type, end: 0, typeFile: fileStrings)
     }
 }

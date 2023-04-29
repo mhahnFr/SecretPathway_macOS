@@ -245,7 +245,7 @@ class Interpreter: ASTVisitor {
                                                     type:    .NOT_FOUND,
                                                     message: "Identifier not found"))
             } else {
-                currentType = await visitFunctionCall(function: f, ids: ids) ?? InterpreterType.any
+                currentType = await visitFunctionCall(function: f, ids: ids) ?? InterpreterType.unknown
             }
         }
     }
@@ -275,9 +275,34 @@ class Interpreter: ASTVisitor {
                                                         type:    .NOT_FOUND,
                                                         message: "Identifier not found"))
                 }
-                currentType = InterpreterType.any
+                currentType = InterpreterType.unknown
             }
         }
+    }
+    
+    private func visitNew(expression: ASTNew) async -> TypeProto {
+        guard let strings = await cast(type: ASTStrings.self, expression.instancingExpression),
+              let context = await loader.loadAndParse(file: strings.value) else {
+            highlights.append(MessagedHighlight(begin:   expression.instancingExpression.begin,
+                                                end:     expression.instancingExpression.end,
+                                                type:    .ERROR,
+                                                message: "Could not resolve file"))
+            for argument in expression.arguments {
+                await argument.visit(self)
+            }
+            return InterpreterType.object
+        }
+        let ids = context.getIdentifiers(name: "create", pos: Int.max)
+        if await visitFunctionCall(function: expression, ids: ids) == nil {
+            highlights.append(MessagedHighlight(begin:   expression.instancingExpression.begin,
+                                                end:     expression.instancingExpression.end,
+                                                type:    .WARNING,
+                                                message: "No constructor found"))
+            for argument in expression.arguments {
+                await argument.visit(self)
+            }
+        }
+        return InterpreterType(type: .OBJECT, file: strings.value)
     }
     
     internal func visit(_ expression: ASTExpression) async {
@@ -517,7 +542,10 @@ class Interpreter: ASTVisitor {
             }
             currentType = InterpreterType.unknown
             
-        case .AST_NEW: currentType = InterpreterType.object // TODO: Load and check arguments, return type -> object<"<file>">
+        case .AST_NEW:
+            let new = expression as! ASTNew
+            
+            currentType = await visitNew(expression: new)
             
         case .ARRAY:
             var substituted: TypeProto?
@@ -574,6 +602,7 @@ class Interpreter: ASTVisitor {
         type != .AST_MAPPING         &&
         type != .ARRAY               &&
         type != .FUNCTION_CALL       &&
-        type != .TYPE
+        type != .TYPE                &&
+        type != .AST_NEW
     }
 }
