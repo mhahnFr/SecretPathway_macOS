@@ -422,13 +422,17 @@ class Interpreter: ASTVisitor {
                operation.operatorType == .DOT {
                 if let funcCall = await cast(type: ASTFunctionCall.self, rhs),
                    let name     = await cast(type: ASTName.self, funcCall.name),
-                   let nameStr  = name.name,
-                   let type     = lhsType as? BasicType,
-                   let file     = type.typeFile as? ASTStrings,
-                   let context  = await createContext(for: file) {
-                    let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
-                    visitName(context: context, name: name)
-                    currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.unknown
+                   let nameStr  = name.name {
+                    if operation.lhs is ASTThis {
+                        visitName(context: current, name: name)
+                        currentType = await visitFunctionCall(function: funcCall, ids: current.getIdentifiers(name: nameStr, pos: operation.begin)) ?? InterpreterType.unknown
+                    } else if let type     = lhsType as? BasicType,
+                              let file     = type.typeFile as? ASTStrings,
+                              let context  = await createContext(for: file) {
+                        let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
+                        visitName(context: context, name: name)
+                        currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.unknown
+                    }
                 } else {
                     currentType = InterpreterType.unknown
                 }
