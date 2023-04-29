@@ -246,6 +246,36 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Visits a name expression.
+    ///
+    /// - Parameters:
+    ///   - context: The context in which to search for the identifier.
+    ///   - name: The name expression to be resolved.
+    private func visitName(context: Context, name: ASTName) {
+        if let n = name.name {
+            let identifiers = context.getIdentifiers(name: n, pos: context === current ? name.begin : Int.max)
+            if let first = identifiers.first {
+                highlights.append(Highlight(begin: name.begin,
+                                            end:   name.end,
+                                            type:  first.kind))
+                currentType = first.returnType
+            } else {
+                if n.starts(with: "$") {
+                    highlights.append(MessagedHighlight(begin:   name.begin,
+                                                        end:     name.end,
+                                                        type:    .NOT_FOUND_BUILTIN,
+                                                        message: "Built-in not found"))
+                } else {
+                    highlights.append(MessagedHighlight(begin:   name.begin,
+                                                        end:     name.end,
+                                                        type:    .NOT_FOUND,
+                                                        message: "Identifier not found"))
+                }
+                currentType = InterpreterType.any
+            }
+        }
+    }
+    
     internal func visit(_ expression: ASTExpression) async {
         var highlight = true
         
@@ -347,30 +377,8 @@ class Interpreter: ASTVisitor {
             }
             
         case .NAME:
-            let name = expression as! ASTName
-            if let n = name.name {
-                let identifiers = current.getIdentifiers(name: n, pos: name.begin)
-                if let first = identifiers.first {
-                    highlights.append(Highlight(begin: expression.begin,
-                                                end:   expression.end,
-                                                type:  first.kind))
-                    currentType = first.returnType
-                } else {
-                    if n.starts(with: "$") {
-                        highlights.append(MessagedHighlight(begin:   name.begin,
-                                                            end:     name.end,
-                                                            type:    .NOT_FOUND_BUILTIN,
-                                                            message: "Built-in not found"))
-                    } else {
-                        highlights.append(MessagedHighlight(begin:   name.begin,
-                                                            end:     name.end,
-                                                            type:    .NOT_FOUND,
-                                                            message: "Identifier not found"))
-                    }
-                    currentType = InterpreterType.any
-                }
-                highlight = false
-            }
+            visitName(context: current, name: expression as! ASTName)
+            highlight = false
             
         case .UNARY_OPERATOR:
             let operation = expression as! ASTUnaryOperation
@@ -397,6 +405,7 @@ class Interpreter: ASTVisitor {
                    let file     = type.typeFile as? ASTStrings,
                    let context  = await createContext(for: file) {
                     let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
+                    visitName(context: context, name: name)
                     currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.any
                 } else {
                     currentType = InterpreterType.any
