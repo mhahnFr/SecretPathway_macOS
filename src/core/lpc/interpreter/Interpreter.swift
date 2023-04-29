@@ -308,7 +308,7 @@ class Interpreter: ASTVisitor {
                 type = unwrapped
                 await type.visit(self)
             } else {
-                type = InterpreterType.any
+                type = InterpreterType.unknown
             }
             
             await current.addIdentifier(begin: varDefinition.begin,
@@ -372,7 +372,7 @@ class Interpreter: ASTVisitor {
             if let n = name.name {
                 let ids = current.getIdentifiers(name: n, pos: name.begin)
                 if !ids.isEmpty {
-                    currentType = await visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.any
+                    currentType = await visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.unknown
                 }
             }
             
@@ -406,9 +406,9 @@ class Interpreter: ASTVisitor {
                    let context  = await createContext(for: file) {
                     let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
                     visitName(context: context, name: name)
-                    currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.any
+                    currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.unknown
                 } else {
-                    currentType = InterpreterType.any
+                    currentType = InterpreterType.unknown
                 }
             } else {
                 await rhs.visit(self)
@@ -501,7 +501,7 @@ class Interpreter: ASTVisitor {
                                                     message: "Enclosing function is not variadic"))
                 highlight = false
             }
-            currentType = InterpreterType.any
+            currentType = InterpreterType.unknown
             
         case .AST_NEW: currentType = InterpreterType.object // TODO: Load and check arguments, return type -> object<"<file>">
             

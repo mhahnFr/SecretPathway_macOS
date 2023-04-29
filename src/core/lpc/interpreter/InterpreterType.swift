@@ -39,11 +39,13 @@ class InterpreterType: BasicType {
     static let char    = InterpreterType(type: .CHAR_KEYWORD)
     /// Represents the `mapping` type.
     static let mapping = InterpreterType(type: .MAPPING)
+    /// Represents an unknown type.
+    static let unknown = InterpreterType(type: nil)
     
     /// Wraps the given token type as a basic type.
     ///
     /// - Parameter type: The token type to represent as basic type.
-    init(type: TokenType) {
+    init(type: TokenType?) {
         super.init(begin: 0, representedType: type, end: 0, typeFile: nil)
     }
 }

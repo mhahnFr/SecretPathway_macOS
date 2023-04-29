@@ -64,7 +64,7 @@ class BasicType: AbstractType {
     }
     
     func isAssignable(from other: TypeProto) -> Bool {
-        guard let representedType else { return false }
+        guard let representedType else { return true }
         
         if representedType == .ANY {
             if let o = other as? BasicType, o.representedType == .VOID {
@@ -78,7 +78,9 @@ class BasicType: AbstractType {
            tf != otf {
             return false
         }
-        if representedType == .OBJECT ||
+        if o.representedType == nil {
+            return true
+        } else if representedType == .OBJECT ||
            representedType == .STRING ||
            representedType == .SYMBOL_KEYWORD {
             return o.representedType == .OBJECT ||
