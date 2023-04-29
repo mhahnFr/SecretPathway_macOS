@@ -19,11 +19,9 @@
  */
 
 /// This class represents a new expression as an AST node.
-class ASTNew: ASTExpression {
+class ASTNew: ASTFunctionCall {
     /// The instancing expression.
     let instancingExpression: ASTExpression
-    /// The optional argument expressions.
-    let arguments: [ASTExpression]?
     
     /// Constructs this AST node using the given information.
     ///
@@ -34,29 +32,24 @@ class ASTNew: ASTExpression {
     init(begin:                Int,
          end:                  Int,
          instancingExpression: ASTExpression,
-         arguments:            [ASTExpression]?) {
+         arguments:            [ASTExpression]) {
         self.instancingExpression = instancingExpression
-        self.arguments            = arguments
         
-        super.init(begin: begin, end: end, type: .AST_NEW)
+        super.init(name: ASTName(token: Token(begin: begin, type: .STRING, payload: "new", end: instancingExpression.end)), arguments: arguments, end: end, type: .AST_NEW)
     }
     
     override func describe(_ indentation: Int) -> String {
-        var buffer = "\(super.describe(indentation)) what:\n" +
+        var buffer = "\(type) [\(begin) - \(end)] what:\n" +
                      "\(instancingExpression.describe(indentation + 4))\n"
-        if let arguments {
-            buffer.append("\(String(repeating: " ", count: indentation))arguments:\n")
-            arguments.forEach { buffer.append("\($0.describe(indentation + 4))\n") }
-        }
+        buffer.append("\(String(repeating: " ", count: indentation))arguments:\n")
+        arguments.forEach { buffer.append("\($0.describe(indentation + 4))\n") }
         return buffer
     }
     
     override func visit(_ visitor: ASTVisitor) async {
         if await visitor.maybeVisit(self) {
             await instancingExpression.visit(visitor)
-            if let arguments {
-                for argument in arguments { await argument.visit(visitor) }
-            }
+            for argument in arguments { await argument.visit(visitor) }
         }
     }
 }

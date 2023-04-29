@@ -31,13 +31,15 @@ class ASTFunctionCall: ASTExpression {
     /// - Parameter name: The name.
     /// - Parameter arguments: The argument expressions.
     /// - Parameter end: The end position.
+    /// - Parameter type: The type of this expression.
     init(name:      ASTExpression,
          arguments: [ASTExpression],
-         end:       Int) {
+         end:       Int,
+         type:      ASTType = .FUNCTION_CALL) {
         self.name      = name
         self.arguments = arguments
         
-        super.init(begin: name.begin, end: end, type: .FUNCTION_CALL)
+        super.init(begin: name.begin, end: end, type: type)
     }
     
     override func describe(_ indentation: Int) -> String {
@@ -45,9 +47,7 @@ class ASTFunctionCall: ASTExpression {
         "\(name.describe(indentation + 4))\n" +
         "\(String(repeating: " ", count: indentation))arguments:\n"
         
-        for argument in arguments {
-            buffer.append("\(argument.describe(indentation + 4))\n")
-        }
+        arguments.forEach { buffer.append("\($0.describe(indentation + 4))\n") }
         
         return buffer
     }

@@ -1044,7 +1044,7 @@ struct Parser {
         }
         let instancingExpression = parseExpression()
         
-        let arguments: [ASTExpression]?
+        let arguments: [ASTExpression]
         if !current.isType(.RIGHT_PAREN) {
             if !current.isType(.COMMA) {
                 parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
@@ -1058,7 +1058,7 @@ struct Parser {
                 advance()
             }
         } else {
-            arguments = nil
+            arguments = []
             advance()
         }
         let result = ASTNew(begin: begin, end: previous.end, instancingExpression: instancingExpression, arguments: arguments)
