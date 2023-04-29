@@ -307,6 +307,10 @@ struct Parser {
         let toReturn: ASTExpression
         if current.isType(.LESS, .GREATER, .STRING) {
             // Has type file
+            if isType(previous) && !previous.isType(.OBJECT) {
+                parts.append(ASTWrong(token:   previous,
+                                      message: "File annotation is only allowed for 'object'"))
+            }
             if !current.isType(.LESS) {
                 parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '<'"))
             } else {
