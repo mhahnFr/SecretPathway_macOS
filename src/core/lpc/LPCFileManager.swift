@@ -83,4 +83,6 @@ class LPCFileManager {
     func compile(file name: String) {
         fatalError("Not implemented! Hint: Check using LPCFileManager#canCompile()")
     }
+    
+    func exists(file: String) async -> Bool { false }
 }

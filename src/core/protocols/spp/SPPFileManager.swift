@@ -44,4 +44,9 @@ class SPPFileManager: LPCFileManager {
     override func compile(file name: String) {
         plugin.compile(file: name)
     }
+    
+    override func exists(file: String) async -> Bool {
+        // TODO: Add as SPP command
+        return await loadAndParse(file: file) != nil
+    }
 }

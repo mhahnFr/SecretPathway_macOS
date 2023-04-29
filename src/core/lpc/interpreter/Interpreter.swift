@@ -130,6 +130,10 @@ class Interpreter: ASTVisitor {
         return await loader.loadAndParse(file: file.value)
     }
     
+    private func fileExists(file: ASTStrings) async -> Bool {
+        return await loader.exists(file: file.value)
+    }
+    
     /// Adds the context of the file represented by the given string nodes
     /// to the current context.
     ///
@@ -492,6 +496,16 @@ class Interpreter: ASTVisitor {
         case .ARRAY_TYPE:
             await cast(type: AbstractType.self, (expression as! ArrayType).underlyingType)?.visit(self)
             
+        case .TYPE:
+            let type = expression as! BasicType
+            if let typeFile = type.typeFile as? ASTStrings,
+               await !fileExists(file: typeFile) {
+                highlights.append(MessagedHighlight(begin:   typeFile.begin,
+                                                    end:     typeFile.end,
+                                                    type:    .ERROR,
+                                                    message: "Could not resolve file"))
+            }
+            
         case .AST_ELLIPSIS:
             let enclosing = current.queryEnclosingFunction()
             if enclosing == nil || !enclosing!.variadic {
@@ -559,6 +573,7 @@ class Interpreter: ASTVisitor {
         type != .ARRAY_TYPE          &&
         type != .AST_MAPPING         &&
         type != .ARRAY               &&
-        type != .FUNCTION_CALL
+        type != .FUNCTION_CALL       &&
+        type != .TYPE
     }
 }
