@@ -471,7 +471,8 @@ struct Parser {
             ((current.isType(.IDENTIFIER) || isType(current)) && next.isType(.IDENTIFIER)) ||
             isType(current) && next.isType(.LEFT_BRACKET, .STAR, .RIGHT_BRACKET)           ||
             (isType(current) && isStopToken(next))                                         ||
-            (isType(current) && next.isType(.LEFT_PAREN, .RIGHT_PAREN)) {
+            (isType(current) && next.isType(.LEFT_PAREN, .RIGHT_PAREN))                    ||
+            isType(current) && next.isType(.LESS, .STRING, .GREATER) {
             return parseFancyVariableDeclaration()
         }
         
