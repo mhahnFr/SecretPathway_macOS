@@ -45,7 +45,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
-    private let file: String?
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
@@ -55,7 +54,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The highlights in the text.
     private var highlights: [Highlight] = []
-    
+    private var file: String?
+
     /// Initializes this delegate using the given file loader.
     ///
     /// - Parameter loader: The loader used for loading files.
@@ -167,8 +167,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     func compile() {
         guard loader.canCompile() else { return }
         
-        // TODO: Compile
-        loader.compile(file: "")
+        saveText()
+        guard let file else { return }
+        loader.compile(file: file)
     }
     
     /// Toggles the highlighting.
