@@ -167,19 +167,19 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
-    func showEditor() {
+    func showEditor(file name: String? = nil) {
         let loader = sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
                                       : LocalFileManager()
         if editorDelegate == nil && Settings.shared.editorInlined {
-            showInlinedEditor(loader: loader)
+            showInlinedEditor(loader: loader, file: name)
         } else {
-            openEditorWindow(loader: loader)
+            openEditorWindow(loader: loader, file: name)
         }
     }
     
-    private func openEditorWindow(loader: LPCFileManager) {
+    private func openEditorWindow(loader: LPCFileManager, file name: String?) {
         let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
-        let delegate = EditorDelegate(loader: loader, referrer: self)
+        let delegate = EditorDelegate(loader: loader, referrer: self, file: name)
         let content  = EditorView(delegate: delegate)
         delegate.onClose = {
             window.performClose(delegate)
@@ -195,9 +195,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     /// Opens an inlined editor.
-    private func showInlinedEditor(loader: LPCFileManager) {
+    private func showInlinedEditor(loader: LPCFileManager, file name: String?) {
         isEditorShowing = true
-        editorDelegate  = EditorDelegate(loader: loader, referrer: self)
+        editorDelegate  = EditorDelegate(loader: loader, referrer: self, file: name)
         editorDelegate!.onClose = {
             self.editorDelegate  = nil
             self.isEditorShowing = false
@@ -208,8 +208,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         sppPlugin.active = true
     }
     
-    internal func openEditor(_ file: (any StringProtocol)?) {
-        // TODO: Implement
+    internal func openEditor(_ file: String?) {
+        DispatchQueue.main.async {
+            self.showEditor(file: file)
+        }
     }
     
     /// Handles incoming data.

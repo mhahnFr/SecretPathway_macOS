@@ -42,5 +42,5 @@ protocol ConnectionSender: AnyObject {
     /// The file given should be displayed by the editor.
     ///
     /// - Parameter file: The file to be opened.
-    func openEditor(_ file: (any StringProtocol)?)
+    func openEditor(_ file: String?)
 }

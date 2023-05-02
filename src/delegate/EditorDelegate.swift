@@ -45,6 +45,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
+    private let file: String?
     
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
@@ -58,9 +59,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     /// Initializes this delegate using the given file loader.
     ///
     /// - Parameter loader: The loader used for loading files.
-    init(loader: LPCFileManager, referrer: ConnectionDelegate?) {
+    init(loader: LPCFileManager, referrer: ConnectionDelegate?, file name: String? = nil) {
         self.loader   = loader
         self.referrer = referrer
+        self.file     = name
     }
     
     /// Attempts to restore the theme used for the editor.
@@ -93,6 +95,17 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         
         textStorage = textView.textStorage
         view        = textView
+        
+        if let file {
+            Task {
+                await self.textStorage.append(NSAttributedString(string: loader.load(file: file) ?? ""))
+                if self.syntaxHighlighting {
+                    self.highlight()
+                } else {
+                    self.resetHighlight()
+                }
+            }
+        }
     }
     
     internal func textDidChange(_ notification: Notification) {
@@ -118,11 +131,19 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         for highlight in highlights {
             if location >= highlight.begin && location <= highlight.end,
                 let highlight = highlight as? MessagedHighlight {
-                statusText = highlight.message
+                setStatus(text: highlight.message)
                 set = true
             }
         }
-        if !set { statusText = "" }
+        if !set { setStatus(text: "") }
+    }
+    
+    private func setStatus(text: String) {
+        DispatchQueue.main.async {
+            withAnimation {
+                self.statusText = text
+            }
+        }
     }
     
     func openEditor() {
@@ -156,8 +177,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         if syntaxHighlighting {
             highlight()
         } else {
-            textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, textStorage.length))
+            resetHighlight()
         }
+    }
+
+    private func resetHighlight() {
+        textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, textStorage.length))
     }
     
     /// Performs the highlighting of the text.
