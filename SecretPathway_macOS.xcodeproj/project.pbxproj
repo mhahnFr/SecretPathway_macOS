@@ -308,7 +308,6 @@
 			children = (
 				BFE06F29296DC1F9004A3C1F /* theme */,
 				BF6AF3532965C95F00DF333D /* EditorView.swift */,
-				BF6AF3552965CD6900DF333D /* EditorDelegate.swift */,
 			);
 			path = editor;
 			sourceTree = "<group>";
@@ -389,6 +388,7 @@
 				BFCF15A12916C34C00A37F5D /* ConnectionPromptDelegate.swift */,
 				BFDDA0E128119FEC00C3E84A /* AppDelegate.swift */,
 				BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */,
+				BF6AF3552965CD6900DF333D /* EditorDelegate.swift */,
 				BFEA07B829043DCC00294822 /* SettingsDelegate.swift */,
 			);
 			path = delegate;
