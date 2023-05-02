@@ -466,26 +466,28 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Returns: Whether the connection is closed.
     func maybeCloseConnection() -> Bool {
-        var result = true
+        guard !connection.isClosed else { return true }
         
-        if !connection.isClosed {
-            let alert = NSAlert()
-            
-            alert.window.title    = "\(Constants.APP_NAME): Active connection"
-            alert.messageText     = "The connection \"\(connection.name)\" is active."
-            alert.informativeText = "Do you want to close it?"
-            
-            alert.addButton(withTitle: "OK")
-            alert.addButton(withTitle: "Cancel")
-            
-            if alert.runModal() == .alertFirstButtonReturn {
-                result = true
-                closeConnection()
-            } else {
-                result = false
+        let alert = NSAlert()
+        
+        alert.window.title    = "\(Constants.APP_NAME): Active connection"
+        alert.messageText     = "The connection \"\(connection.name)\" is active."
+        alert.informativeText = "Do you want to close it?"
+        
+        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: "Cancel")
+        
+        if alert.runModal() == .alertFirstButtonReturn {
+            if !(editorDelegate?.close() ?? true) { return false }
+            for editor in editors {
+                if !editor.close() {
+                    return false
+                }
             }
+            closeConnection()
+            return true
         }
-        return result
+        return false
     }
     
     /// Attempts to reestablish the current connection.

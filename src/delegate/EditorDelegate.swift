@@ -157,8 +157,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     }
     
     /// Closes the editor.
-    func close() {
+    func close() -> Bool {
+        // TODO: Check for unsaved changes etc...
         onClose?()
+        return true
     }
     
     /// Attempts to compile the text.

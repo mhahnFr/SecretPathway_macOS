@@ -37,7 +37,7 @@ struct EditorView: View {
                 HStack {
                     Toggle("Syntax Highlighting", isOn: $delegate.syntaxHighlighting).frame(maxWidth: .infinity, alignment: .leading)
                     Button("Close") {
-                        delegate.close()
+                        _ = delegate.close()
                     }.keyboardShortcut(.cancelAction)
                     if delegate.canCompile {
                         Button("Compile") {
