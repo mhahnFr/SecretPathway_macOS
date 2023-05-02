@@ -24,7 +24,7 @@ import SwiftUI
 /// This class acts as a delegate for the EditorView.
 ///
 /// It features the LPC syntax highlighting.
-class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, ObservableObject {
+class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject {
     /// Indicates whether the syntax highlighting is enabled.
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
@@ -50,6 +50,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     private weak var textStorage: NSTextStorage!
     /// A reference to the actual text view.
     private weak var view: NSTextView!
+    private weak var referrer: ConnectionDelegate!
     
     /// The highlights in the text.
     private var highlights: [Highlight] = []
@@ -57,8 +58,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     /// Initializes this delegate using the given file loader.
     ///
     /// - Parameter loader: The loader used for loading files.
-    init(loader: LPCFileManager) {
-        self.loader = loader
+    init(loader: LPCFileManager, referrer: ConnectionDelegate?) {
+        self.loader   = loader
+        self.referrer = referrer
     }
     
     /// Attempts to restore the theme used for the editor.
@@ -121,6 +123,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
             }
         }
         if !set { statusText = "" }
+    }
+    
+    func openEditor() {
+        referrer.showEditor()
     }
     
     /// Saves the text by sending a message to the server.

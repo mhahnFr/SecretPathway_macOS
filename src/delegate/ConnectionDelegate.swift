@@ -35,15 +35,15 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// A string that can hold a message displayed for the user.
     @Published private(set) var message: String? {
         didSet {
-            // TODO: Callout to the associated editors
             editorDelegate?.connectionStatus = message
+            editors.forEach { $0.connectionStatus = message }
         }
     }
     /// The color to be used for the user message.
     @Published private(set) var messageColor: Color? {
         didSet {
-            // TODO: Callout to the associated editors
             editorDelegate?.connectionColor = messageColor
+            editors.forEach { $0.connectionColor = messageColor }
         }
     }
     /// The delegate to be used for the inlined LPC editor.
@@ -82,6 +82,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var lastWasIAC = false
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
+    private var editors: [EditorDelegate] = []
     /// The style currently being used for incoming text.
     internal var currentStyle = SPStyle()
     internal var passwordMode = false
@@ -166,11 +167,37 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
-    /// Opens an inlined editor.
     func showEditor() {
+        let loader = sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
+                                      : LocalFileManager()
+        if editorDelegate == nil && Settings.shared.editorInlined {
+            showInlinedEditor(loader: loader)
+        } else {
+            openEditorWindow(loader: loader)
+        }
+    }
+    
+    private func openEditorWindow(loader: LPCFileManager) {
+        let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
+        let delegate = EditorDelegate(loader: loader, referrer: self)
+        let content  = EditorView(delegate: delegate)
+        delegate.onClose = {
+            window.performClose(delegate)
+            self.editors.remove(at: self.editors.firstIndex(of: delegate)! )
+        }
+        window.contentView = NSHostingView(rootView: content)
+        window.title       = "\(Constants.APP_NAME): LPC Editor"
+        window.delegate    = delegate
+        
+        editors.append(delegate)
+        
+        window.makeKeyAndOrderFront(self)
+    }
+    
+    /// Opens an inlined editor.
+    private func showInlinedEditor(loader: LPCFileManager) {
         isEditorShowing = true
-        editorDelegate  = EditorDelegate(loader: sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
-                                                                  : LocalFileManager())
+        editorDelegate  = EditorDelegate(loader: loader, referrer: self)
         editorDelegate!.onClose = {
             self.editorDelegate  = nil
             self.isEditorShowing = false

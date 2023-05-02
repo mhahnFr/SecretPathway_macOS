@@ -29,25 +29,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var recents: [NSMenuItem: ConnectionRecord] = [:]
     /// The menu with recent connections.
     @IBOutlet weak var recentsMenu: NSMenu!
-
-    /// Opens an editor window.
-    private func openEditorWindow(loader: LPCFileManager) {
-        let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
-        let delegate = EditorDelegate(loader: loader)
-        let content  = EditorView(delegate: delegate)
-        delegate.onClose   = { window.performClose(delegate) }
-        window.contentView = NSHostingView(rootView: content)
-        window.title       = "\(Constants.APP_NAME): LPC Editor"
-        
-        window.makeKeyAndOrderFront(self)
-    }
     
     @IBAction func editorMenuAction(_ sender: NSMenuItem) {
-        if Settings.shared.editorInlined, let delegate = NSApp.keyWindow?.delegate as? ConnectionDelegate, !delegate.isEditorShowing {
+        if let delegate = NSApp.keyWindow?.delegate as? ConnectionDelegate {
             delegate.showEditor()
-        } else {
-            // TODO: Ask current window for the file loader
-            openEditorWindow(loader: LocalFileManager())
+        } else if let delegate = NSApp.keyWindow?.delegate as? EditorDelegate {
+            delegate.openEditor()
         }
     }
     
