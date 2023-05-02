@@ -152,8 +152,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// Saves the text by sending a message to the server.
     func saveText() {
-        // TODO: Save the text
-        print("Saving")
+        if file == nil {
+            // TODO: Write frame for that
+        }
+        loader.save(file: file!, content: textStorage.string)
     }
     
     /// Closes the editor.
