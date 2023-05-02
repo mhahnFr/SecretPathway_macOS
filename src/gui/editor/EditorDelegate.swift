@@ -19,6 +19,7 @@
  */
 
 import AppKit
+import SwiftUI
 
 /// This class acts as a delegate for the EditorView.
 ///
@@ -28,6 +29,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, Obse
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
     }
+    @Published var connectionStatus: String?
+    @Published var connectionColor: Color?
     /// The status text to be displayed beneath the text.
     @Published private(set) var statusText = ""
     

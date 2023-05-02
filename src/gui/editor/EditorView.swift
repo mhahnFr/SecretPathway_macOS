@@ -26,6 +26,11 @@ struct EditorView: View {
     
     var body: some View {
         VStack {
+            if let connectionMessage = delegate.connectionStatus {
+                Text(connectionMessage)
+                    .foregroundColor(delegate.connectionColor)
+                    .bold()
+            }
             NSTextViewBridge(length: 0, fontSize: settings.fontSize, delegate: delegate)
             VStack {
                 Text(delegate.statusText).frame(maxWidth: .infinity, alignment: .leading)

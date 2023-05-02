@@ -33,9 +33,19 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The prompt text.
     @Published private(set) var prompt:  String?
     /// A string that can hold a message displayed for the user.
-    @Published private(set) var message: String?
+    @Published private(set) var message: String? {
+        didSet {
+            // TODO: Callout to the associated editors
+            editorDelegate?.connectionStatus = message
+        }
+    }
     /// The color to be used for the user message.
-    @Published private(set) var messageColor: Color?
+    @Published private(set) var messageColor: Color? {
+        didSet {
+            // TODO: Callout to the associated editors
+            editorDelegate?.connectionColor = messageColor
+        }
+    }
     /// The delegate to be used for the inlined LPC editor.
     @Published private(set) var editorDelegate: EditorDelegate?
     
