@@ -24,6 +24,7 @@ class Context: Instruction {
     let returnType: TypeProto = InterpreterType.void
     /// The optional parent context.
     let parent: Context?
+    let fileName: String?
     
     /// The instruction contained in this context.
     private(set) var instructions: [Int: Instruction] = [:]
@@ -40,9 +41,10 @@ class Context: Instruction {
     /// - Parameters:
     ///   - begin: The beginning position.
     ///   - parent: The parent context.
-    init(begin: Int = 0, parent: Context? = nil) {
-        self.begin  = begin
-        self.parent = parent
+    init(begin: Int = 0, parent: Context? = nil, fileName: String? = nil) {
+        self.begin    = begin
+        self.parent   = parent
+        self.fileName = fileName
     }
     
     /// Pushes this scope.
@@ -165,5 +167,14 @@ class Context: Instruction {
         } else {
             return parent.queryEnclosingFunction()
         }
+    }
+    
+    func inheritsFrom(file: String) -> Bool {
+        for inherit in inherited {
+            if inherit.fileName == file || inherit.inheritsFrom(file: file) {
+                return true
+            }
+        }
+        return false
     }
 }

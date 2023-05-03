@@ -64,6 +64,14 @@ class BasicType: AbstractType {
     }
     
     func isAssignable(from other: TypeProto) -> Bool {
+        isAssignableImpl(from: other, otherContext: nil)
+    }
+    
+    func isAssignable(from other: TypeProto, otherContext: Context?) -> Bool {
+        isAssignableImpl(from: other, otherContext: otherContext)
+    }
+    
+    private func isAssignableImpl(from other: TypeProto, otherContext: Context?) -> Bool {
         guard let representedType else { return true }
         
         if representedType == .ANY {
@@ -76,7 +84,10 @@ class BasicType: AbstractType {
         if let tf  = (typeFile as? ASTStrings)?.value,
            let otf = (o.typeFile as? ASTStrings)?.value,
            tf != otf {
-            return false
+            guard let otherContext,
+                  otherContext.inheritsFrom(file: tf) else {
+                return false
+            }
         }
         if o.representedType == nil {
             return true

@@ -29,6 +29,14 @@ protocol TypeProto: AnyObject {
     /// - Parameter other: The type of the right hand side expression.
     /// - Returns: Whether this type can be assigned from the given one.
     func isAssignable(from other: TypeProto) -> Bool
+    
+    func isAssignable(from other: TypeProto, otherContext: Context?) -> Bool
+}
+
+extension TypeProto {
+    func isAssignable(from other: TypeProto, otherContext: Context?) -> Bool {
+        isAssignable(from: other)
+    }
 }
 
 /// This protocol defines the functionality array type representations should have.
