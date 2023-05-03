@@ -250,6 +250,29 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    private func visitFunctionReference(_ operation: ASTUnaryOperation) async {
+        guard let name       = await cast(type: ASTName.self, operation.identifier),
+              let nameString = name.name else { return }
+        
+        let ids = current.getIdentifiers(name: nameString, pos: operation.begin)
+        if !ids.isEmpty {
+            for id in ids {
+                if let i = id as? FunctionDefinition {
+                    var parameterTypes = [TypeProto?]()
+                    i.parameters.forEach { parameterTypes.append($0.returnType) }
+                    currentType = InterpreterFuncRefType(returnType:     i.returnType,
+                                                         parameterTypes: parameterTypes,
+                                                         variadic:       i.variadic)
+                    return
+                }
+            }
+        }
+        highlights.append(MessagedHighlight(begin:   name.begin,
+                                            end:     name.end,
+                                            type:    .NOT_FOUND,
+                                            message: "Identifier not found"))
+    }
+    
     /// Visits a name expression.
     ///
     /// - Parameters:
@@ -405,10 +428,11 @@ class Interpreter: ASTVisitor {
         case .UNARY_OPERATOR:
             let operation = expression as! ASTUnaryOperation
             
-            if operation.operatorType == .SCOPE {
-                await visitSuperFunc(operation)
-            } else {
-                await operation.identifier.visit(self)
+            switch operation.operatorType {
+            case .SCOPE:     await visitSuperFunc(operation)
+            case .AMPERSAND: await visitFunctionReference(operation)
+                
+            default: await operation.identifier.visit(self)
             }
             
         case .OPERATION:
@@ -507,8 +531,8 @@ class Interpreter: ASTVisitor {
         case .FUNCTION_REFERENCE:
             let funcref = expression as! FunctionReferenceType
             
-            await cast(type: AbstractType.self, funcref.returnType)?.visit(self)
-            for parameter in funcref.parameterTypes {
+            await cast(type: AbstractType.self, funcref.returnTypeExpression)?.visit(self)
+            for parameter in funcref.parameterTypeExpressions {
                 if let type = await cast(type: AbstractType.self, parameter) {
                     await type.visit(self)
                     maybeWrongVoid(type)
