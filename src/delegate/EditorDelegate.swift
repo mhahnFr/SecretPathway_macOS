@@ -153,7 +153,22 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     /// Saves the text by sending a message to the server.
     func saveText() {
         if file == nil {
-            // TODO: Write frame for that
+            let alert = NSAlert()
+            let field = NSTextField(frame: NSMakeRect(0, 0, alert.window.frame.width - 20, 24))
+            
+            alert.messageText                  = "File unnamed."
+            alert.informativeText              = "Enter a name:"
+            alert.accessoryView                = field
+            alert.alertStyle                   = .informational
+            alert.window.initialFirstResponder = field
+
+            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "Cancel")
+            
+            guard alert.runModal() == .alertFirstButtonReturn &&
+                    !field.stringValue.isEmpty else { return }
+            
+            file = field.stringValue
         }
         loader.save(file: file!, content: textStorage.string)
     }
