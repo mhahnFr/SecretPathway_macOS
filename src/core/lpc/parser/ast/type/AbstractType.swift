@@ -45,9 +45,13 @@ protocol ArrayTypeProto: TypeProto {
     var underlying: TypeProto? { get }
 }
 
+/// This protocoll defines the base of a function reference type.
 protocol FunctionReferenceTypeProto: TypeProto {
+    /// The return type of the referenced function.
     var returnType: TypeProto? { get }
+    /// The types of the parameters of the referenced function.
     var parameterTypes: [TypeProto?] { get }
+    /// Indicates whether the referenced function is variadic.
     var variadic: Bool { get }
 }
 
