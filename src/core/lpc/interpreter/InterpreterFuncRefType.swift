@@ -18,16 +18,10 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/// This class represents a function reference type as an AST node.
-class FunctionReferenceType: AbstractType, FunctionReferenceTypeProto {
-    /// The return type of the referenced function.
-    let returnTypeExpression: ASTExpression
-    /// The types of the parameters of the referenced function.
-    let parameterTypeExpressions: [ASTExpression]
-    /// Indicates whether the referenced function has variadic parameters.
-    let variadic: Bool
+class InterpreterFuncRefType: FunctionReferenceTypeProto {
     let returnType: TypeProto?
     let parameterTypes: [TypeProto?]
+    let variadic: Bool
     
     var string: String {
         var buffer = ""
@@ -55,49 +49,10 @@ class FunctionReferenceType: AbstractType, FunctionReferenceTypeProto {
         return buffer
     }
     
-    /// Constructs this AST node using the given information.
-    ///
-    /// - Parameter returnType: The return type of the referenced function.
-    /// - Parameter parameterTypes: The types of the parameters of the referenced function.
-    /// - Parameter variadic: Indicates whether the referenced function has variadic arguments.
-    /// - Parameter end: The end position.
-    init(returnType:     ASTExpression,
-         parameterTypes: [ASTExpression],
-         variadic:       Bool = false,
-         end:            Int) {
-        self.returnTypeExpression     = returnType
-        self.parameterTypeExpressions = parameterTypes
-        self.variadic                 = variadic
-        
-        self.returnType = TypeHelper.unwrap(returnTypeExpression)
-        
-        var parameterTypes = [TypeProto?]()
-        parameterTypeExpressions.forEach {
-            parameterTypes.append(TypeHelper.unwrap($0))
-        }
+    init(returnType: TypeProto?, parameterTypes: [TypeProto?], variadic: Bool) {
+        self.returnType     = returnType
         self.parameterTypes = parameterTypes
-        
-        super.init(begin: returnType.begin, end: end, type: .FUNCTION_REFERENCE)
-    }
-    
-    override func describe(_ indentation: Int) -> String {
-        let indent = String(repeating: " ", count: indentation)
-        
-        var buffer = "\(super.describe(indentation)) return type:\n\(returnTypeExpression.describe(indentation + 4))\n" +
-                     "\(indent)parameter types:\n"
-        
-        parameterTypeExpressions.forEach { buffer.append("\($0.describe(indentation + 4))\n") }
-        
-        buffer.append("\(indent)variadic: \(variadic)")
-        
-        return buffer
-    }
-    
-    override func visit(_ visitor: ASTVisitor) async {
-        if await visitor.maybeVisit(self) {
-            await returnTypeExpression.visit(visitor)
-            for param in parameterTypeExpressions { await param.visit(visitor) }
-        }
+        self.variadic       = variadic
     }
     
     func isAssignable(from other: TypeProto) -> Bool {

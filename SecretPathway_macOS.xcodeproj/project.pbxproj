@@ -47,6 +47,7 @@
 		BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916178294E306700C8B967 /* ProtocolPlugin.swift */; };
 		BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91617A294E32EF00C8B967 /* ConnectionSender.swift */; };
 		BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91617C294E400E00C8B967 /* SPPPlugin.swift */; };
+		BF91EDDD2A02AA69008DA953 /* InterpreterFuncRefType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF91EDDC2A02AA69008DA953 /* InterpreterFuncRefType.swift */; };
 		BF92224B29E5D6EC001085B9 /* ASTModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF92224A29E5D6EC001085B9 /* ASTModifier.swift */; };
 		BF92224D29E5D7D7001085B9 /* ASTSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF92224C29E5D7D7001085B9 /* ASTSymbol.swift */; };
 		BF92224F29E5D8CB001085B9 /* ASTUnaryOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF92224E29E5D8CB001085B9 /* ASTUnaryOperation.swift */; };
@@ -159,6 +160,7 @@
 		BF916178294E306700C8B967 /* ProtocolPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolPlugin.swift; sourceTree = "<group>"; };
 		BF91617A294E32EF00C8B967 /* ConnectionSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSender.swift; sourceTree = "<group>"; };
 		BF91617C294E400E00C8B967 /* SPPPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPPPlugin.swift; sourceTree = "<group>"; };
+		BF91EDDC2A02AA69008DA953 /* InterpreterFuncRefType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterFuncRefType.swift; sourceTree = "<group>"; };
 		BF92224A29E5D6EC001085B9 /* ASTModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTModifier.swift; sourceTree = "<group>"; };
 		BF92224C29E5D7D7001085B9 /* ASTSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTSymbol.swift; sourceTree = "<group>"; };
 		BF92224E29E5D8CB001085B9 /* ASTUnaryOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTUnaryOperation.swift; sourceTree = "<group>"; };
@@ -364,6 +366,7 @@
 				BF2DC08F29F2F12B00CE0E00 /* Definition.swift */,
 				BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */,
 				BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */,
+				BF91EDDC2A02AA69008DA953 /* InterpreterFuncRefType.swift */,
 			);
 			path = interpreter;
 			sourceTree = "<group>";
@@ -681,6 +684,7 @@
 				BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */,
 				BFC6891E29BD1258001E51C1 /* ASTEmpty.swift in Sources */,
 				BFD9B0D72923FBE800E59D00 /* Dialog.swift in Sources */,
+				BF91EDDD2A02AA69008DA953 /* InterpreterFuncRefType.swift in Sources */,
 				BFB6CE2B29D49177004A49F2 /* ASTNil.swift in Sources */,
 				BFD9B0D52923F59700E59D00 /* DialogView.swift in Sources */,
 				BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */,

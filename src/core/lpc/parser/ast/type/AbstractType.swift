@@ -19,7 +19,7 @@
  */
 
 /// This protocol defines the functionality type representations should have.
-protocol TypeProto {
+protocol TypeProto: AnyObject {
     /// The string description of this type representation.
     var string: String { get }
     
@@ -35,6 +35,12 @@ protocol TypeProto {
 protocol ArrayTypeProto: TypeProto {
     /// The underlying type.
     var underlying: TypeProto? { get }
+}
+
+protocol FunctionReferenceTypeProto: TypeProto {
+    var returnType: TypeProto? { get }
+    var parameterTypes: [TypeProto?] { get }
+    var variadic: Bool { get }
 }
 
 /// Represents a type definition as an AST node.
