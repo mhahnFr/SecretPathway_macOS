@@ -179,7 +179,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     private func openEditorWindow(loader: LPCFileManager, file name: String?) {
         let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
-        let delegate = EditorDelegate(loader: loader, referrer: self, file: name)
+        let delegate = EditorDelegate(loader: loader, referrer: self, container: window, file: name)
         let content  = EditorView(delegate: delegate)
         delegate.onClose = {
             window.performClose(delegate)
@@ -197,7 +197,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Opens an inlined editor.
     private func showInlinedEditor(loader: LPCFileManager, file name: String?) {
         isEditorShowing = true
-        editorDelegate  = EditorDelegate(loader: loader, referrer: self, file: name)
+        editorDelegate  = EditorDelegate(loader: loader, referrer: self, container: window, file: name)
         editorDelegate!.onClose = {
             self.editorDelegate  = nil
             self.isEditorShowing = false

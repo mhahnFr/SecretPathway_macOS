@@ -55,6 +55,6 @@ struct EditorView: View {
 
 struct EditorView_Previews: PreviewProvider {
     static var previews: some View {
-        EditorView(delegate: EditorDelegate(loader: LocalFileManager(), referrer: nil))
+        EditorView(delegate: EditorDelegate(loader: LocalFileManager(), referrer: nil, container: nil))
     }
 }

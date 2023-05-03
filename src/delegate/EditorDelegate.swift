@@ -45,13 +45,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
-    
+
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
     /// A reference to the actual text view.
     private weak var view: NSTextView!
     private weak var referrer: ConnectionDelegate!
-    
+    private weak var window: NSWindow!
+
     /// The highlights in the text.
     private var highlights: [Highlight] = []
     private var file: String?
@@ -60,8 +61,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     /// Initializes this delegate using the given file loader.
     ///
     /// - Parameter loader: The loader used for loading files.
-    init(loader: LPCFileManager, referrer: ConnectionDelegate?, file name: String? = nil) {
+    init(loader: LPCFileManager, referrer: ConnectionDelegate?, container window: NSWindow?, file name: String? = nil) {
         self.loader   = loader
+        self.window   = window
         self.referrer = referrer
         self.file     = name
     }
@@ -119,6 +121,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     }
     
     internal func textDidChange(_ notification: Notification) {
+        window.isDocumentEdited = textStorage.string != lastSaved
         if syntaxHighlighting {
             highlight()
         }
@@ -183,12 +186,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         let content = textStorage.string
         loader.save(file: file!, content: content)
         lastSaved = content
+        window.isDocumentEdited = false
     }
     
     /// Closes the editor.
     func close() -> Bool {
-        let content = textStorage.string
-        if lastSaved != content {
+        if window.isDocumentEdited {
             let alert = NSAlert()
             
             alert.alertStyle      = .warning
