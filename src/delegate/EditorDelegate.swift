@@ -55,6 +55,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     /// The highlights in the text.
     private var highlights: [Highlight] = []
     private var file: String?
+    private var lastSaved = ""
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -98,12 +99,21 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         
         if let file {
             Task {
-                await self.textStorage.append(NSAttributedString(string: loader.load(file: file) ?? ""))
-                if self.syntaxHighlighting {
-                    self.highlight()
+                self.setStatus(text: "Loading \"\(file)\"...")
+                let appendix: String
+                if let loaded = await loader.load(file: file) {
+                    self.textStorage.append(NSAttributedString(string: loaded))
+                    lastSaved = loaded
+                    if self.syntaxHighlighting {
+                        self.highlight()
+                    } else {
+                        self.resetHighlight()
+                    }
+                    appendix = "Done."
                 } else {
-                    self.resetHighlight()
+                    appendix = "Failed!"
                 }
+                self.setStatus(text: "Loading \"\(file)\"... \(appendix)")
             }
         }
     }
@@ -170,12 +180,33 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
             
             file = field.stringValue
         }
-        loader.save(file: file!, content: textStorage.string)
+        let content = textStorage.string
+        loader.save(file: file!, content: content)
+        lastSaved = content
     }
     
     /// Closes the editor.
     func close() -> Bool {
-        // TODO: Check for unsaved changes etc...
+        let content = textStorage.string
+        if lastSaved != content {
+            let alert = NSAlert()
+            
+            alert.alertStyle      = .warning
+            alert.messageText     = "Do you want to save the changes?"
+            alert.informativeText = "Unsaved changes are discarded otherwise."
+            
+            alert.addButton(withTitle: "Yes")
+            alert.addButton(withTitle: "No")
+            alert.addButton(withTitle: "Cancel")
+            
+            switch alert.runModal() {
+            case .alertFirstButtonReturn:  saveText()
+                                           fallthrough
+            case .alertSecondButtonReturn: break
+                
+            default: return false
+            }
+        }
         onClose?()
         return true
     }
