@@ -29,6 +29,7 @@ class Interpreter: ASTVisitor {
     private var current = Context()
     /// The return type of the lastly interpreted expression.
     private var currentType: TypeProto = InterpreterType.any
+    private var background = false
     
     init(loader: LPCFileManager) {
         self.loader = loader
@@ -39,11 +40,30 @@ class Interpreter: ASTVisitor {
     /// - Parameter ast: The AST to be interpreted.
     /// - Returns: The interpretation context.
     func createContext(for ast: [ASTExpression], file name: String? = nil) async -> Context {
+        background = false
         highlights = []
         current    = Context(fileName: name)
         
         for node in ast { await node.visit(self) }
         return current
+    }
+    
+    func createBackgroundContext(for ast: [ASTExpression], file name: String) async -> Context {
+        background = true
+        current = Context(fileName: name)
+        
+        for node in ast { await node.visit(self) }
+        return current
+    }
+    
+    private func addHighlight(_ highlight: @autoclosure () -> Highlight) {
+        if !background {
+            highlights.append(highlight())
+        }
+    }
+    
+    private func isAssignable(_ type: TypeProto, from other: TypeProto) async -> Bool {
+        await type.isAssignable(from: other, loader: background ? nil : loader)
     }
     
     /// Unwraps the given ASTCombination.
@@ -90,10 +110,10 @@ class Interpreter: ASTVisitor {
         if let t = type as? BasicType,
            let actualType = t.representedType,
            actualType == .VOID {
-            highlights.append(MessagedHighlight(begin:   type.begin,
-                                                end:     type.end,
-                                                type:    .TYPE_MISMATCH,
-                                                message: "'void' not allowed here"))
+            addHighlight(MessagedHighlight(begin:   type.begin,
+                                           end:     type.end,
+                                           type:    .TYPE_MISMATCH,
+                                           message: "'void' not allowed here"))
         }
     }
     
@@ -106,10 +126,10 @@ class Interpreter: ASTVisitor {
         
         for parameter in function.parameters {
             if parameter.type == .MISSING {
-                highlights.append(MessagedHighlight(begin:   parameter.begin,
-                                                    end:     parameter.end,
-                                                    type:    .MISSING,
-                                                    message: (parameter as! ASTMissing).message))
+                addHighlight(MessagedHighlight(begin:   parameter.begin,
+                                               end:     parameter.end,
+                                               type:    .MISSING,
+                                               message: (parameter as! ASTMissing).message))
             } else if parameter.type != .AST_ELLIPSIS,
                       let param = await cast(type: ASTParameter.self, parameter),
                       let type  = await cast(type: AbstractType.self, param.declaredType) {
@@ -142,10 +162,10 @@ class Interpreter: ASTVisitor {
         if let context = await createContext(for: file) {
             current.included.append(context)
         } else {
-            highlights.append(MessagedHighlight(begin:   file.begin,
-                                                end:     file.end,
-                                                type:    .ERROR,
-                                                message: "Could not resolve inclusion"))
+            addHighlight(MessagedHighlight(begin:   file.begin,
+                                           end:     file.end,
+                                           type:    .ERROR,
+                                           message: "Could not resolve inclusion"))
         }
     }
     
@@ -157,10 +177,10 @@ class Interpreter: ASTVisitor {
         if let context = await createContext(for: file) {
             current.inherited.append(context)
         } else {
-            highlights.append(MessagedHighlight(begin:   file.begin,
-                                                end:     file.end,
-                                                type:    .ERROR,
-                                                message: "Could not resolve inheritance"))
+            addHighlight(MessagedHighlight(begin:   file.begin,
+                                           end:     file.end,
+                                           type:    .ERROR,
+                                           message: "Could not resolve inheritance"))
         }
     }
     
@@ -182,8 +202,11 @@ class Interpreter: ASTVisitor {
             await argument.visit(self)
             
             if let next = it.next() {
-                if !next.returnType.isAssignable(from: currentType) {
-                    highlights.append(MessagedHighlight(begin: argument.begin, end: argument.end, type: .TYPE_MISMATCH, message: "\(next.returnType.string) is not assignable from \(currentType.string)"))
+                if await !isAssignable(next.returnType, from: currentType) {
+                    addHighlight(MessagedHighlight(begin:   argument.begin,
+                                                        end:     argument.end,
+                                                        type:    .TYPE_MISMATCH,
+                                                        message: "\(next.returnType.string) is not assignable from \(currentType.string)"))
                 }
             } else {
                 if !id.variadic && tooManyBegin == nil {
@@ -193,13 +216,13 @@ class Interpreter: ASTVisitor {
         }
         
         if let tooManyBegin {
-            highlights.append(MessagedHighlight(begin:   tooManyBegin,
+            addHighlight(MessagedHighlight(begin:   tooManyBegin,
                                                 end:     arguments.last!.end,
                                                 type:    .ERROR,
                                                 message: "Expected \(id.parameters.count) arguments, got \(arguments.count)"))
         }
         if it.next() != nil {
-            highlights.append(MessagedHighlight(begin:   lastArg?.end ?? function.begin,
+            addHighlight(MessagedHighlight(begin:   lastArg?.end ?? function.begin,
                                                 end:     function.end,
                                                 type:    .ERROR,
                                                 message: "Expected \(id.parameters.count) arguments, got \(arguments.count)"))
@@ -240,7 +263,7 @@ class Interpreter: ASTVisitor {
            let n = await cast(type: ASTName.self, f.name)?.name {
             let ids = current.getSuperIdentifiers(name: n)
             if ids.isEmpty {
-                highlights.append(MessagedHighlight(begin:   operation.begin,
+                addHighlight(MessagedHighlight(begin:   operation.begin,
                                                     end:     operation.end,
                                                     type:    .NOT_FOUND,
                                                     message: "Identifier not found"))
@@ -267,7 +290,7 @@ class Interpreter: ASTVisitor {
                 }
             }
         }
-        highlights.append(MessagedHighlight(begin:   name.begin,
+        addHighlight(MessagedHighlight(begin:   name.begin,
                                             end:     name.end,
                                             type:    .NOT_FOUND,
                                             message: "Identifier not found"))
@@ -282,18 +305,18 @@ class Interpreter: ASTVisitor {
         if let n = name.name {
             let identifiers = context.getIdentifiers(name: n, pos: context === current ? name.begin : Int.max)
             if let first = identifiers.first {
-                highlights.append(Highlight(begin: name.begin,
+                addHighlight(Highlight(begin: name.begin,
                                             end:   name.end,
                                             type:  first.kind))
                 currentType = first.returnType
             } else {
                 if n.starts(with: "$") {
-                    highlights.append(MessagedHighlight(begin:   name.begin,
+                    addHighlight(MessagedHighlight(begin:   name.begin,
                                                         end:     name.end,
                                                         type:    .NOT_FOUND_BUILTIN,
                                                         message: "Built-in not found"))
                 } else {
-                    highlights.append(MessagedHighlight(begin:   name.begin,
+                    addHighlight(MessagedHighlight(begin:   name.begin,
                                                         end:     name.end,
                                                         type:    .NOT_FOUND,
                                                         message: "Identifier not found"))
@@ -306,7 +329,7 @@ class Interpreter: ASTVisitor {
     private func visitNew(expression: ASTNew) async -> TypeProto {
         guard let strings = await cast(type: ASTStrings.self, expression.instancingExpression),
               let context = await loader.loadAndParse(file: strings.value) else {
-            highlights.append(MessagedHighlight(begin:   expression.instancingExpression.begin,
+            addHighlight(MessagedHighlight(begin:   expression.instancingExpression.begin,
                                                 end:     expression.instancingExpression.end,
                                                 type:    .ERROR,
                                                 message: "Could not resolve file"))
@@ -317,7 +340,7 @@ class Interpreter: ASTVisitor {
         }
         let ids = context.getIdentifiers(name: "create", pos: Int.max)
         if await visitFunctionCall(function: expression, ids: ids) == nil {
-            highlights.append(MessagedHighlight(begin:   expression.instancingExpression.begin,
+            addHighlight(MessagedHighlight(begin:   expression.instancingExpression.begin,
                                                 end:     expression.instancingExpression.end,
                                                 type:    .WARNING,
                                                 message: "No constructor found"))
@@ -333,7 +356,7 @@ class Interpreter: ASTVisitor {
         
         switch expression.type {
         case .MISSING, .WRONG:
-            highlights.append(MessagedHighlight(begin:   expression.begin,
+            addHighlight(MessagedHighlight(begin:   expression.begin,
                                                 end:     expression.end,
                                                 type:    expression.type,
                                                 message: (expression as! ASTHole).message))
@@ -403,7 +426,7 @@ class Interpreter: ASTVisitor {
                 await addInheriting(from: cast(type: ASTStrings.self, inherited)!)
             } else {
                 highlight = false
-                highlights.append(MessagedHighlight(begin:   inheritance.begin,
+                addHighlight(MessagedHighlight(begin:   inheritance.begin,
                                                     end:     inheritance.end,
                                                     type:    .WARNING,
                                                     message: "Inheriting from nothing"))
@@ -463,9 +486,9 @@ class Interpreter: ASTVisitor {
             } else {
                 await rhs.visit(self)
             }
-            if operation.operatorType == .ASSIGNMENT &&
-               !lhsType.isAssignable(from: currentType) {
-                highlights.append(MessagedHighlight(begin:   rhs.begin,
+            if operation.operatorType == .ASSIGNMENT,
+               await !isAssignable(lhsType, from: currentType) {
+                addHighlight(MessagedHighlight(begin:   rhs.begin,
                                                     end:     rhs.end,
                                                     type:    .TYPE_MISMATCH,
                                                     message: "\(lhsType.string) is not assignable from \(currentType.string)"))
@@ -501,8 +524,8 @@ class Interpreter: ASTVisitor {
             let condition = i.condition
             
             await condition.visit(self)
-            if !InterpreterType.bool.isAssignable(from: currentType) {
-                highlights.append(MessagedHighlight(begin:   condition.begin,
+            if await !isAssignable(InterpreterType.bool, from: currentType) {
+                addHighlight(MessagedHighlight(begin:   condition.begin,
                                                     end:     condition.end,
                                                     type:    .TYPE_MISMATCH,
                                                     message: "Condition should be a boolean expression"))
@@ -521,8 +544,8 @@ class Interpreter: ASTVisitor {
             }
             
             if let enclosing = current.queryEnclosingFunction(),
-               !enclosing.returnType.isAssignable(from: currentType) {
-                highlights.append(MessagedHighlight(begin:   ret.begin,
+               await !isAssignable(enclosing.returnType, from: currentType) {
+                addHighlight(MessagedHighlight(begin:   ret.begin,
                                                     end:     ret.end,
                                                     type:   .TYPE_MISMATCH,
                                                     message: "\(enclosing.returnType.string) is not assignable from \(currentType.string)"))
@@ -546,7 +569,7 @@ class Interpreter: ASTVisitor {
             let type = expression as! BasicType
             if let typeFile = type.typeFile as? ASTStrings,
                await !fileExists(file: typeFile) {
-                highlights.append(MessagedHighlight(begin:   typeFile.begin,
+                addHighlight(MessagedHighlight(begin:   typeFile.begin,
                                                     end:     typeFile.end,
                                                     type:    .ERROR,
                                                     message: "Could not resolve file"))
@@ -555,7 +578,7 @@ class Interpreter: ASTVisitor {
         case .AST_ELLIPSIS:
             let enclosing = current.queryEnclosingFunction()
             if enclosing == nil || !enclosing!.variadic {
-                highlights.append(MessagedHighlight(begin:   expression.begin,
+                addHighlight(MessagedHighlight(begin:   expression.begin,
                                                     end:     expression.end,
                                                     type:    .ERROR,
                                                     message: "Enclosing function is not variadic"))
@@ -574,7 +597,7 @@ class Interpreter: ASTVisitor {
             for expression in (expression as! ASTArray).content {
                 await expression.visit(self)
                 if let s = substituted {
-                    if !s.isAssignable(from: currentType) {
+                    if await !isAssignable(s, from: currentType) {
                         // TODO: Find common super type
                         substituted = InterpreterType.any
                     }
@@ -605,7 +628,7 @@ class Interpreter: ASTVisitor {
         default: currentType = InterpreterType.void
         }
         if highlight {
-            highlights.append(ASTHighlight(node: expression))
+            addHighlight(ASTHighlight(node: expression))
         }
     }
     

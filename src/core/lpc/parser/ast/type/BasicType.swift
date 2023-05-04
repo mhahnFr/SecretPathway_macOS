@@ -67,8 +67,14 @@ class BasicType: AbstractType {
         isAssignableImpl(from: other, otherContext: nil)
     }
     
-    func isAssignable(from other: TypeProto, otherContext: Context?) -> Bool {
-        isAssignableImpl(from: other, otherContext: otherContext)
+    func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
+        let otherContext: Context?
+        if let otherFile = ((other as? BasicType)?.typeFile as? ASTStrings)?.value {
+            otherContext = await loader?.loadAndParse(file: otherFile)
+        } else {
+            otherContext = nil
+        }
+        return isAssignableImpl(from: other, otherContext: otherContext)
     }
     
     private func isAssignableImpl(from other: TypeProto, otherContext: Context?) -> Bool {

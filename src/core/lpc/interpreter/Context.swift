@@ -168,7 +168,23 @@ class Context: Instruction {
     
     func inheritsFrom(file: String) -> Bool {
         for inherit in inherited {
-            if inherit.fileName == file || inherit.inheritsFrom(file: file) {
+            let lhs: String?
+            let rhs: String?
+            if inherit.fileName?.starts(with: "/") ?? false && !file.starts(with: "/") {
+                if let cut = inherit.fileName?.dropFirst() {
+                    lhs = String(cut)
+                } else {
+                    lhs = nil
+                }
+                rhs = file
+            } else if file.starts(with: "/") && !(inherit.fileName?.starts(with: "/") ?? true) {
+                lhs = inherit.fileName
+                rhs = String(file.dropFirst())
+            } else {
+                lhs = inherit.fileName
+                rhs = file
+            }
+            if lhs == rhs || inherit.inheritsFrom(file: file) {
                 return true
             }
         }

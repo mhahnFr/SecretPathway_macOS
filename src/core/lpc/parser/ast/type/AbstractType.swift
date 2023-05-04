@@ -30,11 +30,11 @@ protocol TypeProto: AnyObject {
     /// - Returns: Whether this type can be assigned from the given one.
     func isAssignable(from other: TypeProto) -> Bool
     
-    func isAssignable(from other: TypeProto, otherContext: Context?) -> Bool
+    func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool
 }
 
 extension TypeProto {
-    func isAssignable(from other: TypeProto, otherContext: Context?) -> Bool {
+    func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
         isAssignable(from: other)
     }
 }
