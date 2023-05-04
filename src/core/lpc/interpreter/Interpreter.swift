@@ -471,14 +471,13 @@ class Interpreter: ASTVisitor {
                    let name     = await cast(type: ASTName.self, funcCall.name),
                    let nameStr  = name.name {
                     if operation.lhs is ASTThis {
-                        visitName(context: current, name: name)
-                        currentType = await visitFunctionCall(function: funcCall, ids: current.getIdentifiers(name: nameStr, pos: operation.begin)) ?? InterpreterType.unknown
+                        visitName(context: current.fileGlobal, name: name)
+                        currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else if let type     = lhsType as? BasicType,
                               let file     = type.typeFile as? ASTStrings,
                               let context  = await createContext(for: file) {
-                        let ids = context.getIdentifiers(name: nameStr, pos: Int.max)
                         visitName(context: context, name: name)
-                        currentType = await visitFunctionCall(function: funcCall, ids: ids) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     }
                 } else {
                     currentType = InterpreterType.unknown
