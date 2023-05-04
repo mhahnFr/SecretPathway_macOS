@@ -158,17 +158,8 @@ class Context: Instruction {
     func queryEnclosingFunction() -> FunctionDefinition? {
         guard let parent else { return nil }
         
-        var lowerbound: Int?
-        for key in parent.instructions.keys {
-            if key < begin {
-                lowerbound = key
-            } else {
-                break
-            }
-        }
-        
-        if let lowerbound,
-           let definition = parent.instructions[lowerbound] as? FunctionDefinition {
+        if let previous   = Array(parent.instructions.keys).sorted(by: <).last(where: { $0 < begin }),
+           let definition = parent.instructions[previous] as? FunctionDefinition {
             return definition
         } else {
             return parent.queryEnclosingFunction()
