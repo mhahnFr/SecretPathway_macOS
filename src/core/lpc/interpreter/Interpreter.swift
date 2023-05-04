@@ -301,10 +301,11 @@ class Interpreter: ASTVisitor {
     /// - Parameters:
     ///   - context: The context in which to search for the identifier.
     ///   - name: The name expression to be resolved.
-    private func visitName(context: Context, name: ASTName) {
+    private func visitName(context: Context, name: ASTName, asFunction: Bool) {
         if let n = name.name {
             let identifiers = context.getIdentifiers(name: n, pos: context === current ? name.begin : Int.max)
-            if let first = identifiers.first {
+            if let first = identifiers.first,
+               first is FunctionDefinition == asFunction {
                 addHighlight(Highlight(begin: name.begin,
                                        end:   name.end,
                                        type:  first.kind))
@@ -436,7 +437,7 @@ class Interpreter: ASTVisitor {
             let fc = expression as! ASTFunctionCall
             
             let name = await cast(type: ASTName.self, fc.name)!
-            await name.visit(self)
+            visitName(context: current, name: name, asFunction: true)
             if let n = name.name {
                 let ids = current.getIdentifiers(name: n, pos: name.begin)
                 if !ids.isEmpty {
@@ -445,7 +446,7 @@ class Interpreter: ASTVisitor {
             }
             
         case .NAME:
-            visitName(context: current, name: expression as! ASTName)
+            visitName(context: current, name: expression as! ASTName, asFunction: false)
             highlight = false
             
         case .UNARY_OPERATOR:
@@ -471,12 +472,12 @@ class Interpreter: ASTVisitor {
                    let name     = await cast(type: ASTName.self, funcCall.name),
                    let nameStr  = name.name {
                     if operation.lhs is ASTThis {
-                        visitName(context: current.fileGlobal, name: name)
+                        visitName(context: current.fileGlobal, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else if let type     = lhsType as? BasicType,
                               let file     = type.typeFile as? ASTStrings,
                               let context  = await createContext(for: file) {
-                        visitName(context: context, name: name)
+                        visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     }
                 } else {
