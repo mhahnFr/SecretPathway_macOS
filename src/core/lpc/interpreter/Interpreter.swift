@@ -38,9 +38,9 @@ class Interpreter: ASTVisitor {
     ///
     /// - Parameter ast: The AST to be interpreted.
     /// - Returns: The interpretation context.
-    func createContext(for ast: [ASTExpression]) async -> Context {
+    func createContext(for ast: [ASTExpression], file name: String? = nil) async -> Context {
         highlights = []
-        current    = Context()
+        current    = Context(fileName: name)
         
         for node in ast { await node.visit(self) }
         return current
@@ -595,7 +595,7 @@ class Interpreter: ASTVisitor {
 
         case .AST_STRING,
              .STRINGS:       currentType = InterpreterType.string
-        case .AST_THIS:      currentType = InterpreterType.object
+        case .AST_THIS:      currentType = InterpreterType(type: .OBJECT, file: current.fileGlobal.fileName)
         case .AST_INTEGER:   currentType = InterpreterType.int
         case .AST_NIL:       currentType = InterpreterType.object
         case .AST_SYMBOL:    currentType = InterpreterType.symbol

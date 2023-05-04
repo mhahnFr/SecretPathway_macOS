@@ -55,7 +55,7 @@ class LPCFileManager {
     private func loadAndParseIntern(file name: String) async -> Context? {
         guard let content = await load(file: name) else { return nil }
         var parser  = Parser(text: content)
-        let context = await Interpreter(loader: self).createContext(for: parser.parse())
+        let context = await Interpreter(loader: self).createContext(for: parser.parse(), file: name)
         cachedContexts[name] = context
         return context
     }

@@ -261,7 +261,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
             let interpreter = Interpreter(loader: loader)
             var parser      = Parser(text: textStorage.string)
             let ast         = parser.parse()
-            let context     = await interpreter.createContext(for: ast)
+            let context     = await interpreter.createContext(for: ast, file: self.file)
             self.highlights = interpreter.highlights
             
             DispatchQueue.main.async {

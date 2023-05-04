@@ -34,6 +34,12 @@ class Context: Instruction {
     var included: [Context] = []
     /// The inherited context objects.
     var inherited: [Context] = []
+    var fileGlobal: Context {
+        if let parent {
+            return parent.fileGlobal
+        }
+        return self
+    }
     
     /// Constructs this context using the optional beginning position
     /// and the optional parent context.
