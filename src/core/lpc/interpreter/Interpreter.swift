@@ -304,12 +304,19 @@ class Interpreter: ASTVisitor {
     private func visitName(context: Context, name: ASTName, asFunction: Bool) {
         if let n = name.name {
             let identifiers = context.getIdentifiers(name: n, pos: context === current ? name.begin : Int.max)
-            if let first = identifiers.first,
-               first is FunctionDefinition == asFunction {
-                addHighlight(Highlight(begin: name.begin,
-                                       end:   name.end,
-                                       type:  first.kind))
-                currentType = first.returnType
+            if let first = identifiers.first {
+                if first is FunctionDefinition == asFunction {
+                    addHighlight(Highlight(begin: name.begin,
+                                           end:   name.end,
+                                           type:  first.kind))
+                    currentType = first.returnType
+                } else {
+                    addHighlight(MessagedHighlight(begin:   name.begin,
+                                                   end:     name.end,
+                                                   type:    .TYPE_MISMATCH,
+                                                   message: asFunction ? "Not a function"
+                                                                       : "Not a variable"))
+                }
             } else {
                 if n.starts(with: "$") {
                     addHighlight(MessagedHighlight(begin:   name.begin,
