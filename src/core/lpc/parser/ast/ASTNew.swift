@@ -39,7 +39,7 @@ class ASTNew: ASTFunctionCall {
     }
     
     override func describe(_ indentation: Int) -> String {
-        var buffer = "\(type) [\(begin) - \(end)] what:\n" +
+        var buffer = "\(String(repeating: " ", count: indentation))\(type) [\(begin) - \(end)] what:\n" +
                      "\(instancingExpression.describe(indentation + 4))\n"
         buffer.append("\(String(repeating: " ", count: indentation))arguments:\n")
         arguments.forEach { buffer.append("\($0.describe(indentation + 4))\n") }
