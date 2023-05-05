@@ -84,5 +84,9 @@ class LPCFileManager {
         fatalError("Not implemented! Hint: Check using LPCFileManager#canCompile()")
     }
     
+    /// Returns whether the file indicated by the given name exists.
+    ///
+    /// - Parameter file: The name of the file to be checked.
+    /// - Returns: Whether the file exists.
     func exists(file: String) async -> Bool { false }
 }
