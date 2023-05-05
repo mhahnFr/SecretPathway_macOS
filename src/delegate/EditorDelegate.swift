@@ -45,6 +45,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
+    private let storageDelegate = SyntaxDocumentDelegate()
 
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
@@ -98,6 +99,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         
         textStorage = textView.textStorage
         view        = textView
+        textStorage.delegate = storageDelegate
         
         if let file {
             Task {
@@ -119,6 +121,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
             }
         }
     }
+    
+    
     
     internal func textDidChange(_ notification: Notification) {
         window.isDocumentEdited = textStorage.string != lastSaved

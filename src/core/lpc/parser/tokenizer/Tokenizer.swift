@@ -167,7 +167,7 @@ struct Tokenizer {
     /// - Returns: The next read word.
     private mutating func readWord() -> String {
         var buffer = ""
-        while stream.hasNext && !isSpecial(stream.peek) {
+        while stream.hasNext && !Tokenizer.isSpecial(stream.peek) {
             buffer.append(stream.next())
         }
         if buffer.isEmpty && stream.hasNext {
@@ -181,7 +181,7 @@ struct Tokenizer {
     ///
     /// - Parameter c: The character to be checked.
     /// - Returns: Whether the given character is a special one.
-    private func isSpecial(_ c: Character) -> Bool {
+    static func isSpecial(_ c: Character) -> Bool {
         return !(c.isNumber || c.isLetter || c == "_" || c == "$" || c == "#")
     }
     
@@ -192,7 +192,7 @@ struct Tokenizer {
         stream.skip(2)
         
         var buffer = ""
-        while stream.hasNext && !isSpecial(stream.peek) {
+        while stream.hasNext && !Tokenizer.isSpecial(stream.peek) {
             buffer.append(stream.next())
         }
         return buffer
