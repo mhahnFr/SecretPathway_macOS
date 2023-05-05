@@ -131,6 +131,23 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         updateStatus()
     }
     
+    internal func textView(_ textView: NSTextView, willDisplayToolTip tooltip: String, forCharacterAt characterIndex: Int) -> String? {
+        getStatusText(for: characterIndex)
+    }
+    
+    private func getStatusText(for position: Int) -> String? {
+        var toReturn = String?.none
+        
+        for highlight in highlights {
+            if position >= highlight.begin && position <= highlight.end,
+                let highlight = highlight as? MessagedHighlight {
+                toReturn = highlight.message
+            }
+        }
+        
+        return toReturn
+    }
+    
     /// Updates the status text for the given cursor location.
     ///
     /// - Parameter location: The location for which to retrieve the status text.
@@ -138,17 +155,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         guard let range = view.selectedRanges.first as? NSRange else { return }
         
         let location = range.location
-        
-        var set = false
-        
-        for highlight in highlights {
-            if location >= highlight.begin && location <= highlight.end,
-                let highlight = highlight as? MessagedHighlight {
-                setStatus(text: highlight.message)
-                set = true
-            }
-        }
-        if !set { setStatus(text: "") }
+
+        setStatus(text: getStatusText(for: location) ?? "")
     }
     
     private func setStatus(text: String) {
