@@ -23,14 +23,19 @@ class Interpreter: ASTVisitor {
     /// The highlights generated from an AST.
     private(set) var highlights: [Highlight] = []
     
+    /// The file loader used for resolving indicated files.
     private let loader: LPCFileManager
     
     /// The currently used context object.
     private var current = Context()
     /// The return type of the lastly interpreted expression.
     private var currentType: TypeProto = InterpreterType.any
+    /// Indicates whether the processed AST is a background AST.
     private var background = false
     
+    /// Initializes this instance using the given file loader.
+    ///
+    /// - Parameter loader: The file loader used for fetching additional files.
     init(loader: LPCFileManager) {
         self.loader = loader
     }
@@ -38,6 +43,7 @@ class Interpreter: ASTVisitor {
     /// Creates and returns a context object for the given AST.
     ///
     /// - Parameter ast: The AST to be interpreted.
+    /// - Parameter name: The name of the file whose AST is to be interpreted.
     /// - Returns: The interpretation context.
     func createContext(for ast: [ASTExpression], file name: String? = nil) async -> Context {
         background = false
@@ -48,6 +54,14 @@ class Interpreter: ASTVisitor {
         return current
     }
     
+    /// Creates and returns a context object for the given AST.
+    ///
+    /// Runs in the background mode.
+    ///
+    /// - Parameters:
+    ///   - ast: The AST to be interpreted.
+    ///   - name: The name of the file whose AST is to be interpreted.
+    /// - Returns: The interpretation context.
     func createBackgroundContext(for ast: [ASTExpression], file name: String) async -> Context {
         background = true
         current = Context(fileName: name)
@@ -56,12 +70,22 @@ class Interpreter: ASTVisitor {
         return current
     }
     
+    /// Adds the highlight resulting of the given closure if this
+    /// interpreter is not in the background mode.
+    ///
+    /// - Parameter highlight: The highlight to be added.
     private func addHighlight(_ highlight: @autoclosure () -> Highlight) {
         if !background {
             highlights.append(highlight())
         }
     }
     
+    /// Returns whether the given type is assignable from the given other type.
+    ///
+    /// - Parameters:
+    ///   - type: The left-hand-side type.
+    ///   - other: The right-hand-side type.
+    /// - Returns: Whether the type is assignable from the other one.
     private func isAssignable(_ type: TypeProto, from other: TypeProto) async -> Bool {
         await type.isAssignable(from: other, loader: background ? nil : loader)
     }
@@ -146,10 +170,19 @@ class Interpreter: ASTVisitor {
         return parameters
     }
     
+    /// Creates and returns an interpretation context for the file
+    /// indicated by the given strings expression.
+    ///
+    /// - Parameter file: The strings expression evaluating to the file name.
+    /// - Returns: The interpretation context or `nil` if the file could not be interpreted.
     private func createContext(for file: ASTStrings) async -> Context? {
         return await loader.loadAndParse(file: file.value)
     }
     
+    /// Returns whether the file indicated by the given strings expression exists.
+    ///
+    /// - Parameter file: The strings expression evaluating to the file name.
+    /// - Returns: Whether the file exists.
     private func fileExists(file: ASTStrings) async -> Bool {
         return await loader.exists(file: file.value)
     }
@@ -273,6 +306,9 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Visists a function reference expression.
+    ///
+    /// - Parameter operation: The function reference operation.
     private func visitFunctionReference(_ operation: ASTUnaryOperation) async {
         guard let name       = await cast(type: ASTName.self, operation.identifier),
               let nameString = name.name else { return }
@@ -301,6 +337,7 @@ class Interpreter: ASTVisitor {
     /// - Parameters:
     ///   - context: The context in which to search for the identifier.
     ///   - name: The name expression to be resolved.
+    ///   - asFunction: Indicates whether to treat the given name expression as a function name.
     private func visitName(context: Context, name: ASTName, asFunction: Bool) {
         if let n = name.name {
             let identifiers = context.getIdentifiers(name: n, pos: context === current ? name.begin : Int.max)
@@ -334,6 +371,10 @@ class Interpreter: ASTVisitor {
         }
     }
     
+    /// Visits a `new` expression.
+    ///
+    /// - Parameter expression: The expression to be visited.
+    /// - Returns: The return type of the expression.
     private func visitNew(expression: ASTNew) async -> TypeProto {
         guard let strings = await cast(type: ASTStrings.self, expression.instancingExpression),
               let context = await loader.loadAndParse(file: strings.value) else {
