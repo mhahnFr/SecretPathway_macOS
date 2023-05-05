@@ -44,8 +44,36 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
                 // TODO: move cursor
             }
             
+        case "}":
+            if isOnlyWhitespacesOnLine(underlying, editedRange.location) {
+                let lineBegin = getLineBegin(underlying, editedRange.location)
+                let len = min(editedRange.location - lineBegin, 4)
+                textStorage.replaceCharacters(in: NSMakeRange(editedRange.location - len, len), with: "")
+                // TODO: move cursor
+            }
+            
         default: break
         }
+    }
+    
+    private func isOnlyWhitespacesOnLine(_ line: String, _ index: Int) -> Bool {
+        let lineBegin = getLineBegin(line, index)
+        return isSpaces(String(line[line.index(line.startIndex, offsetBy: lineBegin) ..< line.index(line.startIndex, offsetBy: index)]))
+    }
+    
+    private func isSpaces(_ string: String) -> Bool {
+        for c in string.unicodeScalars {
+            guard c == " " else { return false }
+        }
+        return true
+    }
+    
+    private func getLineBegin(_ line: String, _ index: Int) -> Int {
+        var lineBegin = index > 0 ? index - 1 : 0
+        while !line[line.index(line.startIndex, offsetBy: lineBegin)].isNewline {
+            lineBegin -= 1
+        }
+        return lineBegin > 0 ? lineBegin + 1 : 0
     }
     
     private func isWhitespace(_ string: String, _ location: Int) -> Bool {
