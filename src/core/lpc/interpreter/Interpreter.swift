@@ -416,7 +416,7 @@ class Interpreter: ASTVisitor {
             await c.castExpression.visit(self)
             currentType = await cast(type: AbstractType.self, c.castType)! as TypeProto
             
-        case .VARIABLE_DEFINITION:
+        case .VARIABLE_DEFINITION: // TODO: Doubled identifiers
             let varDefinition = expression as! ASTVariableDefinition
             
             let type: AbstractType
@@ -435,7 +435,7 @@ class Interpreter: ASTVisitor {
             maybeWrongVoid(type)
             currentType = type
             
-        case .FUNCTION_DEFINITION:
+        case .FUNCTION_DEFINITION: // TODO: Doubled identifiers
             let function         = expression as! ASTFunctionDefinition
             let block            = function.body
             let paramExpressions = function.parameters

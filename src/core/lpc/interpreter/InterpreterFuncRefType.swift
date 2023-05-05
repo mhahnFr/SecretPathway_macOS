@@ -18,6 +18,7 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents an interpreter function reference type.
 class InterpreterFuncRefType: FunctionReferenceTypeProto {
     let returnType: TypeProto?
     let parameterTypes: [TypeProto?]
@@ -49,6 +50,12 @@ class InterpreterFuncRefType: FunctionReferenceTypeProto {
         return buffer
     }
     
+    /// Initializes this type representation using the given information.
+    ///
+    /// - Parameters:
+    ///   - returnType: The return type of the referenced function.
+    ///   - parameterTypes: The parameter types of the referenced function.
+    ///   - variadic: Indicates whether the referenced function has variadic parameters.
     init(returnType: TypeProto?, parameterTypes: [TypeProto?], variadic: Bool) {
         self.returnType     = returnType
         self.parameterTypes = parameterTypes
