@@ -24,6 +24,7 @@ class Context: Instruction {
     let returnType: TypeProto = InterpreterType.void
     /// The optional parent context.
     let parent: Context?
+    /// The name of the file from which this context was created.
     let fileName: String?
     
     /// The instruction contained in this context.
@@ -34,6 +35,7 @@ class Context: Instruction {
     var included: [Context] = []
     /// The inherited context objects.
     var inherited: [Context] = []
+    /// The global scope in which this context is in.
     var fileGlobal: Context {
         if let parent {
             return parent.fileGlobal
@@ -47,6 +49,7 @@ class Context: Instruction {
     /// - Parameters:
     ///   - begin: The beginning position.
     ///   - parent: The parent context.
+    ///   - fileName: The name of the file from which this context is created.
     init(begin: Int = 0, parent: Context? = nil, fileName: String? = nil) {
         self.begin    = begin
         self.parent   = parent
@@ -114,6 +117,11 @@ class Context: Instruction {
         return newContext
     }
     
+    /// Returns all identifiers of the given name inside the inherited
+    /// contexts.
+    ///
+    /// - Parameter name: The name of the searched identifier.
+    /// - Returns: A list with all found identifiers.
     func getSuperIdentifiers(name: String) -> [Definition] {
         if let parent {
             return parent.getSuperIdentifiers(name: name)
@@ -128,6 +136,12 @@ class Context: Instruction {
         return []
     }
     
+    /// Returns all identifiers of the given name available at the given position.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the requested identifiers.
+    ///   - pos: The position.
+    /// - Returns: A list with all found identifiers.
     func getIdentifiers(name: String, pos: Int) -> [Definition] {
         var definitions: [Definition] = []
         for (begin, instruction) in instructions {
@@ -155,6 +169,9 @@ class Context: Instruction {
         return getSuperIdentifiers(name: name)
     }
     
+    /// Returns the function definition this context is in.
+    ///
+    /// - Returns: The enclosing function or `nil` if there is none.
     func queryEnclosingFunction() -> FunctionDefinition? {
         guard let parent else { return nil }
         
@@ -166,6 +183,11 @@ class Context: Instruction {
         }
     }
     
+    /// Returns whether this context inherits directly or indirectly from
+    /// the given file.
+    ///
+    /// - Parameter file: The file name.
+    /// - Returns: Whether this context inherits from the given file.
     func inheritsFrom(file: String) -> Bool {
         for inherit in inherited {
             let lhs: String?
