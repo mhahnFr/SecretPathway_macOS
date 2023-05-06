@@ -215,8 +215,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
             alert.addButton(withTitle: "Cancel")
             
             switch alert.runModal() {
-            case .alertFirstButtonReturn:  saveText()
-                                           fallthrough
+            case .alertFirstButtonReturn:
+                saveText()
+                return close()
+                                           
             case .alertSecondButtonReturn: break
                 
             default: return false
