@@ -60,5 +60,5 @@ enum HighlightType: String {
     COMMENT_BLOCK, COMMENT_LINE
 
     /// An interpretation highlight type.
-    case TYPE_MISMATCH, ERROR, WARNING, NOT_FOUND, NOT_FOUND_BUILTIN
+    case TYPE_MISMATCH, ERROR, WARNING, NOT_FOUND, NOT_FOUND_BUILTIN, UNRESOLVED
 }

@@ -27,18 +27,19 @@ struct DefaultTheme: SPTheme {
     
     /// Initializes this theme.
     init() {
-        let keyword = SPStyle(bold: true, foreground: NSColor(red: 0.015, green: 0.388, blue: 0.51, alpha: 1))
-        let type    = SPStyle(foreground: NSColor(red: 0.015, green: 0.51,  blue: 0.51,  alpha: 1))
-        let control = SPStyle(foreground: NSColor(red: 0.714, green: 0.004, blue: 0.09,  alpha: 1))
-        let id      = SPStyle(foreground: NSColor(red: 0.702, green: 0.043, blue: 0.749, alpha: 1))
-        let flow    = SPStyle(foreground: NSColor(red: 0.086, green: 0.459, blue: 0.02,  alpha: 1))
-        let comment = SPStyle(italic: true, foreground: .gray)
-        let const   = SPStyle(foreground: NSColor(red: 0.671, green: 0.627, blue: 0.012, alpha: 1))
-        let warning = SPStyle(underlined: true, foreground: NSColor(red: 0.75, green: 0.75, blue: 0, alpha: 1))
-        let error   = SPStyle(bold: true, foreground: .red)
-        let error2  = SPStyle(underlined: true, foreground: .red)
-        let error3  = SPStyle(foreground: .red)
-        let missing = SPStyle(background: NSColor(red: 1, green: 0.5098, blue: 0.5098, alpha: 1))
+        let keyword    = SPStyle(bold: true, foreground: NSColor(red: 0.015, green: 0.388, blue: 0.51, alpha: 1))
+        let type       = SPStyle(foreground: NSColor(red: 0.015, green: 0.51,  blue: 0.51,  alpha: 1))
+        let control    = SPStyle(foreground: NSColor(red: 0.714, green: 0.004, blue: 0.09,  alpha: 1))
+        let id         = SPStyle(foreground: NSColor(red: 0.702, green: 0.043, blue: 0.749, alpha: 1))
+        let flow       = SPStyle(foreground: NSColor(red: 0.086, green: 0.459, blue: 0.02,  alpha: 1))
+        let comment    = SPStyle(italic: true, foreground: .gray)
+        let const      = SPStyle(foreground: NSColor(red: 0.671, green: 0.627, blue: 0.012, alpha: 1))
+        let warning    = SPStyle(underlined: true, foreground: NSColor(red: 0.75, green: 0.75, blue: 0, alpha: 1))
+        let error      = SPStyle(bold: true, foreground: .red)
+        let error2     = SPStyle(underlined: true, foreground: .red)
+        let error3     = SPStyle(foreground: .red)
+        let missing    = SPStyle(background: NSColor(red: 1, green: 0.5098, blue: 0.5098, alpha: 1))
+        let unresolved = SPStyle(bold: true, foreground: NSColor(red: 0.75, green: 0.75, blue: 0, alpha: 1))
         styles = [
             .IDENTIFIER: id,
             
@@ -106,6 +107,8 @@ struct DefaultTheme: SPTheme {
             .TYPE_MISMATCH: error2,
             
             .NOT_FOUND: error3,
+            
+            .UNRESOLVED: unresolved,
             
             .MISSING: missing
         ]

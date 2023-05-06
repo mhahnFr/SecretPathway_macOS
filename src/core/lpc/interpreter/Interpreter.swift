@@ -197,7 +197,7 @@ class Interpreter: ASTVisitor {
         } else {
             addHighlight(MessagedHighlight(begin:   file.begin,
                                            end:     file.end,
-                                           type:    .ERROR,
+                                           type:    .UNRESOLVED,
                                            message: "Could not resolve inclusion"))
         }
     }
@@ -212,7 +212,7 @@ class Interpreter: ASTVisitor {
         } else {
             addHighlight(MessagedHighlight(begin:   file.begin,
                                            end:     file.end,
-                                           type:    .ERROR,
+                                           type:    .UNRESOLVED,
                                            message: "Could not resolve inheritance"))
         }
     }
@@ -298,7 +298,7 @@ class Interpreter: ASTVisitor {
             if ids.isEmpty {
                 addHighlight(MessagedHighlight(begin:   operation.begin,
                                                end:     operation.end,
-                                               type:    .NOT_FOUND,
+                                               type:    .UNRESOLVED,
                                                message: "Identifier not found"))
             } else {
                 currentType = await visitFunctionCall(function: f, ids: ids) ?? InterpreterType.unknown
@@ -380,7 +380,7 @@ class Interpreter: ASTVisitor {
               let context = await loader.loadAndParse(file: strings.value) else {
             addHighlight(MessagedHighlight(begin:   expression.instancingExpression.begin,
                                            end:     expression.instancingExpression.end,
-                                           type:    .ERROR,
+                                           type:    .UNRESOLVED,
                                            message: "Could not resolve file"))
             for argument in expression.arguments {
                 await argument.visit(self)
@@ -619,7 +619,7 @@ class Interpreter: ASTVisitor {
                await !fileExists(file: typeFile) {
                 addHighlight(MessagedHighlight(begin:   typeFile.begin,
                                                end:     typeFile.end,
-                                               type:    .ERROR,
+                                               type:    .UNRESOLVED,
                                                message: "Could not resolve file"))
             }
             
