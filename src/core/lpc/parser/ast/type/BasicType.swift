@@ -80,7 +80,7 @@ class BasicType: AbstractType {
     private func isAssignableImpl(from other: TypeProto, otherContext: Context?) -> Bool {
         guard let representedType else { return true }
         
-        if representedType == .ANY {
+        if representedType == .ANY || representedType == .MIXED {
             if let o = other as? BasicType, o.representedType == .VOID {
                 return false
             }
