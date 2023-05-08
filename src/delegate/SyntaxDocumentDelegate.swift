@@ -52,8 +52,48 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
                 // TODO: move cursor
             }
             
+        // TODO: ':', '.', default reindentations...
+            
+        case "\n":
+            let openingParenthesis = isPreviousOpeningParenthesis(underlying, editedRange.location)
+            if openingParenthesis && isClosingParenthesis(underlying, editedRange.location + editedRange.length) {
+                let indent = String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location))
+                textStorage.insert(NSAttributedString(string: indent + "    \n" + indent), at: editedRange.location + editedRange.length)
+                // TODO: Move cursor
+            } else {
+                textStorage.insert(NSAttributedString(string: String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location)) + (openingParenthesis ? "    " : "")), at: editedRange.location + editedRange.length)
+            }
+            
         default: break
         }
+    }
+    
+    private func getPreviousIndent(_ string: String, _ offset: Int) -> Int {
+        var lineBegin = getLineBegin(string, offset)
+        var indent = 0
+        while lineBegin < offset && string[string.index(string.startIndex, offsetBy: lineBegin)] == " " {
+            lineBegin += 1
+            indent    += 1
+        }
+        return indent
+    }
+    
+    private func isPreviousOpeningParenthesis(_ string: String, _ offset: Int) -> Bool {
+        guard offset > 0 else { return false }
+        
+        let c = string[string.index(string.startIndex, offsetBy: offset - 1)]
+        return c == "(" ||
+               c == "{" ||
+               c == "["
+    }
+    
+    private func isClosingParenthesis(_ string: String, _ offset: Int) -> Bool {
+        guard offset < string.count else { return false }
+        
+        let c = string[string.index(string.startIndex, offsetBy: offset)]
+        return c == ")" ||
+               c == "}" ||
+               c == "]"
     }
     
     private func isOnlyWhitespacesOnLine(_ line: String, _ index: Int) -> Bool {
@@ -70,7 +110,7 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
     
     private func getLineBegin(_ line: String, _ index: Int) -> Int {
         var lineBegin = index > 0 ? index - 1 : 0
-        while !line[line.index(line.startIndex, offsetBy: lineBegin)].isNewline {
+        while lineBegin > 0 && !line[line.index(line.startIndex, offsetBy: lineBegin)].isNewline {
             lineBegin -= 1
         }
         return lineBegin > 0 ? lineBegin + 1 : 0
