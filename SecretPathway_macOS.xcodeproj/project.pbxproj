@@ -35,7 +35,6 @@
 		BF5C0F4229E7473D007F49BA /* ASTIf.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F4129E7473D007F49BA /* ASTIf.swift */; };
 		BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3532965C95F00DF333D /* EditorView.swift */; };
 		BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3552965CD6900DF333D /* EditorDelegate.swift */; };
-		BF6E6ABD2A095602003D4CA9 /* CaretMover.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6E6ABC2A095602003D4CA9 /* CaretMover.swift */; };
 		BF7D3C3929F97E3C008B42AC /* InterpreterArrayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */; };
 		BF7D3C3B29F99C2F008B42AC /* LPCFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3A29F99C2F008B42AC /* LPCFileManager.swift */; };
 		BF7D3C3D29F99EDD008B42AC /* LocalFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3C29F99EDD008B42AC /* LocalFileManager.swift */; };
@@ -150,7 +149,6 @@
 		BF5C0F4129E7473D007F49BA /* ASTIf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTIf.swift; sourceTree = "<group>"; };
 		BF6AF3532965C95F00DF333D /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		BF6AF3552965CD6900DF333D /* EditorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorDelegate.swift; sourceTree = "<group>"; };
-		BF6E6ABC2A095602003D4CA9 /* CaretMover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaretMover.swift; sourceTree = "<group>"; };
 		BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterArrayType.swift; sourceTree = "<group>"; };
 		BF7D3C3A29F99C2F008B42AC /* LPCFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LPCFileManager.swift; sourceTree = "<group>"; };
 		BF7D3C3C29F99EDD008B42AC /* LocalFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileManager.swift; sourceTree = "<group>"; };
@@ -314,7 +312,6 @@
 			children = (
 				BFE06F29296DC1F9004A3C1F /* theme */,
 				BF6AF3532965C95F00DF333D /* EditorView.swift */,
-				BF6E6ABC2A095602003D4CA9 /* CaretMover.swift */,
 			);
 			path = editor;
 			sourceTree = "<group>";
@@ -713,7 +710,6 @@
 				BFE2DB8229A7EE69003E2BFF /* ASTMissing.swift in Sources */,
 				BFDCA77B29AD2569005B8AA9 /* ASTBool.swift in Sources */,
 				BFE06F26296DAA24004A3C1F /* JSONStyle.swift in Sources */,
-				BF6E6ABD2A095602003D4CA9 /* CaretMover.swift in Sources */,
 				BFE2DB7E29A7E466003E2BFF /* ASTVisitor.swift in Sources */,
 				BFC6891A29BD1177001E51C1 /* ASTDefault.swift in Sources */,
 				BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */,
