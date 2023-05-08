@@ -74,7 +74,7 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
                 self.delta = 0
             }
             
-        // TODO: ':', '.', default reindentations...
+        // TODO: ':', '.'
             
         case "\n":
             let openingParenthesis = isPreviousOpeningParenthesis(underlying, editedRange.location)
