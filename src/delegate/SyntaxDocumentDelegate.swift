@@ -23,6 +23,8 @@ import AppKit
 class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
     var delta = 0
     
+    private var ignore: (Int, String)?
+    
     internal func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int) {
         guard editedMask.contains(.editedCharacters) else { return }
         
@@ -30,6 +32,15 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
         
         let str = textStorage.attributedSubstring(from: editedRange).string
         let underlying = textStorage.string
+        
+        if let ignore,
+           editedRange.location == ignore.0,
+           str == ignore.1 {
+            textStorage.replaceCharacters(in: NSMakeRange(editedRange.location + editedRange.length, 1), with: "")
+        } else {
+            self.ignore = nil
+        }
+        
         switch str {
         case "\t":
             textStorage.replaceCharacters(in: editedRange, with: "    ")
@@ -37,8 +48,9 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
             
         case "(", "{", "[", "\"", "'":
             if isSpecial(underlying, editedRange.location + editedRange.length) {
-                textStorage.insert(NSAttributedString(string: getClosingString(str)), at: editedRange.location + editedRange.length)
-                // TODO: Ignore addition
+                let closing = getClosingString(str)
+                textStorage.insert(NSAttributedString(string: closing), at: editedRange.location + editedRange.length)
+                self.ignore = (editedRange.location + editedRange.length, closing)
                 self.delta = -1
             } else {
                 self.delta = 0
@@ -58,8 +70,6 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
                 let lineBegin = getLineBegin(underlying, editedRange.location)
                 let len = min(editedRange.location - lineBegin, 4)
                 textStorage.replaceCharacters(in: NSMakeRange(editedRange.location - len, len), with: "")
-                // TODO: move cursor
-                self.delta = -len // ?
             } else {
                 self.delta = 0
             }
