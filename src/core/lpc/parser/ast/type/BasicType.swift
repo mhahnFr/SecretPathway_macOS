@@ -77,6 +77,15 @@ class BasicType: AbstractType {
         return isAssignableImpl(from: other, otherContext: otherContext)
     }
     
+    /// Returns whether this type is assignable to the given other type.
+    ///
+    /// The optional context is used to resolve the type annotation of the other type
+    /// if it has one.
+    ///
+    /// - Parameters:
+    ///   - other: The other type.
+    ///   - otherContext: The context associated with the type annotation of the other type.
+    /// - Returns: Whether this type is assignable from the given other type.
     private func isAssignableImpl(from other: TypeProto, otherContext: Context?) -> Bool {
         guard let representedType else { return true }
         
