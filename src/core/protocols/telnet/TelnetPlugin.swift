@@ -280,6 +280,11 @@ class TelnetPlugin: ProtocolPlugin {
         sender.send(data: data)
     }
     
+    /// Sends the given data as subnegotiation.
+    ///
+    /// - Parameters:
+    ///   - sender: The sender used for sending the data.
+    ///   - data: The data to be sent.
     private func sendSB(sender: ConnectionSender, data: Data) {
         var d = Data()
         
