@@ -61,7 +61,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     
     /// The window that is controlled by this delegate instance.
     private(set) weak var window: NSWindow?
-
+    
+    /// The SPP plugin.
     private lazy var sppPlugin = SPPPlugin(sender: self)
     /// The protocol abstractions object.
     private lazy var protocols = Protocols(sender: self, plugins: sppPlugin,
@@ -82,9 +83,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     private var lastWasIAC = false
     /// A buffer used for broken unicode points.
     private var unicodeBuffer = Data()
+    /// The currently opened editors.
     private var editors: [EditorDelegate] = []
     /// The style currently being used for incoming text.
     internal var currentStyle = SPStyle()
+    /// Indicated whether to hide user input.
     internal var passwordMode = false
     
     /// The last timer used to remove the user message. Nil if none is active.
@@ -167,6 +170,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    /// Shows an editor.
+    ///
+    /// - Parameter name: The name of the file to be displayed.
     func showEditor(file name: String? = nil) {
         let loader = sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
                                       : LocalFileManager()
@@ -177,6 +183,11 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
     }
     
+    /// Opens an editor window.
+    ///
+    /// - Parameters:
+    ///   - loader: The loader used for resolving referenced files.
+    ///   - name: The name of the file to be displayed.
     private func openEditorWindow(loader: LPCFileManager, file name: String?) {
         let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
         let delegate = EditorDelegate(loader: loader, referrer: self, container: window, file: name)
