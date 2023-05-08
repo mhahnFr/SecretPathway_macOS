@@ -101,6 +101,7 @@ class Settings: ObservableObject {
     @AppStorage(Constants.Storage.USE_UTF8)
     var useUTF8 = true
     
+    /// The raw data of the editor theme bookmark, retained by the app storage.
     @AppStorage(Constants.Storage.EDITOR_THEME)
     private var editorThemeBookmark: Data?
     /// The raw data of the currently opened connections.
