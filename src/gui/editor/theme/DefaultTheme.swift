@@ -39,7 +39,7 @@ struct DefaultTheme: SPTheme {
         let error2     = SPStyle(underlined: true, foreground: .red)
         let error3     = SPStyle(foreground: .red)
         let missing    = SPStyle(background: NSColor(red: 1, green: 0.5098, blue: 0.5098, alpha: 1))
-        let unresolved = SPStyle(bold: true, foreground: NSColor(red: 0.75, green: 0.75, blue: 0, alpha: 1))
+        let unresolved = SPStyle(bold: true, underlined: true, foreground: NSColor(red: 0.75, green: 0.75, blue: 0, alpha: 1))
         styles = [
             .IDENTIFIER: id,
             
