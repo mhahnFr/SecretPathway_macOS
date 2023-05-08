@@ -29,7 +29,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
     }
+    /// The status text of the underlying connection.
     @Published var connectionStatus: String?
+    /// The color used for the connection status text.
     @Published var connectionColor: Color?
     /// The status text to be displayed beneath the text.
     @Published private(set) var statusText = ""
@@ -45,19 +47,23 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
-    
-    private lazy var storageDelegate = SyntaxDocumentDelegate()
+    /// The delegate for the text storage.
+    private let storageDelegate = SyntaxDocumentDelegate()
 
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
     /// A reference to the actual text view.
     private weak var view: NSTextView!
+    /// The referrer that opened this editor instance.
     private weak var referrer: ConnectionDelegate!
+    /// The window this editor is in.
     private weak var window: NSWindow!
 
     /// The highlights in the text.
     private var highlights: [Highlight] = []
+    /// The associated file name.
     private var file: String?
+    /// The lastly saved content.
     private var lastSaved = ""
 
     /// Initializes this delegate using the given file loader.
@@ -144,6 +150,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         getStatusText(for: characterIndex)
     }
     
+    /// Returns the status text available for the given position.
+    ///
+    /// If no status text is available, `nil` is returned.
+    ///
+    /// - Parameter position: The position for which to query the message.
+    /// - Returns: The available message or `nil`.
     private func getStatusText(for position: Int) -> String? {
         var toReturn = String?.none
         
@@ -168,6 +180,11 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         setStatus(text: getStatusText(for: location) ?? "")
     }
     
+    /// Sets the status text.
+    ///
+    /// Takes care of using the correct thread.
+    ///
+    /// - Parameter text: The new text to be displayed.
     private func setStatus(text: String) {
         DispatchQueue.main.async {
             withAnimation {
@@ -176,6 +193,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         }
     }
     
+    /// Opens a new editor instance.
     func openEditor() {
         referrer.showEditor()
     }
@@ -253,7 +271,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
             resetHighlight()
         }
     }
-
+    
+    /// Clears the visible syntax highlighting.
     private func resetHighlight() {
         textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, textStorage.length))
     }
