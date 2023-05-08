@@ -104,21 +104,42 @@ class Context: Instruction {
                      scopeBegin: Int,
                      name:       ASTName,
                      returnType: TypeProto,
-                     parameters: [Definition],
-                     variadic: Bool) -> Context {
-        // TODO: Check function redefinition
-        instructions[begin] = FunctionDefinition(begin:      begin,
-                                                 name:       name.name ?? "<< unknown >>",
-                                                 returnType: returnType,
-                                                 parameters: parameters,
-                                                 variadic:   variadic)
+                     parameters: [(ASTName?, Definition)],
+                     variadic: Bool) -> (Context, [ASTName?]) {
+        var redefinitions = [ASTName?]()
+        let previous = instructions.first {
+            guard let fd = $0.value as? FunctionDefinition,
+                  fd.name             == name.name,
+                  fd.parameters.count == parameters.count,
+                  fd.variadic         == variadic
+            else { return false }
+            
+            for i in 0 ..< parameters.count {
+                guard parameters[i].1.returnType.isAssignable(from: fd.parameters[i].returnType) else {
+                    return false
+                }
+            }
+            return true
+        }
+        var paramDefs = [Definition]()
+        parameters.forEach { paramDefs.append($0.1) }
+        let function = FunctionDefinition(begin:      begin,
+                                          name:       name.name ?? "<< unknown >>",
+                                          returnType: returnType,
+                                          parameters: paramDefs,
+                                          variadic:   variadic)
+        instructions[begin] = function
+        if previous != nil { redefinitions.append(name) }
         
         let newContext = pushScope(begin: scopeBegin)
         parameters.forEach {
-            // TODO: Doubled parameter names
-            _ = newContext.addIdentifier(begin: $0.begin, name: $0.name, type: $0.returnType, $0.kind)
+            let name = $0.1.name
+            if newContext.instructions.first(where: { ($0.value as? Definition)?.name == name }) != nil {
+                redefinitions.append($0.0)
+            }
+            newContext.instructions[$0.1.begin] = $0.1
         }
-        return newContext
+        return (newContext, redefinitions)
     }
     
     /// Returns all identifiers of the given name inside the inherited

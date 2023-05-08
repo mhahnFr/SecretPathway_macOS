@@ -145,8 +145,8 @@ class Interpreter: ASTVisitor {
     ///
     /// - Parameter function: The declared function whose parameters to visit.
     /// - Returns: The definitions created from the declared parameters.
-    private func visitParams(of function: ASTFunctionDefinition) async -> [Definition] {
-        var parameters: [Definition] = []
+    private func visitParams(of function: ASTFunctionDefinition) async -> [(ASTName?, Definition)] {
+        var parameters = [(ASTName?, Definition)]()
         
         for parameter in function.parameters {
             if parameter.type == .MISSING {
@@ -160,10 +160,13 @@ class Interpreter: ASTVisitor {
                 await type.visit(self)
                 maybeWrongVoid(type)
                 
-                await parameters.append(Definition(begin:      param.begin,
-                                                   returnType: type,
-                                                   name:       cast(type: ASTName.self, param.name)?.name ?? "<< unknown >>",
-                                                   kind:       .PARAMETER))
+                let name = await cast(type: ASTName.self, param.name)
+                let definition = Definition(begin:      param.begin,
+                                            returnType: type,
+                                            name:       name?.name ?? "<< unknown >>",
+                                            kind:       .PARAMETER)
+                definition.end = param.end
+                parameters.append((name, definition))
             }
         }
         
@@ -441,7 +444,7 @@ class Interpreter: ASTVisitor {
             maybeWrongVoid(type)
             currentType = type
             
-        case .FUNCTION_DEFINITION: // TODO: Doubled identifiers
+        case .FUNCTION_DEFINITION:
             let function         = expression as! ASTFunctionDefinition
             let block            = function.body
             let paramExpressions = function.parameters
@@ -449,13 +452,22 @@ class Interpreter: ASTVisitor {
             let retType = await cast(type: AbstractType.self, function.returnType)!
             await retType.visit(self)
             let params  = await visitParams(of: function)
-            
-            current = await current.addFunction(begin:      function.begin,
-                                                scopeBegin: block.begin,
-                                                name:       cast(type: ASTName.self,      function.name)!,
-                                                returnType: cast(type: AbstractType.self, function.returnType)!,
-                                                parameters: params,
-                                                variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
+
+            let (scope, redefs) = await current.addFunction(begin:      function.begin,
+                                                            scopeBegin: block.begin,
+                                                            name:       cast(type: ASTName.self,      function.name)!,
+                                                            returnType: cast(type: AbstractType.self, function.returnType)!,
+                                                            parameters: params,
+                                                            variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
+            current = scope
+            redefs.forEach {
+                guard let name = $0 else { return }
+                
+                addHighlight(MessagedHighlight(begin:   name.begin,
+                                               end:     name.end,
+                                               type:    .ERROR,
+                                               message: "Redefinition of \"\(name.name ?? "<< unknown >>")\""))
+            }
             if let block = await cast(type: ASTBlock.self, block) {
                 for expression in block.body {
                     await expression.visit(self)
