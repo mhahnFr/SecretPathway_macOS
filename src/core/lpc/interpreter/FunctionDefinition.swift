@@ -25,6 +25,7 @@ class FunctionDefinition: Definition {
     /// Indicates whether the represented function can take variadic arguments.
     let variadic: Bool
     
+    /// The string description of this function definition.
     var string: String {
         var buffer = "\(name)("
         
