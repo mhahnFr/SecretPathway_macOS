@@ -83,8 +83,10 @@ class Context: Instruction {
     ///   - name: The name of the identifier.
     ///   - type: The return type of the identifier.
     ///   - kind: The AST type of the identifier.
-    func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType) {
+    func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType) -> Bool {
+        let redeclaring = instructions.first { ($0.value as? Definition)?.name == name } == nil
         instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
+        return redeclaring
     }
     
     /// Adds a function to this scope. The given parameters are
@@ -104,6 +106,7 @@ class Context: Instruction {
                      returnType: TypeProto,
                      parameters: [Definition],
                      variadic: Bool) -> Context {
+        // TODO: Check function redefinition
         instructions[begin] = FunctionDefinition(begin:      begin,
                                                  name:       name.name ?? "<< unknown >>",
                                                  returnType: returnType,
@@ -112,7 +115,8 @@ class Context: Instruction {
         
         let newContext = pushScope(begin: scopeBegin)
         parameters.forEach {
-            newContext.addIdentifier(begin: $0.begin, name: $0.name, type: $0.returnType, $0.kind)
+            // TODO: Doubled parameter names
+            _ = newContext.addIdentifier(begin: $0.begin, name: $0.name, type: $0.returnType, $0.kind)
         }
         return newContext
     }

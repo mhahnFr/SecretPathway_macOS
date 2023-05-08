@@ -416,7 +416,7 @@ class Interpreter: ASTVisitor {
             await c.castExpression.visit(self)
             currentType = await cast(type: AbstractType.self, c.castType)! as TypeProto
             
-        case .VARIABLE_DEFINITION: // TODO: Doubled identifiers
+        case .VARIABLE_DEFINITION:
             let varDefinition = expression as! ASTVariableDefinition
             
             let type: AbstractType
@@ -428,10 +428,16 @@ class Interpreter: ASTVisitor {
                 type = InterpreterType.unknown
             }
             
-            await current.addIdentifier(begin: varDefinition.begin,
-                                        name:  cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>",
-                                        type: type,
-                                        .VARIABLE_DEFINITION)
+            let idName = await cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>"
+            if !current.addIdentifier(begin: varDefinition.begin,
+                                      name:  idName,
+                                      type: type,
+                                      .VARIABLE_DEFINITION) {
+                addHighlight(MessagedHighlight(begin:   varDefinition.name.begin,
+                                               end:     varDefinition.name.end,
+                                               type:    .ERROR,
+                                               message: "Redeclaring identifier \"\(idName)\""))
+            }
             maybeWrongVoid(type)
             currentType = type
             
