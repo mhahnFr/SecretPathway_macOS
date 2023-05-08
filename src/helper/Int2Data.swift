@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import Foundation
@@ -45,10 +44,10 @@ extension Int {
     func dump() -> Data {
         var tmpData = Data()
         
-        tmpData.append(Data(repeating: UInt8(self >> 24 & 0xff), count: 1))
-        tmpData.append(Data(repeating: UInt8(self >> 16 & 0xff), count: 1))
-        tmpData.append(Data(repeating: UInt8(self >>  8 & 0xff), count: 1))
-        tmpData.append(Data(repeating: UInt8(self >>  0 & 0xff), count: 1))
+        tmpData.append(contentsOf: [UInt8(self >> 24 & 0xff),
+                                    UInt8(self >> 16 & 0xff),
+                                    UInt8(self >>  8 & 0xff),
+                                    UInt8(self >>  0 & 0xff)])
 
         return tmpData
     }
