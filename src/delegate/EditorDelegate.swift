@@ -45,7 +45,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
-    private let storageDelegate = SyntaxDocumentDelegate()
+    
+    private lazy var storageDelegate = SyntaxDocumentDelegate()
 
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
@@ -125,6 +126,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     
     internal func textDidChange(_ notification: Notification) {
+        print("is: \(view.selectedRange().location), delta: \(storageDelegate.delta)")
+        if storageDelegate.delta != 0 {
+            view.setSelectedRange(NSMakeRange(view.selectedRange().location + storageDelegate.delta, 0))
+        }
         window.isDocumentEdited = textStorage.string != lastSaved
         if syntaxHighlighting {
             highlight()

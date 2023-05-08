@@ -21,6 +21,8 @@
 import AppKit
 
 class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
+    var delta = 0
+    
     internal func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int) {
         guard editedMask.contains(.editedCharacters) else { return }
         
@@ -29,19 +31,26 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
         let str = textStorage.attributedSubstring(from: editedRange).string
         let underlying = textStorage.string
         switch str {
-        case "\t": textStorage.replaceCharacters(in: editedRange, with: "    ")
+        case "\t":
+            textStorage.replaceCharacters(in: editedRange, with: "    ")
+            self.delta = 0
             
         case "(", "{", "[", "\"", "'":
             if isSpecial(underlying, editedRange.location + editedRange.length) {
                 textStorage.insert(NSAttributedString(string: getClosingString(str)), at: editedRange.location + editedRange.length)
-                // TODO: Ignore addition, move cursor
+                // TODO: Ignore addition
+                self.delta = -1
+            } else {
+                self.delta = 0
             }
         case "!":
             if editedRange.location >= 2,
                underlying[underlying.index(underlying.startIndex, offsetBy: editedRange.location - 2) ..< underlying.index(underlying.startIndex, offsetBy: editedRange.location)] == "/*",
                isWhitespace(underlying, editedRange.location + editedRange.length) {
                 textStorage.insert(NSAttributedString(string: "!*/"), at: editedRange.location + editedRange.length)
-                // TODO: move cursor
+                self.delta = -3
+            } else {
+                self.delta = 0
             }
             
         case "}":
@@ -50,6 +59,9 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
                 let len = min(editedRange.location - lineBegin, 4)
                 textStorage.replaceCharacters(in: NSMakeRange(editedRange.location - len, len), with: "")
                 // TODO: move cursor
+                self.delta = -len // ?
+            } else {
+                self.delta = 0
             }
             
         // TODO: ':', '.', default reindentations...
@@ -59,12 +71,14 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
             if openingParenthesis && isClosingParenthesis(underlying, editedRange.location + editedRange.length) {
                 let indent = String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location))
                 textStorage.insert(NSAttributedString(string: indent + "    \n" + indent), at: editedRange.location + editedRange.length)
-                // TODO: Move cursor
+                self.delta = -indent.count - 1
             } else {
                 textStorage.insert(NSAttributedString(string: String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location)) + (openingParenthesis ? "    " : "")), at: editedRange.location + editedRange.length)
+                self.delta = 0
             }
             
-        default: break
+        default:
+            self.delta = 0
         }
     }
     
