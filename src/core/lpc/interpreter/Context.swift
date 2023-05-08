@@ -83,6 +83,7 @@ class Context: Instruction {
     ///   - name: The name of the identifier.
     ///   - type: The return type of the identifier.
     ///   - kind: The AST type of the identifier.
+    /// - Returns: Returns whether the added identifier does not redeclare another one.
     func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType) -> Bool {
         let redeclaring = instructions.first { ($0.value as? Definition)?.name == name } == nil
         instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
@@ -97,9 +98,9 @@ class Context: Instruction {
     ///   - scopeBegin: The beginning position of the function's scope.
     ///   - name: The name of the function.
     ///   - returnType: The return type of the function.
-    ///   - parameters: The parameter definitions.
+    ///   - parameters: The parameter definitions and name expressions.
     ///   - variadic: Indicates whether the function has variadic parameters.
-    /// - Returns: The subscope context object of the function's body.
+    /// - Returns: The subscope context object of the function's body and the redeclared name expressions.
     func addFunction(begin:      Int,
                      scopeBegin: Int,
                      name:       ASTName,
@@ -108,18 +109,23 @@ class Context: Instruction {
                      variadic: Bool) -> (Context, [ASTName?]) {
         var redefinitions = [ASTName?]()
         let previous = instructions.first {
-            guard let fd = $0.value as? FunctionDefinition,
-                  fd.name             == name.name,
-                  fd.parameters.count == parameters.count,
-                  fd.variadic         == variadic
-            else { return false }
-            
-            for i in 0 ..< parameters.count {
-                guard parameters[i].1.returnType.isAssignable(from: fd.parameters[i].returnType) else {
-                    return false
+            if let fd = $0.value as? FunctionDefinition {
+                if fd.name             == name.name,
+                   fd.parameters.count == parameters.count,
+                   fd.variadic         == variadic {
+                   
+                    for i in 0 ..< parameters.count {
+                        guard parameters[i].1.returnType.isAssignable(from: fd.parameters[i].returnType) else {
+                            return false
+                        }
+                    }
+                    return true
                 }
+            } else if let def = $0.value as? Definition,
+                      def.name == name.name {
+                return true
             }
-            return true
+            return false
         }
         var paramDefs = [Definition]()
         parameters.forEach { paramDefs.append($0.1) }
