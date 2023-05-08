@@ -682,6 +682,23 @@ class Interpreter: ASTVisitor {
             for expression in (expression as! ASTMapping).content { await expression.visit(self) }
             currentType = InterpreterType.mapping
 
+        case .AST_FOR:
+            let loop = expression as! ASTFor
+            current  = current.pushScope(begin: loop.begin)
+            await loop.initExpression.visit(self)
+            await loop.condition.visit(self)
+            await loop.afterExpression.visit(self)
+            await loop.body.visit(self)
+            current  = current.popScope(end: loop.end)!
+            
+        case .AST_FOREACH:
+            let loop = expression as! ASTForEach
+            current  = current.pushScope(begin: loop.begin)
+            await loop.variable.visit(self)
+            await loop.rangeExpression.visit(self)
+            await loop.body.visit(self)
+            current  = current.popScope(end: loop.end)!
+            
         case .AST_STRING,
              .STRINGS:       currentType = InterpreterType.string
         case .AST_THIS:      currentType = InterpreterType(type: .OBJECT, file: current.fileGlobal.fileName)
@@ -713,6 +730,8 @@ class Interpreter: ASTVisitor {
         type != .ARRAY               &&
         type != .FUNCTION_CALL       &&
         type != .TYPE                &&
-        type != .AST_NEW
+        type != .AST_NEW             &&
+        type != .AST_FOR             &&
+        type != .AST_FOREACH
     }
 }
