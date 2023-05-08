@@ -30,9 +30,17 @@ protocol TypeProto: AnyObject {
     /// - Returns: Whether this type can be assigned from the given one.
     func isAssignable(from other: TypeProto) -> Bool
     
+    /// Returns whether variables of this type can be assigned
+    /// values of variables of the given other type.
+    ///
+    /// - Parameters:
+    ///   - other: The type of the right hand side expression.
+    ///   - loader: The file loader used to resolve type annotations.
+    /// - Returns: Whether this type can be assigned from the given one.
     func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool
 }
 
+/// This extension adds a default functionality as convenience.
 extension TypeProto {
     func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
         isAssignable(from: other)
