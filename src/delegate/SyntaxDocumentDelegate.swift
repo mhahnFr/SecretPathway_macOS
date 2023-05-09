@@ -22,7 +22,9 @@ import AppKit
 
 class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
     var delta = 0
-    
+
+    weak var suggestionShower: SuggestionShower?
+
     private var ignore: (Int, String)?
     
     internal func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int) {
@@ -41,6 +43,11 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
             self.ignore = nil
         }
         
+        var superBegin = false
+        var update     = false
+        var begin      = false
+        var end        = true
+        
         switch str {
         case "\t":
             textStorage.replaceCharacters(in: editedRange, with: "    ")
@@ -55,26 +62,27 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
             } else {
                 self.delta = 0
             }
-        case "!":
-            if editedRange.location >= 2,
-               underlying[underlying.index(underlying.startIndex, offsetBy: editedRange.location - 2) ..< underlying.index(underlying.startIndex, offsetBy: editedRange.location)] == "/*",
-               isWhitespace(underlying, editedRange.location + editedRange.length) {
-                textStorage.insert(NSAttributedString(string: "!*/"), at: editedRange.location + editedRange.length)
-                self.delta = -3
-            } else {
-                self.delta = 0
-            }
             
-        case "}":
-            if isOnlyWhitespacesOnLine(underlying, editedRange.location) {
-                let lineBegin = getLineBegin(underlying, editedRange.location)
-                let len = min(editedRange.location - lineBegin, 4)
-                textStorage.replaceCharacters(in: NSMakeRange(editedRange.location - len, len), with: "")
-            } else {
-                self.delta = 0
-            }
+        case "!" where editedRange.location >= 2 &&
+                       underlying[underlying.index(underlying.startIndex, offsetBy: editedRange.location - 2) ..<
+                                  underlying.index(underlying.startIndex, offsetBy: editedRange.location)] == "/*" &&
+                       isWhitespace(underlying, editedRange.location + editedRange.length):
+            textStorage.insert(NSAttributedString(string: "!*/"), at: editedRange.location + editedRange.length)
+            self.delta = -3
             
-        // TODO: ':', '.'
+        case "}" where isOnlyWhitespacesOnLine(underlying, editedRange.location):
+            let lineBegin = getLineBegin(underlying, editedRange.location)
+            let len = min(editedRange.location - lineBegin, 4)
+            textStorage.replaceCharacters(in: NSMakeRange(editedRange.location - len, len), with: "")
+            self.delta = 0
+            
+        case ":" where isColon(underlying, editedRange.location - 1):
+            superBegin = true
+            self.delta = 0
+            
+        case "." where isInWord(underlying, editedRange.location - 1):
+            begin      = true
+            self.delta = 0
             
         case "\n":
             let openingParenthesis = isPreviousOpeningParenthesis(underlying, editedRange.location)
@@ -88,8 +96,36 @@ class SyntaxDocumentDelegate: NSObject, NSTextStorageDelegate {
             }
             
         default:
+            if str.count == 1,
+               !Tokenizer.isSpecial(str[str.startIndex]),
+               !str[str.startIndex].isNumber {
+                if isSpecial(underlying, editedRange.location - 1) && isSpecial(underlying, editedRange.location + editedRange.length) {
+                    // TODO: No suggestion token types
+                    begin = true
+                }
+                update = true
+                end    = false
+            }
             self.delta = 0
         }
+        
+        if let suggestionShower {
+            if update          { suggestionShower.updateSuggestions()     }
+            if begin           { /* TODO: Implement */                    }
+            else if superBegin { suggestionShower.beginSuperSuggestions() }
+            else if end        { suggestionShower.endSuggestions()        }
+        }
+    }
+    
+    private func isColon(_ string: String, _ offset: Int) -> Bool {
+        guard offset >= 0 && offset <= string.count else { return false }
+        
+        return string[string.index(string.startIndex, offsetBy: offset)] == ":"
+    }
+    
+    private func isInWord(_ string: String, _ offset: Int) -> Bool {
+        (offset > 0            && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
+        (offset < string.count && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset)]))
     }
     
     private func getPreviousIndent(_ string: String, _ offset: Int) -> Int {
