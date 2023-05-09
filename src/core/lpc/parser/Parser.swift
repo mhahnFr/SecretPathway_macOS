@@ -393,7 +393,7 @@ struct Parser {
                     }
                     break
                 } else if current.isType(.RIGHT_PAREN) {
-                    toReturn.append(ASTMissing(begin: previous.end, end: current.end, message: "Missing parameter"))
+                    toReturn.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing parameter"))
                     advance()
                     break
                 }
