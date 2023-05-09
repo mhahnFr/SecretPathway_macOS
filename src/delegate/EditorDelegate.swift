@@ -65,6 +65,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var lastSaved = ""
     private var delta = 0
     private var ignore: (Int, String)?
+    private var beginSuggestions = false
+    private var beginDotSuggestions = false
+    private var beginSuperSuggestions = false
+    private var updateSuggestions = false
+    private var endSuggestions = true
+    private var tokens = [Token]()
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -135,6 +141,13 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
         window.isDocumentEdited = textStorage.string != lastSaved
         if syntaxHighlighting {
+//            if updateSuggestions          { updateSuggestions()                   }
+//            if beginSuggestions           { computeSuggestionContext(position: editedRange.location +
+//                                                                               editedRange.length + delta,
+//                                                                     begin: true) }
+//            else if beginSuperSuggestions { beginSuperSuggestions()               }
+//            else if beginDotSuggestions   { beginDotSuggestions()                 }
+//            else if endSuggestions        { endSuggestions()                      }
             highlight()
         }
     }
@@ -162,11 +175,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         } else {
             self.ignore = nil
         }
-        
-        var superBegin = false
-        var update     = false
-        var begin      = false
-        var end        = true
         
         switch str {
         case "\t":
@@ -197,12 +205,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             self.delta = 0
             
         case ":" where isColon(underlying, editedRange.location - 1):
-            superBegin = true
-            self.delta = 0
+            beginSuperSuggestions = true
+            self.delta            = 0
             
         case "." where isInWord(underlying, editedRange.location - 1):
-            begin      = true
-            self.delta = 0
+            beginDotSuggestions = true
+            self.delta          = 0
             
         case "\n":
             let openingParenthesis = isPreviousOpeningParenthesis(underlying, editedRange.location)
@@ -220,22 +228,28 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                !Tokenizer.isSpecial(str[str.startIndex]),
                !str[str.startIndex].isNumber {
                 if isSpecial(underlying, editedRange.location - 1) && isSpecial(underlying, editedRange.location + editedRange.length) {
-                    // TODO: No suggestion token types
-                    begin = true
+                    beginSuggestions = !isInToken(position: editedRange.location, .STRING,
+                                                                                  .CHARACTER,
+                                                                                  .COMMENT_BLOCK,
+                                                                                  .COMMENT_LINE)
                 }
-                update = true
-                end    = false
+                updateSuggestions = true
+                endSuggestions    = false
             }
             self.delta = 0
         }
+    }
+    
+    private func isInToken(position: Int, _ types: TokenType...) -> Bool {
+        for token in tokens {
+            if types.contains(token.type),
+               position < token.end,
+               position > token.begin {
+                return true
+            }
+        }
         
-//        if let suggestionShower {
-//            if update          { suggestionShower.updateSuggestions()     }
-//            if begin           { computeSuggestionContext(position: editedRange.location + editedRange.length + delta,
-//                                                          begin: true)    }
-//            else if superBegin { suggestionShower.beginSuperSuggestions() }
-//            else if end        { suggestionShower.endSuggestions()        }
-//        }
+        return false
     }
     
     private func isColon(_ string: String, _ offset: Int) -> Bool {
@@ -457,19 +471,15 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         textStorage.setAttributes(SPStyle().native, range: NSRange(0 ..< textStorage.length)) // TODO: Flickering
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
         
-        var comments: [Token] = []
-        
+        tokens = []
         var token = tokenizer.nextToken()
         while token.type != .EOF {            
             textStorage.setAttributes((theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
             
-            if token.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
-                comments.append(token)
-            }
-            
+            tokens.append(token)
             token = tokenizer.nextToken()
         }
-        let roTokens = comments
+        let roTokens = tokens
         Task(priority: .background) {
             let interpreter = Interpreter(loader: loader)
             var parser      = Parser(text: textStorage.string)
@@ -483,8 +493,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                         self.textStorage.addAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
                     }
                 }
-                for token in roTokens {
-                    self.textStorage.setAttributes((self.theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
+                roTokens.forEach {
+                    if $0.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
+                        self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
+                    }
                 }
                 self.updateStatus()
             }
