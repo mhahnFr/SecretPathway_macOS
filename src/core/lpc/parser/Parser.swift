@@ -584,8 +584,40 @@ struct Parser {
         return ASTWhile(begin: begin, condition: condition, body: body)
     }
     
-    /// Parses a `for` statement. `foreach` loops are parsed by this
-    /// method as well.
+    /// Parses a `foreach` statement.
+    ///
+    /// - Returns: The AST representation of the full statement.
+    private mutating func parseForEach() -> ASTExpression {
+        var parts = [ASTExpression]()
+        let begin = current.begin
+        
+        advance()
+        
+        if !current.isType(.LEFT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+        } else {
+            advance()
+        }
+        let variable = parseFancyVariableDeclaration()
+        if !current.isType(.COLON) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
+        } else {
+            advance()
+        }
+        let expression = parseExpression()
+        if !current.isType(.RIGHT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+        } else {
+            advance()
+        }
+        let loop = ASTForEach(begin: begin, variable: variable, rangeExpression: expression, body: parseInstruction())
+        if !parts.isEmpty {
+            return combine(loop, parts)
+        }
+        return loop
+    }
+    
+    /// Parses a `for` statement.
     ///
     /// - Returns: The AST representation of the full statement.
     private mutating func parseFor() -> ASTExpression {
@@ -599,26 +631,7 @@ struct Parser {
         } else {
             advance()
         }
-        var variable = parseMaybeVariable()
-        if variable != nil {
-            if current.isType(.COLON) {
-                advance()
-                let expression = parseExpression()
-                if !current.isType(.RIGHT_PAREN) {
-                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
-                } else {
-                    advance()
-                }
-                let loop = ASTForEach(begin: begin, variable: variable!, rangeExpression: expression, body: parseInstruction())
-                if !parts.isEmpty {
-                    return combine(loop, parts)
-                }
-                return loop
-            } else {
-                variable = assertSemicolon(for: variable!)
-            }
-        }
-        let initExpression = variable ?? assertSemicolon(for: parseExpression())
+        let initExpression = assertSemicolon(for: parseExpression())
         let condition      = assertSemicolon(for: parseExpression())
         let after          = parseExpression()
         
@@ -817,18 +830,19 @@ struct Parser {
             return assertSemicolon(for: maybeVariable)
         }
         switch current.type {
-        case .LEFT_CURLY:    toReturn = parseBlock()
-        case .IF:            toReturn = parseIf()
-        case .WHILE:         toReturn = parseWhile()
-        case .FOR, .FOREACH: toReturn = parseFor()
-        case .SWITCH:        toReturn = parseSwitch()
-        case .DO:            toReturn = parseDo()
-        case .BREAK:         toReturn = parseBreak()
-        case .CONTINUE:      toReturn = parseContinue()
-        case .RETURN:        toReturn = assertSemicolon(for: parseReturn())
-        case .TRY:           toReturn = parseTryCatch()
-        case .SEMICOLON:     toReturn = assertSemicolon(for: ASTEmpty(current.begin, current.end))
-        default:             toReturn = assertSemicolon(for: parseExpression())
+        case .LEFT_CURLY: toReturn = parseBlock()
+        case .IF:         toReturn = parseIf()
+        case .WHILE:      toReturn = parseWhile()
+        case .FOR:        toReturn = parseFor()
+        case .FOREACH:    toReturn = parseForEach()
+        case .SWITCH:     toReturn = parseSwitch()
+        case .DO:         toReturn = parseDo()
+        case .BREAK:      toReturn = parseBreak()
+        case .CONTINUE:   toReturn = parseContinue()
+        case .RETURN:     toReturn = assertSemicolon(for: parseReturn())
+        case .TRY:        toReturn = parseTryCatch()
+        case .SEMICOLON:  toReturn = assertSemicolon(for: ASTEmpty(current.begin, current.end))
+        default:          toReturn = assertSemicolon(for: parseExpression())
         }
         
         return toReturn
