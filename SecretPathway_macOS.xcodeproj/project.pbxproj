@@ -22,6 +22,8 @@
 		BF2DC08E29F2EF7C00CE0E00 /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC08D29F2EF7C00CE0E00 /* Instruction.swift */; };
 		BF2DC09029F2F12B00CE0E00 /* Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC08F29F2F12B00CE0E00 /* Definition.swift */; };
 		BF2DC09229F2FD6E00CE0E00 /* FunctionDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */; };
+		BF2DDF612A0AA9CE0069E194 /* SuggestionShower.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */; };
+		BF2DDF642A0AACA80069E194 /* SuggestionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DDF632A0AACA80069E194 /* SuggestionType.swift */; };
 		BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3572632964A206002661B5 /* ANSIPlugin.swift */; };
 		BF54A3F629FDAA6F008E5BC2 /* ASTHole.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */; };
 		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
@@ -136,6 +138,8 @@
 		BF2DC08D29F2EF7C00CE0E00 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		BF2DC08F29F2F12B00CE0E00 /* Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Definition.swift; sourceTree = "<group>"; };
 		BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDefinition.swift; sourceTree = "<group>"; };
+		BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionShower.swift; sourceTree = "<group>"; };
+		BF2DDF632A0AACA80069E194 /* SuggestionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionType.swift; sourceTree = "<group>"; };
 		BF3572632964A206002661B5 /* ANSIPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIPlugin.swift; sourceTree = "<group>"; };
 		BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTHole.swift; sourceTree = "<group>"; };
 		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
@@ -299,6 +303,15 @@
 			path = tokenizer;
 			sourceTree = "<group>";
 		};
+		BF2DDF622A0AAA3D0069E194 /* suggestions */ = {
+			isa = PBXGroup;
+			children = (
+				BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */,
+				BF2DDF632A0AACA80069E194 /* SuggestionType.swift */,
+			);
+			path = suggestions;
+			sourceTree = "<group>";
+		};
 		BF3572622964A1F5002661B5 /* ansi */ = {
 			isa = PBXGroup;
 			children = (
@@ -310,6 +323,7 @@
 		BF6AF3522965C95100DF333D /* editor */ = {
 			isa = PBXGroup;
 			children = (
+				BF2DDF622A0AAA3D0069E194 /* suggestions */,
 				BFE06F29296DC1F9004A3C1F /* theme */,
 				BF6AF3532965C95F00DF333D /* EditorView.swift */,
 			);
@@ -658,6 +672,7 @@
 				BF92224D29E5D7D7001085B9 /* ASTSymbol.swift in Sources */,
 				BF0D297F29F1B4CB00AB4E87 /* InterpreterType.swift in Sources */,
 				BFC6891629BD0F32001E51C1 /* ASTCombination.swift in Sources */,
+				BF2DDF642A0AACA80069E194 /* SuggestionType.swift in Sources */,
 				BFDCA77929AD226F005B8AA9 /* ASTBlock.swift in Sources */,
 				BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */,
 				BF551CB729AE7F3D004D1CFE /* ASTCharacter.swift in Sources */,
@@ -729,6 +744,7 @@
 				BFC5140929F01F5C00382D64 /* AbstractType.swift in Sources */,
 				BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */,
 				BF92225329E5DC38001085B9 /* ASTReturn.swift in Sources */,
+				BF2DDF612A0AA9CE0069E194 /* SuggestionShower.swift in Sources */,
 				BFFD268E29A69C29002998E8 /* ASTInheritance.swift in Sources */,
 				BF551CB929AE8029004D1CFE /* ASTClass.swift in Sources */,
 			);
