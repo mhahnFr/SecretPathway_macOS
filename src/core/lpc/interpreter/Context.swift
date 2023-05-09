@@ -85,9 +85,11 @@ class Context: Instruction {
     ///   - kind: The AST type of the identifier.
     /// - Returns: Returns whether the added identifier does not redeclare another one.
     func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType) -> Bool {
-        let redeclaring = instructions.first { ($0.value as? Definition)?.name == name } == nil
-        instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
-        return redeclaring
+        let notRedeclaring = instructions.first { ($0.value as? Definition)?.name == name } == nil
+        if notRedeclaring {
+            instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
+        }
+        return notRedeclaring
     }
     
     /// Adds a function to this scope. The given parameters are
@@ -134,16 +136,20 @@ class Context: Instruction {
                                           returnType: returnType,
                                           parameters: paramDefs,
                                           variadic:   variadic)
-        instructions[begin] = function
-        if previous != nil { redefinitions.append(name) }
+        if previous == nil {
+            instructions[begin] = function
+        } else {
+            redefinitions.append(name)
+        }
         
         let newContext = pushScope(begin: scopeBegin)
         parameters.forEach {
             let name = $0.1.name
-            if newContext.instructions.first(where: { ($0.value as? Definition)?.name == name }) != nil {
+            if newContext.instructions.first(where: { ($0.value as? Definition)?.name == name }) == nil {
+                newContext.instructions[$0.1.begin] = $0.1
+            } else {
                 redefinitions.append($0.0)
             }
-            newContext.instructions[$0.1.begin] = $0.1
         }
         return (newContext, redefinitions)
     }
