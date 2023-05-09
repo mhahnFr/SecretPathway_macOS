@@ -598,17 +598,34 @@ struct Parser {
         } else {
             advance()
         }
-        let variable = parseFancyVariableDeclaration()
+        let variable = parseMaybeVariable() ?? combine(ASTVariableDefinition(begin:     previous.end,
+                                                                             end:       current.begin,
+                                                                             modifiers: [],
+                                                                             type:      nil,
+                                                                             name:      combine(ASTName(begin:  previous.end,
+                                                                                                        end:    current.begin),
+                                                                                                ASTMissing(begin:   previous.end,
+                                                                                                           end:     current.begin,
+                                                                                                           message: "Missing variable"))),
+                                                       ASTMissing(begin:   previous.end,
+                                                                  end:     current.begin,
+                                                                  message: "Missing variable"))
         if !current.isType(.COLON) {
             parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
         } else {
             advance()
         }
-        let expression = parseExpression()
-        if !current.isType(.RIGHT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
-        } else {
+        let expression: ASTExpression
+        if current.isType(.RIGHT_PAREN) {
+            expression = ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression")
             advance()
+        } else {
+            expression = parseExpression()
+            if !current.isType(.RIGHT_PAREN) {
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+            } else {
+                advance()
+            }
         }
         let loop = ASTForEach(begin: begin, variable: variable, rangeExpression: expression, body: parseInstruction())
         if !parts.isEmpty {
@@ -631,7 +648,7 @@ struct Parser {
         } else {
             advance()
         }
-        let initExpression = assertSemicolon(for: parseExpression())
+        let initExpression = assertSemicolon(for: parseMaybeVariable() ?? parseExpression())
         let condition      = assertSemicolon(for: parseExpression())
         let after          = parseExpression()
         
