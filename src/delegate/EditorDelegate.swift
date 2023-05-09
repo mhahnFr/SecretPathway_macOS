@@ -24,7 +24,7 @@ import SwiftUI
 /// This class acts as a delegate for the EditorView.
 ///
 /// It features the LPC syntax highlighting.
-class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject {
+class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject {
     /// Indicates whether the syntax highlighting is enabled.
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
@@ -47,8 +47,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     /// The loader used for fetching files.
     private let loader: LPCFileManager
-    /// The delegate for the text storage.
-    private let storageDelegate = SyntaxDocumentDelegate()
 
     /// A reference to the text storage of the text view.
     private weak var textStorage: NSTextStorage!
@@ -65,6 +63,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     private var file: String?
     /// The lastly saved content.
     private var lastSaved = ""
+    private var delta = 0
+    private var ignore: (Int, String)?
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -106,7 +106,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         
         textStorage = textView.textStorage
         view        = textView
-        textStorage.delegate = storageDelegate
+        textStorage.delegate = self
         
         if let file {
             Task {
@@ -129,12 +129,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
         }
     }
     
-    
-    
     internal func textDidChange(_ notification: Notification) {
-        print("is: \(view.selectedRange().location), delta: \(storageDelegate.delta)")
-        if storageDelegate.delta != 0 {
-            view.setSelectedRange(NSMakeRange(view.selectedRange().location + storageDelegate.delta, 0))
+        if delta != 0 {
+            view.setSelectedRange(NSMakeRange(view.selectedRange().location + delta, 0))
         }
         window.isDocumentEdited = textStorage.string != lastSaved
         if syntaxHighlighting {
@@ -148,6 +145,184 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextViewDelegate, NSWi
     
     internal func textView(_ textView: NSTextView, willDisplayToolTip tooltip: String, forCharacterAt characterIndex: Int) -> String? {
         getStatusText(for: characterIndex)
+    }
+    
+    internal func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int) {
+        guard editedMask.contains(.editedCharacters) else { return }
+        
+        if editedRange.length == 0 { /* TODO: Handle deletions */ }
+        
+        let str = textStorage.attributedSubstring(from: editedRange).string
+        let underlying = textStorage.string
+        
+        if let ignore,
+           editedRange.location == ignore.0,
+           str == ignore.1 {
+            textStorage.replaceCharacters(in: NSMakeRange(editedRange.location + editedRange.length, 1), with: "")
+        } else {
+            self.ignore = nil
+        }
+        
+        var superBegin = false
+        var update     = false
+        var begin      = false
+        var end        = true
+        
+        switch str {
+        case "\t":
+            textStorage.replaceCharacters(in: editedRange, with: "    ")
+            self.delta = 0
+            
+        case "(", "{", "[", "\"", "'":
+            if isSpecial(underlying, editedRange.location + editedRange.length) {
+                let closing = getClosingString(str)
+                textStorage.insert(NSAttributedString(string: closing), at: editedRange.location + editedRange.length)
+                self.ignore = (editedRange.location + editedRange.length, closing)
+                self.delta = -1
+            } else {
+                self.delta = 0
+            }
+            
+        case "!" where editedRange.location >= 2 &&
+                       underlying[underlying.index(underlying.startIndex, offsetBy: editedRange.location - 2) ..<
+                                  underlying.index(underlying.startIndex, offsetBy: editedRange.location)] == "/*" &&
+                       isWhitespace(underlying, editedRange.location + editedRange.length):
+            textStorage.insert(NSAttributedString(string: "!*/"), at: editedRange.location + editedRange.length)
+            self.delta = -3
+            
+        case "}" where isOnlyWhitespacesOnLine(underlying, editedRange.location):
+            let lineBegin = getLineBegin(underlying, editedRange.location)
+            let len = min(editedRange.location - lineBegin, 4)
+            textStorage.replaceCharacters(in: NSMakeRange(editedRange.location - len, len), with: "")
+            self.delta = 0
+            
+        case ":" where isColon(underlying, editedRange.location - 1):
+            superBegin = true
+            self.delta = 0
+            
+        case "." where isInWord(underlying, editedRange.location - 1):
+            begin      = true
+            self.delta = 0
+            
+        case "\n":
+            let openingParenthesis = isPreviousOpeningParenthesis(underlying, editedRange.location)
+            if openingParenthesis && isClosingParenthesis(underlying, editedRange.location + editedRange.length) {
+                let indent = String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location))
+                textStorage.insert(NSAttributedString(string: indent + "    \n" + indent), at: editedRange.location + editedRange.length)
+                self.delta = -indent.count - 1
+            } else {
+                textStorage.insert(NSAttributedString(string: String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location)) + (openingParenthesis ? "    " : "")), at: editedRange.location + editedRange.length)
+                self.delta = 0
+            }
+            
+        default:
+            if str.count == 1,
+               !Tokenizer.isSpecial(str[str.startIndex]),
+               !str[str.startIndex].isNumber {
+                if isSpecial(underlying, editedRange.location - 1) && isSpecial(underlying, editedRange.location + editedRange.length) {
+                    // TODO: No suggestion token types
+                    begin = true
+                }
+                update = true
+                end    = false
+            }
+            self.delta = 0
+        }
+        
+//        if let suggestionShower {
+//            if update          { suggestionShower.updateSuggestions()     }
+//            if begin           { computeSuggestionContext(position: editedRange.location + editedRange.length + delta,
+//                                                          begin: true)    }
+//            else if superBegin { suggestionShower.beginSuperSuggestions() }
+//            else if end        { suggestionShower.endSuggestions()        }
+//        }
+    }
+    
+    private func isColon(_ string: String, _ offset: Int) -> Bool {
+        guard offset >= 0 && offset <= string.count else { return false }
+        
+        return string[string.index(string.startIndex, offsetBy: offset)] == ":"
+    }
+    
+    private func isInWord(_ string: String, _ offset: Int) -> Bool {
+        (offset > 0            && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
+        (offset < string.count && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset)]))
+    }
+    
+    private func getPreviousIndent(_ string: String, _ offset: Int) -> Int {
+        var lineBegin = getLineBegin(string, offset)
+        var indent = 0
+        while lineBegin < offset && string[string.index(string.startIndex, offsetBy: lineBegin)] == " " {
+            lineBegin += 1
+            indent    += 1
+        }
+        return indent
+    }
+    
+    private func isPreviousOpeningParenthesis(_ string: String, _ offset: Int) -> Bool {
+        guard offset > 0 else { return false }
+        
+        let c = string[string.index(string.startIndex, offsetBy: offset - 1)]
+        return c == "(" ||
+               c == "{" ||
+               c == "["
+    }
+    
+    private func isClosingParenthesis(_ string: String, _ offset: Int) -> Bool {
+        guard offset < string.count else { return false }
+        
+        let c = string[string.index(string.startIndex, offsetBy: offset)]
+        return c == ")" ||
+               c == "}" ||
+               c == "]"
+    }
+    
+    private func isOnlyWhitespacesOnLine(_ line: String, _ index: Int) -> Bool {
+        let lineBegin = getLineBegin(line, index)
+        return isSpaces(String(line[line.index(line.startIndex, offsetBy: lineBegin) ..< line.index(line.startIndex, offsetBy: index)]))
+    }
+    
+    private func isSpaces(_ string: String) -> Bool {
+        for c in string.unicodeScalars {
+            guard c == " " else { return false }
+        }
+        return true
+    }
+    
+    private func getLineBegin(_ line: String, _ index: Int) -> Int {
+        var lineBegin = index > 0 ? index - 1 : 0
+        while lineBegin > 0 && !line[line.index(line.startIndex, offsetBy: lineBegin)].isNewline {
+            lineBegin -= 1
+        }
+        return lineBegin > 0 ? lineBegin + 1 : 0
+    }
+    
+    private func isWhitespace(_ string: String, _ location: Int) -> Bool {
+        guard location > 0,
+              location < string.count else { return true }
+        
+        return string[string.index(string.startIndex, offsetBy: location)].isWhitespace
+    }
+    
+    private func isSpecial(_ string: String, _ location: Int) -> Bool {
+        guard location > 0,
+              location < string.count else { return true }
+        
+        return Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: location)])
+    }
+    
+    private func getClosingString(_ opening: String) -> String {
+        let toReturn: String
+        
+        switch opening {
+        case "(": toReturn = ")"
+        case "{": toReturn = "}"
+        case "[": toReturn = "]"
+            
+        default:  toReturn = opening
+        }
+        
+        return toReturn
     }
     
     /// Returns the status text available for the given position.
