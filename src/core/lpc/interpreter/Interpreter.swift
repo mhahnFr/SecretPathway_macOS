@@ -699,6 +699,18 @@ class Interpreter: ASTVisitor {
             await loop.body.visit(self)
             current  = current.popScope(end: loop.end)!
             
+        case .TRY_CATCH:
+            let tryCatch = expression as! ASTTryCatch
+            await tryCatch.tryExpression.visit(self)
+            let variable = tryCatch.exceptionVariable
+            if let variable {
+                current = current.pushScope(begin: variable.begin)
+            }
+            await tryCatch.catchExression.visit(self)
+            if let variable {
+                current = current.popScope(end: tryCatch.catchExression.end)!
+            }
+            
         case .AST_STRING,
              .STRINGS:       currentType = InterpreterType.string
         case .AST_THIS:      currentType = InterpreterType(type: .OBJECT, file: current.fileGlobal.fileName)
@@ -732,6 +744,7 @@ class Interpreter: ASTVisitor {
         type != .TYPE                &&
         type != .AST_NEW             &&
         type != .AST_FOR             &&
-        type != .AST_FOREACH
+        type != .AST_FOREACH         &&
+        type != .TRY_CATCH
     }
 }
