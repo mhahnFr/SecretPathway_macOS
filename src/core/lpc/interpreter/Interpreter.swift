@@ -521,6 +521,7 @@ class Interpreter: ASTVisitor {
             switch operation.operatorType {
             case .SCOPE:     await visitSuperFunc(operation)
             case .AMPERSAND: await visitFunctionReference(operation)
+            case .NOT:       currentType = InterpreterType.bool
                 
             default: await operation.identifier.visit(self)
             }
