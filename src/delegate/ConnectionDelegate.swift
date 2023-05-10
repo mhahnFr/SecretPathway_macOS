@@ -48,6 +48,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     /// The delegate to be used for the inlined LPC editor.
     @Published private(set) var editorDelegate: EditorDelegate?
+    /// Indicates whether to show the password field.
     @Published private(set) var showPasswordField = false
     
     /// Indicates whether an inlined editor is being displayed.
@@ -97,7 +98,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         get { showPasswordField }
     }
-    
     internal var prompt: String? {
         set {
             DispatchQueue.main.async {
