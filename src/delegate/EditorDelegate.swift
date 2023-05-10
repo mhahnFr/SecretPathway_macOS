@@ -63,15 +63,20 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var file: String?
     /// The lastly saved content.
     private var lastSaved = ""
+    /// The delta by which the cursor should be moved automatically.
     private var delta = 0
+    /// The string that should be ignored on insertion.
     private var ignore: (Int, String)?
     private var beginSuggestions = false
     private var beginDotSuggestions = false
     private var beginSuperSuggestions = false
     private var updateSuggestions = false
     private var endSuggestions = true
+    /// The tokens lastly recognized in the text.
     private var tokens = [Token]()
+    /// The AST lastly parsed.
     private var ast = [ASTExpression]() // FIXME: Synchronise over multiple threads!!!
+    /// The lastly generated interpretation context.
     private var context = Context()     // FIXME: Synchronise over multiple threads!!!
     private var visitor = SuggestionVisitor()
 
@@ -223,7 +228,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                 textStorage.insert(NSAttributedString(string: indent + "    \n" + indent), at: editedRange.location + editedRange.length)
                 self.delta = -indent.count - 1
             } else {
-                textStorage.insert(NSAttributedString(string: String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location)) + (openingParenthesis ? "    " : "")), at: editedRange.location + editedRange.length)
+                textStorage.insert(NSAttributedString(string: String(repeating: " ", count: getPreviousIndent(underlying, editedRange.location)) +
+                                                                                            (openingParenthesis ? "    " : "")),
+                                   at: editedRange.location + editedRange.length)
                 self.delta = 0
             }
             
@@ -231,7 +238,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             if str.count == 1,
                !Tokenizer.isSpecial(str[str.startIndex]),
                !str[str.startIndex].isNumber {
-                if isSpecial(underlying, editedRange.location - 1) && isSpecial(underlying, editedRange.location + editedRange.length) {
+                if isSpecial(underlying, editedRange.location - 1),
+                   isSpecial(underlying, editedRange.location + editedRange.length) {
                     beginSuggestions = !isInToken(position: editedRange.location, .STRING,
                                                                                   .CHARACTER,
                                                                                   .COMMENT_BLOCK,
@@ -296,6 +304,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         visitor.visit(node: last, position: position, context: context)
     }
     
+    /// Returns whether the given position is in a token of the given type.
+    ///
+    /// - Parameters:
+    ///   - position: The position to be checked.
+    ///   - types: The token types to be taken into account.
+    /// - Returns: Whether the given position is in a token of the given type.
     private func isInToken(position: Int, _ types: TokenType...) -> Bool {
         for token in tokens {
             if types.contains(token.type),
@@ -308,17 +322,35 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return false
     }
     
+    /// Returns whether the character at the given position is a `:`.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - offset: The position.
+    /// - Returns: Whether the character at the given position is a colon.
     private func isColon(_ string: String, _ offset: Int) -> Bool {
         guard offset >= 0 && offset <= string.count else { return false }
         
         return string[string.index(string.startIndex, offsetBy: offset)] == ":"
     }
     
+    /// Returns whether the given position is in a word.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - offset: The position to be checked.
+    /// - Returns: Whether the position is inside of a word.
     private func isInWord(_ string: String, _ offset: Int) -> Bool {
         (offset > 0            && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
         (offset < string.count && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset)]))
     }
     
+    /// Returns the indentation level prior to the given position.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - offset: The position to be checked.
+    /// - Returns: The indentation level prior to the given position.
     private func getPreviousIndent(_ string: String, _ offset: Int) -> Int {
         var lineBegin = getLineBegin(string, offset)
         var indent = 0
@@ -329,6 +361,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return indent
     }
     
+    /// Returns whether the character prior to the given position is an opening parenthesis.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - offset: The position to be checked.
+    /// - Returns: Whether the preceding character is an opening parenthesis.
     private func isPreviousOpeningParenthesis(_ string: String, _ offset: Int) -> Bool {
         guard offset > 0 else { return false }
         
@@ -338,6 +376,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                c == "["
     }
     
+    /// Returns whether the character at the given position is a closing parenthesis.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - offset: The position to be checked.
+    /// - Returns: Whether the following character is a closing parenthesis.
     private func isClosingParenthesis(_ string: String, _ offset: Int) -> Bool {
         guard offset < string.count else { return false }
         
@@ -347,11 +391,21 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                c == "]"
     }
     
+    /// Returns whether only spaces preceed the given position in the given string.
+    ///
+    /// - Parameters:
+    ///   - line: The line in which to check.
+    ///   - index: The position to be checked.
+    /// - Returns: Whether only spaces preceed the position.
     private func isOnlyWhitespacesOnLine(_ line: String, _ index: Int) -> Bool {
         let lineBegin = getLineBegin(line, index)
         return isSpaces(String(line[line.index(line.startIndex, offsetBy: lineBegin) ..< line.index(line.startIndex, offsetBy: index)]))
     }
     
+    /// Returns whether the given string contains only spaces (not whitespaces).
+    ///
+    /// - Parameter string: The string to be checked.
+    /// - Returns: Whether string consists of only spaces.
     private func isSpaces(_ string: String) -> Bool {
         for c in string.unicodeScalars {
             guard c == " " else { return false }
@@ -359,6 +413,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return true
     }
     
+    /// Returns the line begin of the line in which the given position is in.
+    ///
+    /// - Parameters:
+    ///   - line: The line string to be checked.
+    ///   - index: The position in the line.
+    /// - Returns: The beginning position of the line.
     private func getLineBegin(_ line: String, _ index: Int) -> Int {
         var lineBegin = index > 0 ? index - 1 : 0
         while lineBegin > 0 && !line[line.index(line.startIndex, offsetBy: lineBegin)].isNewline {
@@ -367,6 +427,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return lineBegin > 0 ? lineBegin + 1 : 0
     }
     
+    /// Returns whether the following character is a whitespace.
+    ///
+    /// If the given position is out of bounds, `true` is returned.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - location: The position to be checked.
+    /// - Returns: Whether the given position is a whitespace.
     private func isWhitespace(_ string: String, _ location: Int) -> Bool {
         guard location > 0,
               location < string.count else { return true }
@@ -374,6 +442,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return string[string.index(string.startIndex, offsetBy: location)].isWhitespace
     }
     
+    /// Returns whether the following character is a special character.
+    ///
+    /// If the position is out of bounds, `true` is returned.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - location: The position to be checked.
+    /// - Returns: Whether the following character is a special one.
     private func isSpecial(_ string: String, _ location: Int) -> Bool {
         guard location > 0,
               location < string.count else { return true }
@@ -381,6 +457,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: location)])
     }
     
+    /// Returns the appropriate closing string for the given string.
+    ///
+    /// - Parameter opening: The string to be closed.
+    /// - Returns: The corresponding closing string.
     private func getClosingString(_ opening: String) -> String {
         let toReturn: String
         
