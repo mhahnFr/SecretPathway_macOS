@@ -41,12 +41,23 @@ struct ConnectionView: View {
                     if let prompt = delegate.promptString {
                         Text(prompt)
                     }
-                    if #available(macOS 12.0, *) {
-                        TextField("Enter something...", text: $enteredText).onSubmit {
-                            sendMessage()
+                    // FIXME: Update focus on change!
+                    if delegate.showPasswordField {
+                        if #available(macOS 12.0, *) {
+                            SecureField("Enter something...", text: $enteredText).onSubmit {
+                                sendMessage()
+                            }
+                        } else {
+                            SecureField("Enter something...", text: $enteredText)
                         }
                     } else {
-                        TextField("Enter something...", text: $enteredText)
+                        if #available(macOS 12.0, *) {
+                            TextField("Enter something...", text: $enteredText).onSubmit {
+                                sendMessage()
+                            }
+                        } else {
+                            TextField("Enter something...", text: $enteredText)
+                        }
                     }
                     Button("Send") {
                         sendMessage()

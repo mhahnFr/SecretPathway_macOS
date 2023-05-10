@@ -48,6 +48,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     /// The delegate to be used for the inlined LPC editor.
     @Published private(set) var editorDelegate: EditorDelegate?
+    @Published private(set) var showPasswordField = false
     
     /// Indicates whether an inlined editor is being displayed.
     private(set) var isEditorShowing = false
@@ -88,7 +89,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The style currently being used for incoming text.
     internal var currentStyle = SPStyle()
     /// Indicated whether to hide user input.
-    internal var passwordMode = false
+    internal var passwordMode: Bool {
+        set {
+            DispatchQueue.main.async {
+                self.showPasswordField = newValue
+            }
+        }
+        get { showPasswordField }
+    }
     
     internal var prompt: String? {
         set {
@@ -453,7 +461,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
         let toSend   = text + "\n"
-        let toAppend = NSMutableAttributedString(string: toSend, attributes: ConnectionDelegate.inputStyle.native)
+        let toAppend = NSMutableAttributedString(string: passwordMode ? String(repeating: "*", count: text.count) : toSend, attributes: ConnectionDelegate.inputStyle.native)
         
         if let prompt {
             let tmp = NSMutableAttributedString(string: prompt, attributes: ConnectionDelegate.promptStyle.native)
