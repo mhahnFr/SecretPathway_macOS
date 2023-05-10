@@ -545,6 +545,8 @@ class Interpreter: ASTVisitor {
                               let context  = await createContext(for: file) {
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
+                    } else {
+                        currentType = InterpreterType.unknown
                     }
                 } else {
                     currentType = InterpreterType.unknown
@@ -707,7 +709,7 @@ class Interpreter: ASTVisitor {
                 current = current.pushScope(begin: variable.begin)
             }
             await tryCatch.catchExression.visit(self)
-            if let variable {
+            if variable != nil {
                 current = current.popScope(end: tryCatch.catchExression.end)!
             }
             

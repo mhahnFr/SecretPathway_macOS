@@ -122,12 +122,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                 self.setStatus(text: "Loading \"\(file)\"...")
                 let appendix: String
                 if let loaded = await loader.load(file: file) {
-                    self.textStorage.append(NSAttributedString(string: loaded))
-                    lastSaved = loaded
-                    if self.syntaxHighlighting {
-                        self.highlight()
-                    } else {
-                        self.resetHighlight()
+                    DispatchQueue.main.async {
+                        self.textStorage.append(NSAttributedString(string: loaded))
+                        self.lastSaved = loaded
+                        if self.syntaxHighlighting {
+                            self.highlight()
+                        } else {
+                            self.resetHighlight()
+                        }
                     }
                     appendix = "Done."
                 } else {
