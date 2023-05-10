@@ -180,7 +180,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         if let ignore,
            editedRange.location == ignore.0,
            str == ignore.1 {
-            textStorage.replaceCharacters(in: NSMakeRange(editedRange.location + editedRange.length, 1), with: "")
+            textStorage.replaceCharacters(in: editedRange, with: "")
+            self.delta = 1
+            return
         } else {
             self.ignore = nil
         }
