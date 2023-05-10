@@ -806,26 +806,26 @@ struct Parser {
             advance()
         }
         
-        let exception: ASTExpression?
-        if current.isType(.LEFT_PAREN, .RIGHT_PAREN) {
-            if !current.isType(.LEFT_PAREN) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
-            } else {
-                advance()
+        let lp: (Int, Int)?
+        if current.isType(.LEFT_PAREN) {
+            advance()
+            lp = nil
+        } else {
+            lp = (previous.end, current.begin)
+        }
+        let exception = parseMaybeVariable()
+        if lp == nil && exception == nil {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing exception variable"))
+        }
+        if exception != nil || lp == nil {
+            if let lp {
+                parts.append(ASTMissing(begin: lp.0, end: lp.1, message: "Missing '('"))
             }
             if !current.isType(.RIGHT_PAREN) {
-                exception = parseFancyVariableDeclaration()
-                if !current.isType(.RIGHT_PAREN) {
-                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
-                } else {
-                    advance()
-                }
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
             } else {
-                exception = nil
                 advance()
             }
-        } else {
-            exception = nil
         }
         let caught = parseInstruction()
         
