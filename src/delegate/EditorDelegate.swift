@@ -71,6 +71,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var updateSuggestions = false
     private var endSuggestions = true
     private var tokens = [Token]()
+    private var ast = [ASTExpression]() // FIXME: Synchronise over multiple threads!!!
+    private var context = Context()     // FIXME: Synchronise over multiple threads!!!
+    private var visitor = SuggestionVisitor()
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -141,13 +144,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
         window.isDocumentEdited = textStorage.string != lastSaved
         if syntaxHighlighting {
-//            if updateSuggestions          { updateSuggestions()                   }
-//            if beginSuggestions           { computeSuggestionContext(position: editedRange.location +
-//                                                                               editedRange.length + delta,
-//                                                                     begin: true) }
-//            else if beginSuperSuggestions { beginSuperSuggestions()               }
-//            else if beginDotSuggestions   { beginDotSuggestions()                 }
-//            else if endSuggestions        { endSuggestions()                      }
+            if updateSuggestions          { suggestionsUpdate()                   }
+            if beginSuggestions           { computeSuggestionContext(position: view.selectedRange().location + delta,
+                                                                     begin: true) }
+            else if beginSuperSuggestions { startSuperSuggestions()               }
+            else if beginDotSuggestions   { startDotSuggestions()                 }
+            else if endSuggestions        { stopSuggestions()                     }
             highlight()
         }
     }
@@ -238,6 +240,58 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             }
             self.delta = 0
         }
+    }
+    
+    private func computeSuggestionContext(position: Int, begin: Bool) {
+        Task {
+//            visit(position: position)
+            DispatchQueue.main.async {
+                let type = self.visitor.suggestionType
+                
+                if begin && type != .literal {
+                    self.startSuggestions()
+                } else if type == .literal {
+                    self.stopSuggestions()
+                } else {
+                    self.updateSuggestionContext(type: type, returnType: self.visitor.expectedType)
+                }
+            }
+        }
+    }
+    
+    private func startSuggestions() {
+        // TODO: Implement
+    }
+    
+    private func startSuperSuggestions() {
+        // TODO: Implement
+    }
+    
+    private func startDotSuggestions() {
+        // TODO: Implement
+    }
+    
+    private func suggestionsUpdate() {
+        // TODO: Implement
+    }
+    
+    private func stopSuggestions() {
+        // TODO: Implement
+    }
+    
+    private func updateSuggestionContext(type: SuggestionType, returnType: TypeProto?) {
+        // TODO: Implement
+    }
+    
+    private func visit(position: Int) {
+        for node in ast {
+            if position >= node.begin && position <= node.end {
+                visitor.visit(node: node, position: position, context: context)
+                return
+            }
+        }
+        guard let last = ast.last else { return }
+        visitor.visit(node: last, position: position, context: context)
     }
     
     private func isInToken(position: Int, _ types: TokenType...) -> Bool {
@@ -483,8 +537,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         Task(priority: .background) {
             let interpreter = Interpreter(loader: loader)
             var parser      = Parser(text: textStorage.string)
-            let ast         = parser.parse()
-            let context     = await interpreter.createContext(for: ast, file: self.file)
+            self.ast        = parser.parse()
+            self.context    = await interpreter.createContext(for: self.ast, file: self.file)
             self.highlights = interpreter.highlights
             
             DispatchQueue.main.async {
