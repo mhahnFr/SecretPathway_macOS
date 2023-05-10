@@ -593,7 +593,7 @@ class Interpreter: ASTVisitor {
                  .ASSIGNMENT_SLASH,
                  .ASSIGNMENT_PERCENT:         break
                 
-            default:                          currentType = InterpreterType.void
+            default:                          currentType = InterpreterType.unknown
             }
             
         case .AST_IF:
