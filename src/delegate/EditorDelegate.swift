@@ -464,7 +464,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             file = field.stringValue
         }
         let content = textStorage.string
-        loader.save(file: file!, content: content)
+        Task { loader.save(file: file!, content: content) }
         lastSaved = content
         window.isDocumentEdited = false
     }
