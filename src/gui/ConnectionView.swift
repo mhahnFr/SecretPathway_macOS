@@ -38,7 +38,7 @@ struct ConnectionView: View {
                 }
                 NSTextViewBridge(length: delegate.contentLength, fontSize: settings.fontSize, delegate: delegate)
                 HStack {
-                    if let prompt = delegate.prompt {
+                    if let prompt = delegate.promptString {
                         Text(prompt)
                     }
                     if #available(macOS 12.0, *) {

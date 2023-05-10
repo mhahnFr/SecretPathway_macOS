@@ -28,6 +28,7 @@ protocol ConnectionSender: AnyObject {
     var charset: String.Encoding { get set }
     /// Indicates whether to hide user input.
     var passwordMode: Bool { get set }
+    var prompt: String? { get set }
     
     /// This function is called when a piece of data should be sent.
     ///

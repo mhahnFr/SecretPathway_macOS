@@ -73,6 +73,7 @@ class SPPPlugin: ProtocolPlugin {
         
         switch code {
         case "promptField": handlePromptCommand(remainder)
+        case "prompt":      sender.prompt = remainder.isEmpty ? nil : String(remainder)
         case "file":        handleFileCommand(remainder)
         case "editor":      sender.openEditor(remainder.isEmpty ? nil : String(remainder))
         default:            print("Unrecognized command: \"\(message)\"")

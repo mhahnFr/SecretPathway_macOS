@@ -31,7 +31,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// The length of the content text used as SwiftUI trigger.
     @Published private(set) var contentLength = 0
     /// The prompt text.
-    @Published private(set) var prompt:  String?
+    @Published private(set) var promptString: String?
     /// A string that can hold a message displayed for the user.
     @Published private(set) var message: String? {
         didSet {
@@ -90,6 +90,14 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Indicated whether to hide user input.
     internal var passwordMode = false
     
+    internal var prompt: String? {
+        set {
+            DispatchQueue.main.async {
+                self.promptString = newValue
+            }
+        }
+        get { promptString }
+    }
     /// The last timer used to remove the user message. Nil if none is active.
     private weak var messageTimer: Timer?
     /// The last timer to used to retry to connect. Nil if none is active.
@@ -444,7 +452,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///
     /// - Parameter text: The text that should be sent.
     func send(_ text: String) {
-        let toAppend = NSMutableAttributedString(string: text + "\n", attributes: ConnectionDelegate.inputStyle.native)
+        let toSend   = text + "\n"
+        let toAppend = NSMutableAttributedString(string: toSend, attributes: ConnectionDelegate.inputStyle.native)
         
         if let prompt {
             let tmp = NSMutableAttributedString(string: prompt, attributes: ConnectionDelegate.promptStyle.native)
@@ -456,9 +465,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         }
         appendToContent(toAppend)
         
-        let data = toAppend.string.data(using: charset, allowLossyConversion: true)!
-        
-        send(data: data)
+        send(data: toSend.data(using: charset, allowLossyConversion: true)!)
     }
 
     internal func send(data: Data) {
