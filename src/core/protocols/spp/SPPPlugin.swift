@@ -54,6 +54,14 @@ class SPPPlugin: ProtocolPlugin {
         return true
     }
     
+    internal func onConnectionError() {
+        DispatchQueue.main.sync {
+            for (id, (file, _, _)) in fetchList {
+                fetchList.updateValue((file, nil, true), forKey: id)
+            }
+        }
+    }
+    
     /// Handles the received SPP message.
     private func processBuffer() {
         guard let message = String(bytes: buffer, encoding: .utf8),
