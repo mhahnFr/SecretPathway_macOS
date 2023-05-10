@@ -22,7 +22,7 @@
 /// Do instantiate this class directly, use a subclass implementation!
 class LPCFileManager {
     /// A mapping of the file names to their cached context.
-    private var cachedContexts: [String: Context] = [:]
+    private var cachedContexts: [String: Context?] = [:]
     
     /// Loads the file whose name is given.
     ///
@@ -53,7 +53,10 @@ class LPCFileManager {
     /// - Parameter name: The name of the desired file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
     private func loadAndParseIntern(file name: String) async -> Context? {
-        guard let content = await load(file: name) else { return nil }
+        guard let content = await load(file: name) else {
+            cachedContexts[name] = Context?.none
+            return nil
+        }
         var parser  = Parser(text: content)
         let context = await Interpreter(loader: self).createBackgroundContext(for: parser.parse(), file: name)
         cachedContexts[name] = context
