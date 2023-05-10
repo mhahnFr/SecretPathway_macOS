@@ -546,6 +546,10 @@ class Interpreter: ASTVisitor {
                               let context  = await createContext(for: file) {
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
+                    } else if let leftString = operation.lhs as? ASTStrings,
+                              let context    = await createContext(for: leftString) {
+                        visitName(context: context, name: name, asFunction: true)
+                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else {
                         currentType = InterpreterType.unknown
                     }
