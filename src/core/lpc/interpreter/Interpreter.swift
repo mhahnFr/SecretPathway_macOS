@@ -87,7 +87,11 @@ class Interpreter: ASTVisitor {
     ///   - other: The right-hand-side type.
     /// - Returns: Whether the type is assignable from the other one.
     private func isAssignable(_ type: TypeProto, from other: TypeProto) async -> Bool {
-        await type.isAssignable(from: other, loader: background ? nil : loader)
+        if type  === InterpreterType.unknown ||
+           other === InterpreterType.unknown {
+            return true
+        }
+        return await type.isAssignable(from: other, loader: background ? nil : loader)
     }
     
     /// Unwraps the given ASTCombination.
