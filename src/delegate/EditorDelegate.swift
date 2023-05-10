@@ -223,6 +223,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             beginDotSuggestions = true
             self.delta          = 0
             
+        case ">" where isDash(underlying, editedRange.location - 1):
+            beginDotSuggestions = true
+            self.delta          = 0
+            
         case "\n":
             let openingParenthesis = isPreviousOpeningParenthesis(underlying, editedRange.location)
             if openingParenthesis && isClosingParenthesis(underlying, editedRange.location + editedRange.length) {
@@ -304,6 +308,20 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
         guard let last = ast.last else { return }
         visitor.visit(node: last, position: position, context: context)
+    }
+    
+    /// Returns whether the character at the given position is a `-`.
+    ///
+    /// If the given position is out of range, `false` is returned.
+    ///
+    /// - Parameters:
+    ///   - string: The string in which to check.
+    ///   - position: The position of the character to be checked.
+    /// - Returns: Whether the character in the given string at the given position is a dash.
+    private func isDash(_ string: String, _ position: Int) -> Bool {
+        guard position > 0 && position < string.count else { return false }
+        
+        return string[string.index(string.startIndex, offsetBy: position)] == "-"
     }
     
     /// Returns whether the given position is in a token of the given type.
