@@ -366,6 +366,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         #endif
         }
         
+        protocols.onConnectionError()
+        
         DispatchQueue.main.async { self.updateMessage(tmpMessage, color: .red) }
     }
     

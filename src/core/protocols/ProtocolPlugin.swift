@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022  mhahnFr
+ * Copyright (C) 2022 - 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -14,9 +14,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program, see the file LICENSE.
- * If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with
+ * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /// This protocol defines the interface for protocol plugins.
@@ -41,4 +40,12 @@ protocol ProtocolPlugin {
     /// - Parameter sender: A reference to the sender responsible for sending back a potential response.
     /// - Returns: Whether this plugin should be called for the next received byte.
     func process(byte: UInt8, sender: ConnectionSender) -> Bool
+    
+    /// Called when an error happened on the associated connection.
+    func onConnectionError()
+}
+
+/// This extension adds some default behaviour to the ProtocolPlugin protocol.
+extension ProtocolPlugin {
+    func onConnectionError() {}
 }
