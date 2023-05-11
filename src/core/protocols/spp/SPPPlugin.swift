@@ -75,9 +75,17 @@ class SPPPlugin: ProtocolPlugin {
         case "promptField": handlePromptCommand(remainder)
         case "prompt":      sender.prompt = remainder.isEmpty ? nil : String(remainder)
         case "file":        handleFileCommand(remainder)
-        case "editor":      sender.openEditor(remainder.isEmpty ? nil : String(remainder))
+        case "editor":      handleEditorCommand(remainder)
         default:            print("Unrecognized command: \"\(message)\"")
         }
+    }
+    
+    private func handleEditorCommand(_ message: any StringProtocol) {
+        guard let index = message.firstIndex(of: ":") else { return }
+        
+        let path    = message[..<index]
+        let content = message[message.index(after: index)...]
+        sender.openEditor(file: path.isEmpty ? nil : String(path), content: content.isEmpty ? nil : String(content))
     }
     
     /// Handles a prompt command of the SPP.
@@ -233,10 +241,10 @@ class SPPPlugin: ProtocolPlugin {
     ///
     /// - Parameter name: The name of the file to be fetched.
     /// - Returns: The content of the file or `nil` if an error occurred.
-    func fetch(file name: String) async -> String? {
+    func fetch(file name: String, referrer: String = "") async -> String? {
         let id = UUID()
         addFetcher(id: id, file: name)
-        send("file:fetch:\(name)")
+        send("file:fetch:\(name):\(referrer)")
         while fetcherWaiting(id: id) {
             await Task.yield()
         }

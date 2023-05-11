@@ -42,7 +42,5 @@ protocol ConnectionSender: AnyObject {
     /// This function is called when an editor should be opened.
     ///
     /// The file given should be displayed by the editor.
-    ///
-    /// - Parameter file: The file to be opened.
-    func openEditor(_ file: String?)
+    func openEditor(file: String?, content: String?)
 }

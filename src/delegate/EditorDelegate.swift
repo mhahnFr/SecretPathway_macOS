@@ -62,7 +62,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     /// The associated file name.
     private var file: String?
     /// The lastly saved content.
-    private var lastSaved = ""
+    private var lastSaved: String?
     /// The delta by which the cursor should be moved automatically.
     private var delta = 0
     /// The string that should be ignored on insertion.
@@ -83,11 +83,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     /// Initializes this delegate using the given file loader.
     ///
     /// - Parameter loader: The loader used for loading files.
-    init(loader: LPCFileManager, referrer: ConnectionDelegate?, container window: NSWindow?, file name: String? = nil) {
-        self.loader   = loader
-        self.window   = window
-        self.referrer = referrer
-        self.file     = name
+    init(loader: LPCFileManager, referrer: ConnectionDelegate?, container window: NSWindow?, file name: String? = nil, content: String? = nil) {
+        self.loader    = loader
+        self.window    = window
+        self.referrer  = referrer
+        self.file      = name
+        self.lastSaved = content
     }
     
     /// Attempts to restore the theme used for the editor.
@@ -122,26 +123,32 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         view        = textView
         textStorage.delegate = self
         
-        if let file {
-            Task {
-                self.setStatus(text: "Loading \"\(file)\"...")
-                let appendix: String
-                if let loaded = await loader.load(file: file) {
-                    DispatchQueue.main.async {
-                        self.textStorage.append(NSAttributedString(string: loaded))
-                        self.lastSaved = loaded
-                        if self.syntaxHighlighting {
-                            self.highlight()
-                        } else {
-                            self.resetHighlight()
-                        }
-                    }
-                    appendix = "Done."
-                } else {
-                    appendix = "Failed!"
-                }
-                self.setStatus(text: "Loading \"\(file)\"... \(appendix)")
+        if let lastSaved {
+            textStorage.append(NSAttributedString(string: lastSaved))
+            if syntaxHighlighting {
+                highlight()
+            } else {
+                resetHighlight()
             }
+//            Task {
+//                self.setStatus(text: "Loading \"\(file)\"...")
+//                let appendix: String
+//                if let loaded = await loader.load(file: file) {
+//                    DispatchQueue.main.async {
+//                        self.textStorage.append(NSAttributedString(string: loaded))
+//                        self.lastSaved = loaded
+//                        if self.syntaxHighlighting {
+//                            self.highlight()
+//                        } else {
+//                            self.resetHighlight()
+//                        }
+//                    }
+//                    appendix = "Done."
+//                } else {
+//                    appendix = "Failed!"
+//                }
+//                self.setStatus(text: "Loading \"\(file)\"... \(appendix)")
+//            }
         }
     }
     

@@ -189,13 +189,13 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Shows an editor.
     ///
     /// - Parameter name: The name of the file to be displayed.
-    func showEditor(file name: String? = nil) {
+    func showEditor(file name: String? = nil, content: String? = nil) {
         let loader = sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
                                       : LocalFileManager()
         if editorDelegate == nil && Settings.shared.editorInlined {
-            showInlinedEditor(loader: loader, file: name)
+            showInlinedEditor(loader: loader, file: name, content: content)
         } else {
-            openEditorWindow(loader: loader, file: name)
+            openEditorWindow(loader: loader, file: name, content: content)
         }
     }
     
@@ -204,9 +204,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Parameters:
     ///   - loader: The loader used for resolving referenced files.
     ///   - name: The name of the file to be displayed.
-    private func openEditorWindow(loader: LPCFileManager, file name: String?) {
+    private func openEditorWindow(loader: LPCFileManager, file name: String?, content: String?) {
         let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
-        let delegate = EditorDelegate(loader: loader, referrer: self, container: window, file: name)
+        let delegate = EditorDelegate(loader: loader, referrer: self, container: window, file: name, content: content)
         let content  = EditorView(delegate: delegate)
         delegate.onClose = {
             window.performClose(delegate)
@@ -222,9 +222,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     }
     
     /// Opens an inlined editor.
-    private func showInlinedEditor(loader: LPCFileManager, file name: String?) {
+    private func showInlinedEditor(loader: LPCFileManager, file name: String?, content: String?) {
         isEditorShowing = true
-        editorDelegate  = EditorDelegate(loader: loader, referrer: self, container: window, file: name)
+        editorDelegate  = EditorDelegate(loader: loader, referrer: self, container: window, file: name, content: content)
         editorDelegate!.onClose = {
             self.editorDelegate  = nil
             self.isEditorShowing = false
@@ -235,9 +235,9 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         sppPlugin.active = true
     }
     
-    internal func openEditor(_ file: String?) {
+    internal func openEditor(file: String?, content: String?) {
         DispatchQueue.main.async {
-            self.showEditor(file: file)
+            self.showEditor(file: file, content: content)
         }
     }
     
