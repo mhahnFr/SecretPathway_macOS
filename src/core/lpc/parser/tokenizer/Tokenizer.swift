@@ -87,6 +87,11 @@ struct Tokenizer {
         else if stream.peek("*=")  { return Token(begin: stream.index, type: .ASSIGNMENT_STAR,    end: stream.skip(2)) }
         else if stream.peek("/=")  { return Token(begin: stream.index, type: .ASSIGNMENT_SLASH,   end: stream.skip(2)) }
         else if stream.peek("%=")  { return Token(begin: stream.index, type: .ASSIGNMENT_PERCENT, end: stream.skip(2)) }
+        else if stream.peek("&=")  { return Token(begin: stream.index, type: .ASSIGNMENT_BIT_AND, end: stream.skip(2)) }
+        else if stream.peek("|=")  { return Token(begin: stream.index, type: .ASSIGNMENT_BIT_OR,  end: stream.skip(2)) }
+        else if stream.peek("^=")  { return Token(begin: stream.index, type: .ASSIGNMENT_BIT_XOR, end: stream.skip(2)) }
+        else if stream.peek("<<=") { return Token(begin: stream.index, type: .ASSIGNMENT_L_SHIFT, end: stream.skip(3)) }
+        else if stream.peek(">>=") { return Token(begin: stream.index, type: .ASSIGNMENT_R_SHIFT, end: stream.skip(3)) }
         else if stream.peek("++")  { return Token(begin: stream.index, type: .INCREMENT,          end: stream.skip(2)) }
         else if stream.peek("--")  { return Token(begin: stream.index, type: .DECREMENT,          end: stream.skip(2)) }
         else if stream.peek("+")   { return Token(begin: stream.index, type: .PLUS,               end: stream.skip())  }
@@ -94,6 +99,8 @@ struct Tokenizer {
         else if stream.peek("*")   { return Token(begin: stream.index, type: .STAR,               end: stream.skip())  }
         else if stream.peek("/")   { return Token(begin: stream.index, type: .SLASH,              end: stream.skip())  }
         else if stream.peek("%")   { return Token(begin: stream.index, type: .PERCENT,            end: stream.skip())  }
+        else if stream.peek("^")   { return Token(begin: stream.index, type: .BIT_XOR,            end: stream.skip())  }
+        else if stream.peek("~")   { return Token(begin: stream.index, type: .BIT_NOT,            end: stream.skip())  }
         else if stream.peek("\"")  { return Token(begin: stream.index, type: .STRING,    payload: readTill("\""),             end: stream.index) }
         else if stream.peek("'")   { return Token(begin: stream.index, type: .CHARACTER, payload: readTill("'"),              end: stream.index) }
         else if stream.peek("#'")  { return Token(begin: stream.index, type: .SYMBOL,    payload: readTill("'", skipping: 2), end: stream.index) }
@@ -115,6 +122,7 @@ struct Tokenizer {
         case "private":    return Token(begin: begin, type: .PRIVATE,        end: end)
         case "protected":  return Token(begin: begin, type: .PROTECTED,      end: end)
         case "public":     return Token(begin: begin, type: .PUBLIC,         end: end)
+        case "static":     return Token(begin: begin, type: .STATIC,         end: end)
         case "override":   return Token(begin: begin, type: .OVERRIDE,       end: end)
         case "deprecated": return Token(begin: begin, type: .DEPRECATED,     end: end)
         case "nosave":     return Token(begin: begin, type: .NOSAVE,         end: end)
@@ -129,11 +137,13 @@ struct Tokenizer {
         case "void":       return Token(begin: begin, type: .VOID,           end: end)
         case "char":       return Token(begin: begin, type: .CHAR_KEYWORD,   end: end)
         case "int":        return Token(begin: begin, type: .INT_KEYWORD,    end: end)
+        case "float":      return Token(begin: begin, type: .FLOAT,          end: end)
         case "bool":       return Token(begin: begin, type: .BOOL,           end: end)
         case "object":     return Token(begin: begin, type: .OBJECT,         end: end)
         case "string":     return Token(begin: begin, type: .STRING_KEYWORD, end: end)
         case "symbol":     return Token(begin: begin, type: .SYMBOL_KEYWORD, end: end)
         case "mapping":    return Token(begin: begin, type: .MAPPING,        end: end)
+        case "exception":  return Token(begin: begin, type: .EXCEPTION,      end: end)
         case "any":        return Token(begin: begin, type: .ANY,            end: end)
         case "mixed":      return Token(begin: begin, type: .MIXED,          end: end)
         case "auto":       return Token(begin: begin, type: .AUTO,           end: end)
