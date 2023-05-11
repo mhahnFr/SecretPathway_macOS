@@ -83,6 +83,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     /// Initializes this delegate using the given file loader.
     ///
     /// - Parameter loader: The loader used for loading files.
+    /// - Parameter referrer: The referring connection delegate.
+    /// - Parameter window: The window this editor is contained in.
+    /// - Parameter name: The name of the file.
+    /// - Parameter content: The content of the file.
     init(loader: LPCFileManager, referrer: ConnectionDelegate?, container window: NSWindow?, file name: String? = nil, content: String? = nil) {
         self.loader    = loader
         self.window    = window
@@ -130,25 +134,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             } else {
                 resetHighlight()
             }
-//            Task {
-//                self.setStatus(text: "Loading \"\(file)\"...")
-//                let appendix: String
-//                if let loaded = await loader.load(file: file) {
-//                    DispatchQueue.main.async {
-//                        self.textStorage.append(NSAttributedString(string: loaded))
-//                        self.lastSaved = loaded
-//                        if self.syntaxHighlighting {
-//                            self.highlight()
-//                        } else {
-//                            self.resetHighlight()
-//                        }
-//                    }
-//                    appendix = "Done."
-//                } else {
-//                    appendix = "Failed!"
-//                }
-//                self.setStatus(text: "Loading \"\(file)\"... \(appendix)")
-//            }
         }
     }
     

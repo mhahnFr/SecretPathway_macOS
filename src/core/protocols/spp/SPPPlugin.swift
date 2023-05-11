@@ -80,6 +80,9 @@ class SPPPlugin: ProtocolPlugin {
         }
     }
     
+    /// Handles editor commands.
+    ///
+    /// - Parameter message: The editor message to process.
     private func handleEditorCommand(_ message: any StringProtocol) {
         guard let index = message.firstIndex(of: ":") else { return }
         
@@ -240,6 +243,7 @@ class SPPPlugin: ProtocolPlugin {
     /// Fetches the file of the given name.
     ///
     /// - Parameter name: The name of the file to be fetched.
+    /// - Parameter referrer: The file referencing the requested file.
     /// - Returns: The content of the file or `nil` if an error occurred.
     func fetch(file name: String, referrer: String = "") async -> String? {
         let id = UUID()
