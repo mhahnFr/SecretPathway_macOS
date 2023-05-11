@@ -170,7 +170,7 @@ struct Parser {
     /// - Parameter token: The token to be checked.
     /// - Returns: Whether the given token represents a modifier.
     private func isModifier(_ token: Token) -> Bool {
-        token.isType(.PRIVATE, .PROTECTED, .PUBLIC, .DEPRECATED, .OVERRIDE, .NOSAVE)
+        token.isType(.PRIVATE, .PROTECTED, .PUBLIC, .DEPRECATED, .OVERRIDE, .NOSAVE, .STATIC)
     }
     
     /// Parses a modifier list.
@@ -193,6 +193,9 @@ struct Parser {
         
         return toReturn
     }
+    
+    // TODO: Add or types, fully implement exception types
+    //       `type | type`           `exception<some_id>`
     
     /// Parses a function reference type.
     ///
@@ -454,7 +457,8 @@ struct Parser {
     private func isOperator(_ token: Token) -> Bool {
         token.isType(.DOT, .ARROW, .PIPE, .LEFT_SHIFT, .RIGHT_SHIFT, .DOUBLE_QUESTION, .QUESTION,
                      .PLUS, .MINUS, .STAR, .SLASH, .PERCENT, .LESS, .LESS_OR_EQUAL, .GREATER, .IS,
-                     .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET)
+                     .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET,
+                     .BIT_XOR, .BIT_NOT)
     }
     
     /// Returns whether the given token represents a type.
@@ -463,7 +467,7 @@ struct Parser {
     /// - Returns: Whether the given token represents a type.
     private func isType(_ token: Token) -> Bool {
         token.isType(.VOID, .CHAR_KEYWORD, .INT_KEYWORD, .BOOL, .OBJECT, .STRING_KEYWORD,
-                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR)
+                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR, .FLOAT, .EXCEPTION)
     }
     
     /// Checks and parses a variable declaration. If no variable
@@ -987,7 +991,12 @@ struct Parser {
                  .ASSIGNMENT_STAR,
                  .ASSIGNMENT_MINUS,
                  .ASSIGNMENT_SLASH,
-                 .ASSIGNMENT_PERCENT:
+                 .ASSIGNMENT_PERCENT,
+                 .ASSIGNMENT_BIT_OR,
+                 .ASSIGNMENT_BIT_AND,
+                 .ASSIGNMENT_BIT_XOR,
+                 .ASSIGNMENT_L_SHIFT,
+                 .ASSIGNMENT_R_SHIFT:
                 let name = ASTName(token: current)
                 let type = next.type
                 advance(count: 2)
