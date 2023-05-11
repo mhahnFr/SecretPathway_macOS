@@ -526,6 +526,14 @@ class Interpreter: ASTVisitor {
             case .SCOPE:     await visitSuperFunc(operation)
             case .AMPERSAND: await visitFunctionReference(operation)
             case .NOT:       currentType = InterpreterType.bool
+            case .STAR:
+                if let string = operation.identifier as? ASTStrings,
+                   await !loader.exists(file: string.value) {
+                    addHighlight(MessagedHighlight(begin:   string.begin,
+                                                   end:     string.end,
+                                                   type:    .UNRESOLVED,
+                                                   message: "Could not resolve file"))
+                }
                 
             default: await operation.identifier.visit(self)
             }
