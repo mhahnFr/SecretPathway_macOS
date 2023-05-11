@@ -31,8 +31,8 @@ class SPPFileManager: LPCFileManager {
         self.plugin = plugin
     }
     
-    override func load(file name: String) async -> String? {
-        return await plugin.fetch(file: name)
+    override func load(file name: String, referrer: String) async -> String? {
+        return await plugin.fetch(file: name, referrer: referrer)
     }
     
     override func save(file name: String, content: String) {
@@ -47,6 +47,6 @@ class SPPFileManager: LPCFileManager {
     
     override func exists(file: String) async -> Bool {
         // TODO: Add as SPP command
-        return await loadAndParse(file: file) != nil
+        return await loadAndParse(file: file, referrer: "/") != nil
     }
 }

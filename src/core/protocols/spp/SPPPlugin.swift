@@ -245,7 +245,7 @@ class SPPPlugin: ProtocolPlugin {
     /// - Parameter name: The name of the file to be fetched.
     /// - Parameter referrer: The file referencing the requested file.
     /// - Returns: The content of the file or `nil` if an error occurred.
-    func fetch(file name: String, referrer: String = "") async -> String? {
+    func fetch(file name: String, referrer: String) async -> String? {
         let id = UUID()
         addFetcher(id: id, file: name)
         send("file:fetch:\(name):\(referrer)")

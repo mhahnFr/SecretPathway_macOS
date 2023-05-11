@@ -31,7 +31,7 @@ class LPCFileManager {
     ///
     /// - Parameter name: The name of the desired file.
     /// - Returns: The content of the file or `nil` on error.
-    func load(file name: String) async -> String? { nil }
+    func load(file name: String, referrer: String) async -> String? { nil }
     
     /// Loads the indicated file and parses its content.
     ///
@@ -39,11 +39,11 @@ class LPCFileManager {
     ///
     /// - Parameter name: The name of the desired file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
-    func loadAndParse(file name: String) async -> Context? {
+    func loadAndParse(file name: String, referrer: String) async -> Context? {
         if let context = cachedContexts[name] {
             return context
         }
-        return await loadAndParseIntern(file: name)
+        return await loadAndParseIntern(file: name, referrer: referrer)
     }
     
     /// Loads and parses the content of the file whose name is given.
@@ -52,8 +52,8 @@ class LPCFileManager {
     ///
     /// - Parameter name: The name of the desired file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
-    private func loadAndParseIntern(file name: String) async -> Context? {
-        guard let content = await load(file: name) else {
+    private func loadAndParseIntern(file name: String, referrer: String) async -> Context? {
+        guard let content = await load(file: name, referrer: referrer) else {
             cachedContexts[name] = Context?.none
             return nil
         }
