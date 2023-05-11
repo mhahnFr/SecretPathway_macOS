@@ -41,7 +41,6 @@ struct ConnectionView: View {
                     if let prompt = delegate.promptString {
                         Text(prompt)
                     }
-                    // FIXME: Update focus on change!
                     if delegate.showPasswordField {
                         if #available(macOS 12.0, *) {
                             SecureField("Enter something...", text: $enteredText).onSubmit {
