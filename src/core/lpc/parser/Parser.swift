@@ -467,7 +467,7 @@ struct Parser {
     /// - Returns: Whether the given token represents a type.
     private func isType(_ token: Token) -> Bool {
         token.isType(.VOID, .CHAR_KEYWORD, .INT_KEYWORD, .BOOL, .OBJECT, .STRING_KEYWORD,
-                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR, .FLOAT, .EXCEPTION)
+                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR, .FLOAT_KEYWORD, .EXCEPTION)
     }
     
     /// Checks and parses a variable declaration. If no variable
@@ -1024,6 +1024,7 @@ struct Parser {
         case .THIS:         toReturn = ASTThis(token: current);      advance()
         case .SYMBOL:       toReturn = ASTSymbol(token: current);    advance()
         case .INTEGER:      toReturn = ASTInteger(token: current);   advance()
+        case .FLOAT:        toReturn = ASTFloat(token: current);     advance()
         case .CHARACTER:    toReturn = ASTCharacter(token: current); advance()
         case .ELLIPSIS,
              .RANGE,
@@ -1359,6 +1360,9 @@ struct Parser {
         } else if priority >= 10 && current.isType(.PIPE) {
             advance()
             return parseExpression(priority: 9)
+        } else if priority >= 10 && current.isType(.BIT_XOR) {
+            advance()
+            return parseExpression(priority: 9)
         } else if priority >= 8 && current.isType(.AMPERSAND) {
             advance()
             return parseExpression(priority: 7)
@@ -1404,7 +1408,7 @@ struct Parser {
         } else if current.isType(.STAR) {
             advance()
             lhs = ASTUnaryOperation(begin: previous.begin, operatorType: .STAR, identifier: parseExpression(priority: 1))
-        } else if priority >= 2 && current.isType(.PLUS, .MINUS, .SIZEOF, .NOT) {
+        } else if priority >= 2 && current.isType(.PLUS, .MINUS, .SIZEOF, .NOT, .BIT_NOT) {
             let copy = current
             advance()
             if copy.isType(.SIZEOF) && current.isType(.LEFT_PAREN) {

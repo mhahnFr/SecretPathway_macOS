@@ -137,7 +137,7 @@ struct Tokenizer {
         case "void":       return Token(begin: begin, type: .VOID,           end: end)
         case "char":       return Token(begin: begin, type: .CHAR_KEYWORD,   end: end)
         case "int":        return Token(begin: begin, type: .INT_KEYWORD,    end: end)
-        case "float":      return Token(begin: begin, type: .FLOAT,          end: end)
+        case "float":      return Token(begin: begin, type: .FLOAT_KEYWORD,  end: end)
         case "bool":       return Token(begin: begin, type: .BOOL,           end: end)
         case "object":     return Token(begin: begin, type: .OBJECT,         end: end)
         case "string":     return Token(begin: begin, type: .STRING_KEYWORD, end: end)
@@ -165,6 +165,7 @@ struct Tokenizer {
         case "operator":   return Token(begin: begin, type: .OPERATOR,       end: end)
             
         default:
+            // TODO: Hex-nums, floats
             if let number = Int(word) {
                 return Token(begin: begin, type: .INTEGER, payload: number, end: end)
             }
