@@ -36,6 +36,8 @@ struct NSTextViewBridge: NSViewRepresentable {
     func makeNSView(context: Self.Context) -> NSViewType {
         let toReturn = NSTextView.scrollableTextView()
         let textView = toReturn.documentView as! NSTextView
+        
+        textView.layoutManager?.allowsNonContiguousLayout = false
 
         delegate?.initTextView(textView)
         
