@@ -38,6 +38,8 @@ struct NSTextViewBridge: NSViewRepresentable {
         let textView = toReturn.documentView as! NSTextView
         
         textView.layoutManager?.allowsNonContiguousLayout = false
+        textView.isHorizontallyResizable = true
+        textView.isVerticallyResizable   = true
 
         delegate?.initTextView(textView)
         
