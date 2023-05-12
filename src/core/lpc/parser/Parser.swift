@@ -1411,11 +1411,15 @@ struct Parser {
         } else if priority >= 2 && current.isType(.PLUS, .MINUS, .SIZEOF, .NOT, .BIT_NOT) {
             let copy = current
             advance()
+            let sizeOfLP: Bool
             if copy.isType(.SIZEOF) && current.isType(.LEFT_PAREN) {
                 advance()
+                sizeOfLP = true
+            } else {
+                sizeOfLP = false
             }
             let expression = parseExpression(priority: 1)
-            if copy.isType(.SIZEOF) && current.isType(.RIGHT_PAREN) {
+            if copy.isType(.SIZEOF) && current.isType(.RIGHT_PAREN) && sizeOfLP {
                 advance()
             }
             lhs = ASTUnaryOperation(begin: previous.begin, operatorType: copy.type, identifier: expression)
