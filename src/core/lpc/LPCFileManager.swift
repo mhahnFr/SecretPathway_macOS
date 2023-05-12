@@ -71,7 +71,7 @@ class LPCFileManager {
     ///   - name: The name of the file.
     ///   - content: The new content of the file.
     func save(file name: String, content: String) {
-        fatalError("Not implemented")
+        print("Not implemented")
     }
     
     /// Returns whether compilation functionality is supported
