@@ -512,8 +512,11 @@ class Interpreter: ASTVisitor {
                 let ids = current.getIdentifiers(name: n, pos: name.begin)
                 if !ids.isEmpty {
                     currentType = await visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.unknown
+                    break
                 }
             }
+            for argument in fc.arguments { await argument.visit(self) }
+            currentType = InterpreterType.unknown
             
         case .NAME:
             visitName(context: current, name: expression as! ASTName, asFunction: false)
@@ -563,6 +566,7 @@ class Interpreter: ASTVisitor {
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else {
+                        for argument in funcCall.arguments { await argument.visit(self) }
                         currentType = InterpreterType.unknown
                     }
                 } else {
@@ -724,6 +728,12 @@ class Interpreter: ASTVisitor {
             let variable = tryCatch.exceptionVariable
             if let variable {
                 current = current.pushScope(begin: variable.begin)
+                if let v       = await cast(type: ASTVariableDefinition.self, variable),
+                   let retType = v.returnType,
+                   let type    = await cast(type: AbstractType.self, retType),
+                   let name    = await cast(type: ASTName.self, v.name)?.name {
+                    _ = current.addIdentifier(begin: variable.begin, name: name, type: type, .VARIABLE_DEFINITION)
+                }
             }
             await tryCatch.catchExression.visit(self)
             if variable != nil {
