@@ -579,7 +579,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                 saveText()
                 return close()
                                            
-            case .alertSecondButtonReturn: break
+            case .alertSecondButtonReturn:
+                window.isDocumentEdited = false
                 
             default: return false
             }
