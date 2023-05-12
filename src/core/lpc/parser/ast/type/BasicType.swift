@@ -70,7 +70,7 @@ class BasicType: AbstractType {
     func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
         let otherContext: Context?
         if let otherFile = ((other as? BasicType)?.typeFile as? ASTStrings)?.value {
-            otherContext = await loader?.loadAndParse(file: otherFile, referrer: "/")
+            otherContext = await loader?.loadAndParse(file: otherFile)
         } else {
             otherContext = nil
         }

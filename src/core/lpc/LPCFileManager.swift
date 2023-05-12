@@ -39,7 +39,7 @@ class LPCFileManager {
     ///
     /// - Parameter name: The name of the desired file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
-    func loadAndParse(file name: String, referrer: String) async -> Context? {
+    func loadAndParse(file name: String, referrer: String = "") async -> Context? {
         if let context = cachedContexts[name] {
             return context
         }

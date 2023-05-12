@@ -183,7 +183,7 @@ class Interpreter: ASTVisitor {
     /// - Parameter file: The strings expression evaluating to the file name.
     /// - Returns: The interpretation context or `nil` if the file could not be interpreted.
     private func createContext(for file: ASTStrings) async -> Context? {
-        return await loader.loadAndParse(file: file.value, referrer: current.fileGlobal.fileName ?? "/")
+        return await loader.loadAndParse(file: file.value, referrer: current.fileGlobal.fileName ?? "")
     }
     
     /// Returns whether the file indicated by the given strings expression exists.
@@ -384,7 +384,7 @@ class Interpreter: ASTVisitor {
     /// - Returns: The return type of the expression.
     private func visitNew(expression: ASTNew) async -> TypeProto {
         guard let strings = await cast(type: ASTStrings.self, expression.instancingExpression),
-              let context = await loader.loadAndParse(file: strings.value, referrer: current.fileGlobal.fileName ?? "/") else {
+              let context = await loader.loadAndParse(file: strings.value, referrer: current.fileGlobal.fileName ?? "") else {
             addHighlight(MessagedHighlight(begin:   expression.instancingExpression.begin,
                                            end:     expression.instancingExpression.end,
                                            type:    .UNRESOLVED,
