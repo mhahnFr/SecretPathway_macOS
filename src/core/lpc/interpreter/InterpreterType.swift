@@ -31,6 +31,8 @@ class InterpreterType: BasicType {
     static let symbol  = InterpreterType(type: .SYMBOL_KEYWORD)
     /// Represents the `int` type.
     static let int     = InterpreterType(type: .INT_KEYWORD)
+    /// Represents the `float` type.
+    static let float   = InterpreterType(type: .FLOAT_KEYWORD)
     /// Represents the `bool` type.
     static let bool    = InterpreterType(type: .BOOL)
     /// Represents the `void` type.
