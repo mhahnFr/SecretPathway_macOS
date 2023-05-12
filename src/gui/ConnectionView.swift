@@ -43,19 +43,25 @@ struct ConnectionView: View {
                     }
                     if delegate.showPasswordField {
                         if #available(macOS 12.0, *) {
-                            SecureField("Enter something...", text: $enteredText).onSubmit {
-                                sendMessage()
-                            }
+                            SecureField("Enter something...", text: $enteredText)
+                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
+                                .onSubmit {
+                                    sendMessage()
+                                }
                         } else {
                             SecureField("Enter something...", text: $enteredText)
+                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
                         }
                     } else {
                         if #available(macOS 12.0, *) {
-                            TextField("Enter something...", text: $enteredText).onSubmit {
-                                sendMessage()
-                            }
+                            TextField("Enter something...", text: $enteredText)
+                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
+                                .onSubmit {
+                                    sendMessage()
+                                }
                         } else {
                             TextField("Enter something...", text: $enteredText)
+                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
                         }
                     }
                     Button("Send") {
