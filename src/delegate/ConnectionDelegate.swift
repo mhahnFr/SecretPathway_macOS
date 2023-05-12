@@ -192,7 +192,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// - Parameter content: The content of the file to be displayed.
     func showEditor(file name: String? = nil, content: String? = nil) {
         let loader = sppPlugin.active ? SPPFileManager(plugin: sppPlugin)
-                                      : LocalFileManager()
+                                      : LPCFileManager()
         if editorDelegate == nil && Settings.shared.editorInlined {
             showInlinedEditor(loader: loader, file: name, content: content)
         } else {
