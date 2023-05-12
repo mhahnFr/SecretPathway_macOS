@@ -165,8 +165,14 @@ struct Tokenizer {
         case "operator":   return Token(begin: begin, type: .OPERATOR,       end: end)
             
         default:
-            // TODO: Hex-nums, floats
-            if let number = Int(word) {
+            // TODO: Floats
+            let number: Int?
+            if word.starts(with: "0x") || word.starts(with: "0X") {
+                number = Int(word[word.index(word.startIndex, offsetBy: 2)...])
+            } else {
+                number = Int(word)
+            }
+            if let number {
                 return Token(begin: begin, type: .INTEGER, payload: number, end: end)
             }
             return Token(begin: begin, type: .IDENTIFIER, payload: word, end: end)
