@@ -288,6 +288,10 @@ struct Parser {
         }
     }
     
+    /// Parses an `|` type.
+    ///
+    /// - Parameter lhs: The already parsed left-hand-side type.
+    /// - Returns: The parsed type.
     private mutating func parseOrType(lhs: ASTExpression) -> ASTExpression {
         advance()
         return recurr(type: OrType(lhs: lhs, rhs: parseType()))

@@ -120,8 +120,11 @@ extension FunctionReferenceTypeProto {
     }
 }
 
+/// This protocol defines the base of `|` types.
 protocol OrTypeProto: TypeProto {
+    /// The left-hand-side type.
     var lhs: TypeProto? { get }
+    /// The right-hand-side type.
     var rhs: TypeProto? { get }
 }
 

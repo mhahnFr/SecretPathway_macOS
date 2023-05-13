@@ -18,13 +18,21 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents an `|` type as an AT node.
 class OrType: AbstractType, OrTypeProto {
     let lhs: TypeProto?
     let rhs: TypeProto?
     
+    /// The left-hand-side type expression.
     let lhsExpression: ASTExpression
+    /// The right-hand-side type expression.
     let rhsExpression: ASTExpression
     
+    /// Constructs this AST node using the given type expressions.
+    ///
+    /// - Parameters:
+    ///   - lhs: The left-hand-side type expression.
+    ///   - rhs: The right-hand-side type expression.
     init(lhs: ASTExpression, rhs: ASTExpression) {
         self.lhs = TypeHelper.unwrap(lhs)
         self.rhs = TypeHelper.unwrap(rhs)
