@@ -63,5 +63,10 @@ protocol FunctionReferenceTypeProto: TypeProto {
     var variadic: Bool { get }
 }
 
+protocol OrTypeProto: TypeProto {
+    var lhs: TypeProto? { get }
+    var rhs: TypeProto? { get }
+}
+
 /// Represents a type definition as an AST node.
 typealias AbstractType = TypeProto & ASTExpression
