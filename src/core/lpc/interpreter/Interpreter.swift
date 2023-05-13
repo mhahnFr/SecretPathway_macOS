@@ -745,7 +745,7 @@ class Interpreter: ASTVisitor {
         case .AST_THIS:      currentType = InterpreterType(type: .OBJECT, file: current.fileGlobal.fileName)
         case .AST_INTEGER:   currentType = InterpreterType.int
         case .AST_FLOAT:     currentType = InterpreterType.float
-        case .AST_NIL:       currentType = InterpreterType.object
+        case .AST_NIL:       currentType = InterpreterOrType.nilType
         case .AST_SYMBOL:    currentType = InterpreterType.symbol
         case .AST_BOOL:      currentType = InterpreterType.bool
         case .AST_CHARACTER: currentType = InterpreterType.char
