@@ -34,6 +34,7 @@ struct TypeHelper {
         case .CHAR_KEYWORD:   return "char"
         case .STRING_KEYWORD: return "string"
         case .SYMBOL_KEYWORD: return "symbol"
+        case .FLOAT_KEYWORD:  return "float"
         default:              return type.rawValue.lowercased()
         }
     }

@@ -283,8 +283,14 @@ struct Parser {
         switch current.type {
         case .LEFT_PAREN: return parseFunctionReferenceType(returnType: type)
         case .LEFT_BRACKET, .RIGHT_BRACKET, .STAR: return parseArrayType(underlying: type)
+        case .PIPE: return parseOrType(lhs: type)
         default: return type
         }
+    }
+    
+    private mutating func parseOrType(lhs: ASTExpression) -> ASTExpression {
+        advance()
+        return recurr(type: OrType(lhs: lhs, rhs: parseType()))
     }
     
     /// Parses a type.
