@@ -125,5 +125,16 @@ protocol OrTypeProto: TypeProto {
     var rhs: TypeProto? { get }
 }
 
+extension OrTypeProto {
+    var string: String {
+        "\(lhs?.string ?? "<< unknown >>") | \(rhs?.string ?? "<< unknown >>")"
+    }
+    
+    func isAssignable(from other: TypeProto) -> Bool {
+        // TODO: Implement
+        false
+    }
+}
+
 /// Represents a type definition as an AST node.
 typealias AbstractType = TypeProto & ASTExpression

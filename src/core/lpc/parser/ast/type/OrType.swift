@@ -22,8 +22,6 @@ class OrType: AbstractType, OrTypeProto {
     let lhs: TypeProto?
     let rhs: TypeProto?
     
-    lazy var string = "\(lhs?.string ?? "<< unknown >>") | \(rhs?.string ?? "<< unknown >>")"
-    
     let lhsExpression: ASTExpression
     let rhsExpression: ASTExpression
     
@@ -49,15 +47,5 @@ class OrType: AbstractType, OrTypeProto {
             await lhsExpression.visit(visitor)
             await rhsExpression.visit(visitor)
         }
-    }
-    
-    internal func isAssignable(from other: TypeProto) -> Bool {
-        // TODO: Implement
-        false
-    }
-    
-    internal func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
-        // TODO: Implement
-        false
     }
 }
