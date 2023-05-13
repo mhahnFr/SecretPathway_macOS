@@ -134,8 +134,7 @@ extension OrTypeProto {
     }
     
     func isAssignable(from other: TypeProto) -> Bool {
-        // TODO: Implement
-        false
+        lhs?.isAssignable(from: other) ?? true || rhs?.isAssignable(from: other) ?? true
     }
 }
 
