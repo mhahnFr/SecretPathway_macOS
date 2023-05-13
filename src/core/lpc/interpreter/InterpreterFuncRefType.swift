@@ -24,32 +24,6 @@ class InterpreterFuncRefType: FunctionReferenceTypeProto {
     let parameterTypes: [TypeProto?]
     let variadic: Bool
     
-    var string: String {
-        var buffer = ""
-        
-        if let returnType {
-            buffer.append("\(returnType.string)")
-        } else {
-            buffer.append("<< unknown >>")
-        }
-        buffer.append("(")
-        let last = parameterTypes.last
-        parameterTypes.forEach {
-            if let type = $0 {
-                buffer.append("\(type.string)")
-            } else {
-                buffer.append("<< unknown >>")
-            }
-            if $0 !== last! || variadic {
-                buffer.append(", ")
-            }
-        }
-        if variadic { buffer.append("...") }
-        buffer.append(")")
-        
-        return buffer
-    }
-    
     /// Initializes this type representation using the given information.
     ///
     /// - Parameters:
@@ -60,23 +34,5 @@ class InterpreterFuncRefType: FunctionReferenceTypeProto {
         self.returnType     = returnType
         self.parameterTypes = parameterTypes
         self.variadic       = variadic
-    }
-    
-    func isAssignable(from other: TypeProto) -> Bool {
-        guard let o = other as? FunctionReferenceTypeProto,
-              (parameterTypes.count == o.parameterTypes.count ||
-               (parameterTypes.count < o.parameterTypes.count && variadic)),
-              let returnType,
-              let oRet = o.returnType,
-              returnType.isAssignable(from: oRet)
-        else { return false }
-        
-        for i in 0 ..< parameterTypes.count {
-            guard let type  = parameterTypes[i],
-                  let oType = o.parameterTypes[i],
-                  type.isAssignable(from: oType)
-            else { return false }
-        }
-        return true
     }
 }

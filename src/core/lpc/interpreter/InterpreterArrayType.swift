@@ -38,13 +38,4 @@ class InterpreterArrayType: ArrayTypeProto {
     init(from underlying: TypeProto?) {
         self.underlying = underlying
     }
-    
-    func isAssignable(from other: TypeProto) -> Bool {
-        guard let o = other as? ArrayTypeProto else { return false }
-        
-        if let underlying, let otherUnder = o.underlying {
-            return underlying.isAssignable(from: otherUnder)
-        }
-        return true
-    }
 }

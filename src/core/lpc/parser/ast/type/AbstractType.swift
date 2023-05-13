@@ -53,6 +53,17 @@ protocol ArrayTypeProto: TypeProto {
     var underlying: TypeProto? { get }
 }
 
+extension ArrayTypeProto {
+    func isAssignable(from other: TypeProto) -> Bool {
+        guard let o = other as? ArrayTypeProto else { return false }
+        
+        if let underlying, let otherUnder = o.underlying {
+            return underlying.isAssignable(from: otherUnder)
+        }
+        return true
+    }
+}
+
 /// This protocoll defines the base of a function reference type.
 protocol FunctionReferenceTypeProto: TypeProto {
     /// The return type of the referenced function.
@@ -61,6 +72,52 @@ protocol FunctionReferenceTypeProto: TypeProto {
     var parameterTypes: [TypeProto?] { get }
     /// Indicates whether the referenced function is variadic.
     var variadic: Bool { get }
+}
+
+extension FunctionReferenceTypeProto {
+    var string: String {
+        var buffer = ""
+        
+        if let returnType {
+            buffer.append("\(returnType.string)")
+        } else {
+            buffer.append("<< unknown >>")
+        }
+        buffer.append("(")
+        let last = parameterTypes.last
+        parameterTypes.forEach {
+            if let type = $0 {
+                buffer.append("\(type.string)")
+            } else {
+                buffer.append("<< unknown >>")
+            }
+            if $0 !== last! || variadic {
+                buffer.append(", ")
+            }
+        }
+        if variadic { buffer.append("...") }
+        buffer.append(")")
+        
+        return buffer
+    }
+    
+    func isAssignable(from other: TypeProto) -> Bool {
+        guard let o = other as? FunctionReferenceTypeProto,
+              (parameterTypes.count == o.parameterTypes.count ||
+               (parameterTypes.count < o.parameterTypes.count && variadic)),
+              let returnType,
+              let oRet = o.returnType,
+              returnType.isAssignable(from: oRet)
+        else { return false }
+        
+        for i in 0 ..< parameterTypes.count {
+            guard let type  = parameterTypes[i],
+                  let oType = o.parameterTypes[i],
+                  type.isAssignable(from: oType)
+            else { return false }
+        }
+        return true
+    }
 }
 
 protocol OrTypeProto: TypeProto {

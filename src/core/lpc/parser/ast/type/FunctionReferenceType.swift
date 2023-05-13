@@ -29,32 +29,6 @@ class FunctionReferenceType: AbstractType, FunctionReferenceTypeProto {
     let returnType: TypeProto?
     let parameterTypes: [TypeProto?]
     
-    var string: String {
-        var buffer = ""
-        
-        if let returnType {
-            buffer.append("\(returnType.string)")
-        } else {
-            buffer.append("<< unknown >>")
-        }
-        buffer.append("(")
-        let last = parameterTypes.last
-        parameterTypes.forEach {
-            if let type = $0 {
-                buffer.append("\(type.string)")
-            } else {
-                buffer.append("<< unknown >>")
-            }
-            if $0 !== last! || variadic {
-                buffer.append(", ")
-            }
-        }
-        if variadic { buffer.append("...") }
-        buffer.append(")")
-        
-        return buffer
-    }
-    
     /// Constructs this AST node using the given information.
     ///
     /// - Parameter returnType: The return type of the referenced function.
@@ -98,23 +72,5 @@ class FunctionReferenceType: AbstractType, FunctionReferenceTypeProto {
             await returnTypeExpression.visit(visitor)
             for param in parameterTypeExpressions { await param.visit(visitor) }
         }
-    }
-    
-    func isAssignable(from other: TypeProto) -> Bool {
-        guard let o = other as? FunctionReferenceTypeProto,
-              (parameterTypes.count == o.parameterTypes.count ||
-               (parameterTypes.count < o.parameterTypes.count && variadic)),
-              let returnType,
-              let oRet = o.returnType,
-              returnType.isAssignable(from: oRet)
-        else { return false }
-        
-        for i in 0 ..< parameterTypes.count {
-            guard let type  = parameterTypes[i],
-                  let oType = o.parameterTypes[i],
-                  type.isAssignable(from: oType)
-            else { return false }
-        }
-        return true
     }
 }

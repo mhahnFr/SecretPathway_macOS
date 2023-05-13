@@ -51,15 +51,4 @@ class ArrayType: AbstractType, ArrayTypeProto {
             await underlyingType.visit(visitor)
         }
     }
-    
-    func isAssignable(from other: TypeProto) -> Bool {
-        guard let o = other as? ArrayTypeProto,
-              let underlying
-        else { return false }
-        
-        if let otherUnder = o.underlying {
-            return underlying.isAssignable(from: otherUnder)
-        }
-        return true
-    }
 }
