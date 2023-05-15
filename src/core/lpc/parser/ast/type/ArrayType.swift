@@ -26,7 +26,8 @@ class ArrayType: AbstractType, ArrayTypeProto {
     
     var string: String {
         if let underlying = TypeHelper.unwrap(underlyingType) {
-            return "\(underlying.string)[]"
+            return underlying is OrTypeProto ? "(\(underlying.string))[]"
+                                             : "\(underlying.string)[]"
         }
         return "<< unknown >> []"
     }
