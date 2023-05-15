@@ -352,10 +352,7 @@ struct Parser {
         let toReturn: ASTExpression
         if current.isType(.LESS, .GREATER, .STRING) {
             // Has type file
-            if isType(previous) && !previous.isType(.OBJECT) {
-                parts.append(ASTWrong(token:   previous,
-                                      message: "File annotation is only allowed for 'object'"))
-            }
+            let typeToken = previous
             if !current.isType(.LESS) {
                 parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '<'"))
             } else {
@@ -363,11 +360,32 @@ struct Parser {
             }
             let stringPart: ASTExpression?
             if !current.isType(.STRING) {
-                stringPart = nil
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing string literal"))
+                if !current.isType(.GREATER) {
+                    if type == .EXCEPTION {
+                        stringPart = ASTName(token: current)
+                    } else {
+                        stringPart = nil
+                        parts.append(ASTWrong(token: current, message: "Expected string literal"))
+                    }
+                    advance()
+                } else {
+                    stringPart = nil
+                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing annotation"))
+                }
             } else {
                 stringPart = parseStrings()
             }
+            
+            if isType(typeToken) {
+                if stringPart?.type == .STRINGS && type != .OBJECT {
+                    parts.append(ASTWrong(token:   typeToken,
+                                          message: "File annotation is only allowed for 'object'"))
+                } else if type != .EXCEPTION && type != .OBJECT {
+                    parts.append(ASTWrong(token:   typeToken,
+                                          message: "Type annotation is only allowed for 'object' and 'exception'"))
+                }
+            }
+            
             if !current.isType(.GREATER) {
                 parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '>'"))
             } else {
