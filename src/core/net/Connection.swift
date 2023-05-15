@@ -145,6 +145,7 @@ class Connection {
                 self.connectionListener?.handleError(.receiving(error: error))
             }
             if !complete && self.connection.state == .ready { self.receive() }
+            if complete { self.close() }
         }
     }
     
