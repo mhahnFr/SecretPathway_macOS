@@ -194,9 +194,6 @@ struct Parser {
         return toReturn
     }
     
-    // TODO: Fully implement exception types
-    //                  `exception<some_id>`
-    
     /// Parses a function reference type.
     ///
     /// - Parameter returnType: The already parsed return type.
@@ -281,10 +278,15 @@ struct Parser {
     /// - Returns: The recursively parsed type or the given type.
     private mutating func recurr(type: ASTExpression) -> ASTExpression {
         switch current.type {
-        case .LEFT_PAREN: return parseFunctionReferenceType(returnType: type)
-        case .LEFT_BRACKET, .RIGHT_BRACKET, .STAR: return parseArrayType(underlying: type)
-        case .PIPE: return parseOrType(lhs: type)
-        default: return type
+        case .LEFT_PAREN:    return parseFunctionReferenceType(returnType: type)
+            
+        case .STAR,
+             .LEFT_BRACKET,
+             .RIGHT_BRACKET: return parseArrayType(underlying: type)
+            
+        case .PIPE:          return parseOrType(lhs: type)
+            
+        default:             return type
         }
     }
     
