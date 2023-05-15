@@ -27,6 +27,7 @@ class SPPPlugin: ProtocolPlugin {
     
     /// The sender this plugin is bound to.
     private let sender: ConnectionSender
+    private let syncer = DispatchQueue(label: "spp-plugin-synchronization")
     
     /// The buffer for a message in the SPP.
     private var buffer: [UInt8] = []
@@ -55,7 +56,7 @@ class SPPPlugin: ProtocolPlugin {
     }
     
     internal func onConnectionError() {
-        DispatchQueue.main.sync {
+        syncer.sync {
             for (id, (file, _, _)) in fetchList {
                 fetchList.updateValue((file, nil, true), forKey: id)
             }
@@ -145,7 +146,7 @@ class SPPPlugin: ProtocolPlugin {
     ///   - value: The content of the file or `nil`.
     ///   - error: Indicates whether an error occurred while fetching the file.
     private func setFetchedValue(file name: any StringProtocol, value: String?, error: Bool = false) {
-        DispatchQueue.main.sync {
+        syncer.sync {
             for (id, (fileName, _, _)) in fetchList {
                 if fileName == name {
                     fetchList.updateValue((fileName, value, error), forKey: id)
@@ -194,7 +195,7 @@ class SPPPlugin: ProtocolPlugin {
     ///   - id: The id of the fetcher.
     ///   - name: The name of the file to be fetched.
     private func addFetcher(id: UUID, file name: String) {
-        DispatchQueue.main.sync {
+        syncer.sync {
             fetchList[id] = (file: name, content: nil, error: false)
         }
     }
@@ -210,7 +211,7 @@ class SPPPlugin: ProtocolPlugin {
     private func fetcherWaiting(id: UUID) -> Bool {
         var ret = true
         
-        DispatchQueue.main.sync {
+        syncer.sync {
             if let fetch = fetchList[id] {
                 ret = fetch.content == nil && !fetch.error
             }
@@ -230,7 +231,7 @@ class SPPPlugin: ProtocolPlugin {
     private func getFetcher(id: UUID) -> (file: String, content: String?, error: Bool) {
         var ret = ("", String?.none, true)
         
-        DispatchQueue.main.sync {
+        syncer.sync {
             if let result = fetchList[id] {
                 ret = result
                 fetchList.removeValue(forKey: id)
