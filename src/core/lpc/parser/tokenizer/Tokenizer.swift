@@ -168,7 +168,7 @@ struct Tokenizer {
             // TODO: Floats
             let number: Int?
             if word.starts(with: "0x") || word.starts(with: "0X") {
-                number = Int(word[word.index(word.startIndex, offsetBy: 2)...])
+                number = Int(word[word.index(word.startIndex, offsetBy: 2)...], radix: 16)
             } else {
                 number = Int(word)
             }
