@@ -194,8 +194,8 @@ struct Parser {
         return toReturn
     }
     
-    // TODO: Add or types, fully implement exception types
-    //       `type | type`           `exception<some_id>`
+    // TODO: Fully implement exception types
+    //                  `exception<some_id>`
     
     /// Parses a function reference type.
     ///
@@ -297,10 +297,42 @@ struct Parser {
         return recurr(type: OrType(lhs: lhs, rhs: parseType()))
     }
     
+    /// Parses a parenthesized type declaration.
+    ///
+    /// - Returns: The parsed type expression.
+    private mutating func parseParenthesizedType() -> ASTExpression {
+        var parts = [ASTExpression]()
+        advance()
+        
+        let type: ASTExpression
+        if current.isType(.RIGHT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type"))
+            type = ASTEmpty(previous.end, current.begin)
+        } else {
+            type = parseType()
+        }
+        if !current.isType(.RIGHT_PAREN) {
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+        } else {
+            advance()
+        }
+        
+        let toReturn: ASTExpression
+        if !parts.isEmpty {
+            toReturn = combine(type, parts)
+        } else {
+            toReturn = type
+        }
+        
+        return recurr(type: toReturn)
+    }
+    
     /// Parses a type.
     ///
     /// - Returns: The parsed type.
     private mutating func parseType() -> ASTExpression {
+        guard !current.isType(.LEFT_PAREN) else { return parseParenthesizedType() }
+        
         var parts: [ASTExpression] = []
         let begin = current.begin
         
