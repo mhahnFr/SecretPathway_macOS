@@ -637,7 +637,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         let length = textStorage.length
         highlights.forEach {
             if let style = theme.styleFor(type: $0.type) {
-                let end   = $0.end >= length ? length : $0.end
+                let end   = $0.end   >= length ? length : $0.end
                 let begin = $0.begin >= length ? length : $0.begin
                 textStorage.addAttributes(style.native, range: NSMakeRange(begin, end - begin))
             }
