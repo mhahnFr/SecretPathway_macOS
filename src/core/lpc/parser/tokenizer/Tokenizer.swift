@@ -180,6 +180,10 @@ struct Tokenizer {
         }
     }
     
+    /// Returns whether the given string contains only number characters.
+    ///
+    /// - Parameter string: The string to be checked.
+    /// - Returns: Whether the string contains only numbers.
     private func isNumbers(_ string: String) -> Bool {
         for c in string {
             guard c.isNumber else { return false }
