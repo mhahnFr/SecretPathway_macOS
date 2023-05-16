@@ -55,7 +55,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     /// The referrer that opened this editor instance.
     private weak var referrer: ConnectionDelegate!
     /// The window this editor is in.
-    private weak var window: NSWindow!
+    private weak var window: NSWindow?
 
     /// The highlights in the text.
     private var highlights: [Highlight] = []
@@ -141,7 +141,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         if delta != 0 {
             view.setSelectedRange(NSMakeRange(view.selectedRange().location + delta, 0))
         }
-        window.isDocumentEdited = textStorage.string != lastSaved
+        window?.isDocumentEdited = textStorage.string != lastSaved
         if syntaxHighlighting {
             if updateSuggestions          { suggestionsUpdate()                   }
             if beginSuggestions           { computeSuggestionContext(position: view.selectedRange().location + delta,
@@ -561,12 +561,13 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         let content = textStorage.string
         Task { loader.save(file: file!, content: content) }
         lastSaved = content
-        window.isDocumentEdited = false
+        window?.isDocumentEdited = false
     }
     
     /// Closes the editor.
     func close() -> Bool {
-        if window.isDocumentEdited {
+        if let window,
+           window.isDocumentEdited {
             let alert = NSAlert()
             
             alert.alertStyle      = .warning
