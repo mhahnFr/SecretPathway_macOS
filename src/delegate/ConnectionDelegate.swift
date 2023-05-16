@@ -229,7 +229,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             self.editors.remove(at: self.editors.firstIndex(of: delegate)! )
         }
         window.contentView = NSHostingView(rootView: content)
-        window.title       = "\(Constants.APP_NAME): LPC Editor"
+        window.title       = "\(Constants.APP_NAME): Editor" + (name == nil ? "" : " - '\(name!)'")
         window.delegate    = delegate
         
         editors.append(delegate)
