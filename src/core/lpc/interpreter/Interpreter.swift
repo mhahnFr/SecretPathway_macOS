@@ -186,6 +186,12 @@ class Interpreter: ASTVisitor {
         return await loader.loadAndParse(file: file.value, referrer: current.fileGlobal.fileName ?? "")
     }
     
+    /// Creates and returns an interpretation context for the file
+    /// indicated by the given strings expression if this intepreter
+    /// instance is not in the background mode.
+    ///
+    /// - Parameter file: The strings expression evaluating to the file name.
+    /// - Returns: The interpretation context of `nil`.
     private func maybeCreateContext(for file: ASTStrings) async -> Context? {
         background ? nil : await createContext(for: file)
     }
