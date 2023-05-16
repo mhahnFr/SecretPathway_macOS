@@ -100,6 +100,14 @@ class Settings: ObservableObject {
     /// Indicates whether to use UTF-8 by default.
     @AppStorage(Constants.Storage.USE_UTF8)
     var useUTF8 = true
+    @AppStorage(Constants.Storage.EDITOR_WINDOW_X)
+    var editorWindowX = 0
+    @AppStorage(Constants.Storage.EDITOR_WINDOW_Y)
+    var editorWindowY = 0
+    @AppStorage(Constants.Storage.EDITOR_WIDTH)
+    var editorWidth = 300
+    @AppStorage(Constants.Storage.EDITOR_HEIGHT)
+    var editorHeight = 200
     
     /// The raw data of the editor theme bookmark, retained by the app storage.
     @AppStorage(Constants.Storage.EDITOR_THEME)

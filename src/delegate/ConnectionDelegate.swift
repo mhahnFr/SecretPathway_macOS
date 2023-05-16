@@ -207,10 +207,24 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     ///   - name: The name of the file to be displayed.
     ///   - content: The content of the file to be displayed.
     private func openEditorWindow(loader: LPCFileManager, file name: String?, content: String?) {
-        let window   = NSWindow(contentRect: NSMakeRect(0, 0, 300, 200), styleMask: [.closable, .resizable, .titled, .miniaturizable], backing: .buffered, defer: false)
+        let settings = Settings.shared
+        
+        let window   = NSWindow(contentRect: NSMakeRect(CGFloat(settings.editorWindowX),
+                                                        CGFloat(settings.editorWindowY),
+                                                        CGFloat(settings.editorWidth),
+                                                        CGFloat(settings.editorHeight)),
+                                styleMask:   [.closable, .resizable, .titled, .miniaturizable],
+                                backing:     .buffered,
+                                defer:       false)
         let delegate = EditorDelegate(loader: loader, referrer: self, container: window, file: name, content: content)
         let content  = EditorView(delegate: delegate)
         delegate.onClose = {
+            let bounds = window.frame
+            settings.editorWindowX = Int(bounds.origin.x)
+            settings.editorWindowY = Int(bounds.origin.y)
+            settings.editorWidth   = Int(bounds.width)
+            settings.editorHeight  = Int(bounds.height)
+            
             window.performClose(delegate)
             self.editors.remove(at: self.editors.firstIndex(of: delegate)! )
         }

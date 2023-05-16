@@ -41,5 +41,9 @@ class Constants {
         static let EDITOR_SYNTAX_HIGHLIGHT = "\(APP_NAME).editorSyntaxHighlighting"
         /// The used editor theme.
         static let EDITOR_THEME            = "\(APP_NAME).editorTheme"
+        static let EDITOR_WINDOW_X         = "\(APP_NAME).editorWindowX"
+        static let EDITOR_WINDOW_Y         = "\(APP_NAME).editorWindowY"
+        static let EDITOR_WIDTH            = "\(APP_NAME).editorWidth"
+        static let EDITOR_HEIGHT           = "\(APP_NAME).editorHeight"
     }
 }
