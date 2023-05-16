@@ -41,9 +41,13 @@ class Constants {
         static let EDITOR_SYNTAX_HIGHLIGHT = "\(APP_NAME).editorSyntaxHighlighting"
         /// The used editor theme.
         static let EDITOR_THEME            = "\(APP_NAME).editorTheme"
+        /// The editor's window's X-coordinate.
         static let EDITOR_WINDOW_X         = "\(APP_NAME).editorWindowX"
+        /// The editor's window's Y-coordinate.
         static let EDITOR_WINDOW_Y         = "\(APP_NAME).editorWindowY"
+        /// The editor's window's width.
         static let EDITOR_WIDTH            = "\(APP_NAME).editorWidth"
+        /// The editor's window's height.
         static let EDITOR_HEIGHT           = "\(APP_NAME).editorHeight"
     }
 }

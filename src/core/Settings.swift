@@ -100,12 +100,16 @@ class Settings: ObservableObject {
     /// Indicates whether to use UTF-8 by default.
     @AppStorage(Constants.Storage.USE_UTF8)
     var useUTF8 = true
+    /// The X-coordinate of the editor's window.
     @AppStorage(Constants.Storage.EDITOR_WINDOW_X)
     var editorWindowX = 0
+    /// The Y-coordinate of the editor's window.
     @AppStorage(Constants.Storage.EDITOR_WINDOW_Y)
     var editorWindowY = 0
+    /// The width of the editor's window.
     @AppStorage(Constants.Storage.EDITOR_WIDTH)
     var editorWidth = 300
+    /// The height of the editor's window.
     @AppStorage(Constants.Storage.EDITOR_HEIGHT)
     var editorHeight = 200
     
