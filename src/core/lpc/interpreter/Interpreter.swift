@@ -186,6 +186,10 @@ class Interpreter: ASTVisitor {
         return await loader.loadAndParse(file: file.value, referrer: current.fileGlobal.fileName ?? "")
     }
     
+    private func maybeCreateContext(for file: ASTStrings) async -> Context? {
+        background ? nil : await createContext(for: file)
+    }
+    
     /// Returns whether the file indicated by the given strings expression exists.
     ///
     /// - Parameter file: The strings expression evaluating to the file name.
@@ -384,7 +388,7 @@ class Interpreter: ASTVisitor {
     /// - Returns: The return type of the expression.
     private func visitNew(expression: ASTNew) async -> TypeProto {
         guard let strings = await cast(type: ASTStrings.self, expression.instancingExpression),
-              let context = await loader.loadAndParse(file: strings.value, referrer: current.fileGlobal.fileName ?? "") else {
+              let context = background ? nil : await loader.loadAndParse(file: strings.value, referrer: current.fileGlobal.fileName ?? "") else {
             addHighlight(MessagedHighlight(begin:   expression.instancingExpression.begin,
                                            end:     expression.instancingExpression.end,
                                            type:    .UNRESOLVED,
@@ -558,11 +562,11 @@ class Interpreter: ASTVisitor {
                         currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else if let type     = lhsType as? BasicType,
                               let file     = type.typeFile as? ASTStrings,
-                              let context  = await createContext(for: file) {
+                              let context  = await maybeCreateContext(for: file) {
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else if let leftString = operation.lhs as? ASTStrings,
-                              let context    = await createContext(for: leftString) {
+                              let context    = await maybeCreateContext(for: leftString) {
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
                     } else {
