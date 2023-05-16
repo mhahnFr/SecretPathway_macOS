@@ -95,6 +95,13 @@ class BasicType: AbstractType {
             }
             return true
         }
+        if other === InterpreterOrType.nilType {
+            return representedType == .EXCEPTION      ||
+                   representedType == .OBJECT         ||
+                   representedType == .MAPPING        ||
+                   representedType == .STRING_KEYWORD ||
+                   representedType == .SYMBOL_KEYWORD
+        }
         guard let o = other as? BasicType else { return false }
         if let tf  = (typeFile as? ASTStrings)?.value,
            let otf = (o.typeFile as? ASTStrings)?.value,
@@ -105,6 +112,9 @@ class BasicType: AbstractType {
             }
         }
         if o.representedType == nil {
+            return true
+        } else if representedType == .FLOAT_KEYWORD &&
+                  o.representedType == .INT_KEYWORD {
             return true
         } else if representedType == .OBJECT ||
            representedType == .STRING ||
