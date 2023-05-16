@@ -30,6 +30,7 @@ class LPCFileManager {
     /// Subclasses should override this method.
     ///
     /// - Parameter name: The name of the desired file.
+    /// - Parameter referrer: The file name from which to resolve the requested file.
     /// - Returns: The content of the file or `nil` on error.
     func load(file name: String, referrer: String) async -> String? { nil }
     
@@ -38,6 +39,7 @@ class LPCFileManager {
     /// Uses a cache to avoid loading and parsing the same file twice.
     ///
     /// - Parameter name: The name of the desired file.
+    /// - Parameter referrer: The file name from which to resolve the requested file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
     func loadAndParse(file name: String, referrer: String = "") async -> Context? {
         if let context = cachedContexts[name] {
@@ -51,6 +53,7 @@ class LPCFileManager {
     /// Does not use caching. Returns `nil` if the file could not be loaded.
     ///
     /// - Parameter name: The name of the desired file.
+    /// - Parameter referrer: The file name from which to resolve the requested file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
     private func loadAndParseIntern(file name: String, referrer: String) async -> Context? {
         guard let content = await load(file: name, referrer: referrer) else {
