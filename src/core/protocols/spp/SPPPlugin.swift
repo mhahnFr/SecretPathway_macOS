@@ -27,6 +27,7 @@ class SPPPlugin: ProtocolPlugin {
     
     /// The sender this plugin is bound to.
     private let sender: ConnectionSender
+    /// The dispath queue used for synchronizing the file fetchers.
     private let syncer = DispatchQueue(label: "spp-plugin-synchronization")
     
     /// The buffer for a message in the SPP.
