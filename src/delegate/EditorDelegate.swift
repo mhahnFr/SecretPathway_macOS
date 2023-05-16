@@ -634,9 +634,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             token = tokenizer.nextToken()
         }
         
+        let length = textStorage.length
         highlights.forEach {
             if let style = theme.styleFor(type: $0.type) {
-                textStorage.addAttributes(style.native, range: NSMakeRange($0.begin, $0.end - $0.begin))
+                let end   = $0.end >= length ? length : $0.end
+                let begin = $0.begin >= length ? length : $0.begin
+                textStorage.addAttributes(style.native, range: NSMakeRange(begin, end - begin))
             }
         }
         
