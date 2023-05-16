@@ -620,21 +620,27 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     
     /// Performs the highlighting of the text.
     private func highlight() {
-        textStorage.setAttributes(SPStyle().native, range: NSRange(0 ..< textStorage.length)) // TODO: Flickering
+        textStorage.beginEditing()
+        textStorage.setAttributes(SPStyle().native, range: NSRange(0 ..< textStorage.length))
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
         
         tokens = []
         var token = tokenizer.nextToken()
-        textStorage.beginEditing()
         while token.type != .EOF {            
             textStorage.setAttributes((theme.styleFor(type: token.type) ?? SPStyle()).native, range: NSMakeRange(token.begin, token.end - token.begin))
             
             tokens.append(token)
             token = tokenizer.nextToken()
         }
+        
+        highlights.forEach {
+            if let style = theme.styleFor(type: $0.type) {
+                textStorage.addAttributes(style.native, range: NSMakeRange($0.begin, $0.end - $0.begin))
+            }
+        }
+        
         textStorage.endEditing()
-        let roTokens = tokens
-        Task(priority: .background) {
+        Task {
             let interpreter = Interpreter(loader: loader)
             var parser      = Parser(text: textStorage.string)
             self.ast        = parser.parse()
@@ -643,12 +649,19 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             
             DispatchQueue.main.async {
                 self.textStorage.beginEditing()
+                self.textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, self.textStorage.length))
+                self.tokens.forEach {
+                    self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
+                }
+                
                 for range in self.highlights {
                     if let style = self.theme.styleFor(type: range.type) {
                         self.textStorage.addAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
                     }
                 }
-                roTokens.forEach {
+                // Setting twice makes them flicker - maybe improve.
+                //                                      - mhahnFr
+                self.tokens.forEach {
                     if $0.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
                         self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
                     }
