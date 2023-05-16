@@ -165,7 +165,6 @@ struct Tokenizer {
         case "operator":   return Token(begin: begin, type: .OPERATOR,       end: end)
             
         default:
-            // TODO: Floats
             let number: Int?
             if word.starts(with: "0x") || word.starts(with: "0X") {
                 number = Int(word[word.index(word.startIndex, offsetBy: 2)...], radix: 16)
@@ -174,9 +173,18 @@ struct Tokenizer {
             }
             if let number {
                 return Token(begin: begin, type: .INTEGER, payload: number, end: end)
+            } else if let floating = Float(word) {
+                return Token(begin: begin, type: .FLOAT, payload: floating, end: end)
             }
             return Token(begin: begin, type: .IDENTIFIER, payload: word, end: end)
         }
+    }
+    
+    private func isNumbers(_ string: String) -> Bool {
+        for c in string {
+            guard c.isNumber else { return false }
+        }
+        return true
     }
     
     /// Returns the next word read from the stream.
@@ -184,7 +192,7 @@ struct Tokenizer {
     /// - Returns: The next read word.
     private mutating func readWord() -> String {
         var buffer = ""
-        while stream.hasNext && !Tokenizer.isSpecial(stream.peek) {
+        while stream.hasNext && (!Tokenizer.isSpecial(stream.peek) || (isNumbers(buffer) && stream.peek == ".")) {
             buffer.append(stream.next())
         }
         if buffer.isEmpty && stream.hasNext {
