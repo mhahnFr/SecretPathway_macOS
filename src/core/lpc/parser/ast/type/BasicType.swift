@@ -30,6 +30,8 @@ class BasicType: AbstractType {
             let typeString = TypeHelper.tokenTypeString(representedType)
             if let file = (typeFile as? ASTStrings)?.value {
                 return "\(typeString)<\"\(file)\">"
+            } else if let annotation = (typeFile as? ASTName)?.name {
+                return "\(typeString)<\(annotation)>"
             }
             return "\(typeString)"
         }
@@ -110,6 +112,10 @@ class BasicType: AbstractType {
                   otherContext.inheritsFrom(file: tf) else {
                 return false
             }
+        } else if let annotation  = (typeFile as? ASTName)?.name,
+                  let oAnnotation = (o.typeFile as? ASTName)?.name,
+                  annotation != oAnnotation {
+            return false
         }
         if o.representedType == nil {
             return true
