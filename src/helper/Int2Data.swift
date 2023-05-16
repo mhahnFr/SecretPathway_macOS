@@ -20,13 +20,13 @@
 
 import Foundation
 
-/// An extension adding dumping possibilites to normal ints.
+/// An extension adding dumping possibilities to regular `int`s.
 extension Int {
-    /// Initializes an int from the given block of data.
+    /// Initializes an `int` from the given block of data.
     ///
-    /// Returns nil if the given block of data contains less than 4 bytes.
+    /// Returns `nil` if the given block of data contains less than 4 bytes.
     ///
-    /// - Parameter data: The data to read the int from.
+    /// - Parameter data: The data to read the `int` from.
     init?(from data: Data) {
         guard data.count >= 4 else { return nil }
         
