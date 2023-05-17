@@ -753,7 +753,15 @@ struct Parser {
         var lastCaseExpressions: [ASTExpression] = []
         var cases: [ASTExpression] = []
         
-        while !current.isType(.RIGHT_CURLY) && !isStopToken(current) {
+        var lastToken = Parser.startToken
+        while !current.isType(.RIGHT_CURLY) {
+            if current == lastToken {
+                lastCaseExpressions.append(ASTWrong(token: current, message: "Unexpected token 6"))
+                advance()
+                continue
+            } else {
+                lastToken = current
+            }
             if current.isType(.CASE) {
                 if lastCase !== defCase || !lastCaseExpressions.isEmpty {
                     cases.append(ASTCase(caseStatement: lastCase, expressions: lastCaseExpressions))
