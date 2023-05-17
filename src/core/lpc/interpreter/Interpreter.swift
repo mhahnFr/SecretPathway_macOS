@@ -25,6 +25,8 @@ class Interpreter: ASTVisitor {
     
     /// The file loader used for resolving indicated files.
     private let loader: LPCFileManager
+    /// The optional file name of the referring file.
+    private let referrer: String?
     
     /// The currently used context object.
     private var current = Context()
@@ -36,8 +38,10 @@ class Interpreter: ASTVisitor {
     /// Initializes this instance using the given file loader.
     ///
     /// - Parameter loader: The file loader used for fetching additional files.
-    init(loader: LPCFileManager) {
-        self.loader = loader
+    /// - Parameter referrer: The file name of the optional referrer.
+    init(loader: LPCFileManager, referrer: String? = nil) {
+        self.loader   = loader
+        self.referrer = referrer
     }
     
     /// Creates and returns a context object for the given AST.
@@ -183,7 +187,17 @@ class Interpreter: ASTVisitor {
     /// - Parameter file: The strings expression evaluating to the file name.
     /// - Returns: The interpretation context or `nil` if the file could not be interpreted.
     private func createContext(for file: ASTStrings) async -> Context? {
-        return await loader.loadAndParse(file: file.value, referrer: current.fileGlobal.fileName ?? "")
+        let fileName = file.value
+        
+        if let referrer,
+           referrer == fileName {
+            addHighlight(MessagedHighlight(begin:   file.begin,
+                                           end:     file.end,
+                                           type:    .ERROR,
+                                           message: "Inheriting from itself"))
+            return nil
+        }
+        return await loader.loadAndParse(file: fileName, referrer: current.fileGlobal.fileName ?? "")
     }
     
     /// Creates and returns an interpretation context for the file

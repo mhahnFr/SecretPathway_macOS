@@ -61,7 +61,7 @@ class LPCFileManager {
             return nil
         }
         var parser  = Parser(text: content)
-        let context = await Interpreter(loader: self).createBackgroundContext(for: parser.parse(), file: name)
+        let context = await Interpreter(loader: self, referrer: referrer).createBackgroundContext(for: parser.parse(), file: name)
         cachedContexts[name] = context
         return context
     }
