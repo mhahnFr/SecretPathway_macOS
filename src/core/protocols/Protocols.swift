@@ -25,6 +25,14 @@
 ///
 /// Although new plugins can be added any time, they cannot be removed.
 class Protocols {
+    /// Indicates whether the underlying connection is available.
+    var connectionAvailable = true {
+        didSet {
+            guard connectionAvailable != oldValue else { return }
+            
+            plugins.forEach { $0.connectionAvailable = connectionAvailable }
+        }
+    }
     /// The array of the plugins.
     private var plugins: [ProtocolPlugin] = []
     /// The plugin currently responsible for handling input.
@@ -84,10 +92,5 @@ class Protocols {
             }
         }
         return false
-    }
-    
-    /// Triggers the connection error handler on all registered plugins.
-    func onConnectionError() {
-        plugins.forEach { $0.onConnectionError() }
     }
 }

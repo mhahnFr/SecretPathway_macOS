@@ -19,7 +19,10 @@
  */
 
 /// This protocol defines the interface for protocol plugins.
-protocol ProtocolPlugin {
+protocol ProtocolPlugin: AnyObject {
+    /// Indicates whether the underlying connection is available.
+    var connectionAvailable: Bool { get set }
+    
     /// Returns whether the given byte is to be interpreted as a begin for
     /// sequences this plugin handles.
     ///
@@ -40,12 +43,12 @@ protocol ProtocolPlugin {
     /// - Parameter sender: A reference to the sender responsible for sending back a potential response.
     /// - Returns: Whether this plugin should be called for the next received byte.
     func process(byte: UInt8, sender: ConnectionSender) -> Bool
-    
-    /// Called when an error happened on the associated connection.
-    func onConnectionError()
 }
 
 /// This extension adds some default behaviour to the ProtocolPlugin protocol.
 extension ProtocolPlugin {
-    func onConnectionError() {}
+    var connectionAvailable: Bool {
+        get { true }
+        set {}
+    }
 }

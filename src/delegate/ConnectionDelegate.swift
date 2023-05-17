@@ -403,8 +403,6 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         #endif
         }
         
-        protocols.onConnectionError()
-        
         DispatchQueue.main.async { self.updateMessage(tmpMessage, color: .red) }
     }
     
@@ -415,6 +413,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         var tmpColor: Color?
         var timeout:  Int?
         
+        var available  = false
         var retry      = false
         var message    = true
         var tmpMessage = ""
@@ -424,18 +423,21 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         switch state {
         case .setup, .preparing:
             tmpMessage = "Connecting..."
+            available  = true
             
         case .ready:
             tmpMessage = "Connected."
             tmpColor   = .green
             timeout    = 5
+            available  = true
             
         case .cancelled:
             tmpMessage = "Disconnected!"
             tmpColor   = .yellow
             
         case .waiting(let error):
-            retry = true
+            retry     = true
+            available = true
             fallthrough
         case .failed(let error):
             message = false
@@ -444,6 +446,8 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         default:
             fatalError()
         }
+        
+        protocols.connectionAvailable = available
         
         DispatchQueue.main.async {
             if message { self.updateMessage(tmpMessage, color: tmpColor) }

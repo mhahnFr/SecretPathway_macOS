@@ -24,6 +24,17 @@ import Foundation
 class SPPPlugin: ProtocolPlugin {
     /// Indicates whether the SP protocol is active.
     var active = false
+    var connectionAvailable = true {
+        didSet {
+            if !connectionAvailable {
+                syncer.sync {
+                    for (id, (file, _, _)) in fetchList {
+                        fetchList.updateValue((file, nil, true), forKey: id)
+                    }
+                }
+            }
+        }
+    }
     
     /// The sender this plugin is bound to.
     private let sender: ConnectionSender
@@ -54,14 +65,6 @@ class SPPPlugin: ProtocolPlugin {
         }
         buffer.append(byte)
         return true
-    }
-    
-    internal func onConnectionError() {
-        syncer.sync {
-            for (id, (file, _, _)) in fetchList {
-                fetchList.updateValue((file, nil, true), forKey: id)
-            }
-        }
     }
     
     /// Handles the received SPP message.
@@ -248,6 +251,8 @@ class SPPPlugin: ProtocolPlugin {
     /// - Parameter referrer: The file referencing the requested file.
     /// - Returns: The content of the file or `nil` if an error occurred.
     func fetch(file name: String, referrer: String) async -> String? {
+        guard connectionAvailable else { return nil }
+        
         let id = UUID()
         addFetcher(id: id, file: name)
         send("file:fetch:\(name):\(referrer)")
