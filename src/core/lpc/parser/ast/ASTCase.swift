@@ -48,6 +48,7 @@ class ASTCase: ASTExpression {
     
     override func visit(_ visitor: ASTVisitor) async {
         if await visitor.maybeVisit(self) {
+            await caseStatement.visit(visitor)
             for expression in expressions { await expression.visit(visitor) }
         }
     }
