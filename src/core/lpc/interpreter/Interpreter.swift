@@ -743,9 +743,21 @@ class Interpreter: ASTVisitor {
         case .AST_FOREACH:
             let loop = expression as! ASTForEach
             current  = current.pushScope(begin: loop.begin)
-            // TODO: Typecheck the variable
             await loop.variable.visit(self)
+            let varType = currentType
             await loop.rangeExpression.visit(self)
+            let type: TypeProto?
+            if let t = currentType as? ArrayTypeProto {
+                type = t.underlying
+            } else {
+                type = currentType
+            }
+            if await !isAssignable(varType, from: type ?? InterpreterType.unknown) {
+                addHighlight(MessagedHighlight(begin:   loop.variable.begin,
+                                               end:     loop.variable.end,
+                                               type:    .TYPE_MISMATCH,
+                                               message: "\(varType.string) is not assignable from \(type?.string ?? "<< unknown >>")"))
+            }
             await loop.body.visit(self)
             current  = current.popScope(end: loop.end)!
             
