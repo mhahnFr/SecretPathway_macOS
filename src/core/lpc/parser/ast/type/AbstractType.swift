@@ -79,7 +79,8 @@ extension FunctionReferenceTypeProto {
         var buffer = ""
         
         if let returnType {
-            buffer.append("\(returnType.string)")
+            buffer.append(returnType is OrTypeProto ? "(\(returnType.string))"
+                                                    : "\(returnType.string)")
         } else {
             buffer.append("<< unknown >>")
         }

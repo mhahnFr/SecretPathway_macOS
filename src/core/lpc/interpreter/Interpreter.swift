@@ -743,6 +743,7 @@ class Interpreter: ASTVisitor {
         case .AST_FOREACH:
             let loop = expression as! ASTForEach
             current  = current.pushScope(begin: loop.begin)
+            // TODO: Typecheck the variable
             await loop.variable.visit(self)
             await loop.rangeExpression.visit(self)
             await loop.body.visit(self)
