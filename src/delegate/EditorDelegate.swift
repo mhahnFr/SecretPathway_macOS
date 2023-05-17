@@ -184,7 +184,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             textStorage.replaceCharacters(in: editedRange, with: "    ")
             self.delta = 0
             
-        case "(", "{", "[", "\"", "'", "<":
+        case "(", "{", "[", "\"", "'":
             if isSpecial(underlying, editedRange.location + editedRange.length) {
                 let closing = getClosingString(str)
                 textStorage.insert(NSAttributedString(string: closing), at: editedRange.location + editedRange.length)
@@ -385,8 +385,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         let c = string[string.index(string.startIndex, offsetBy: offset - 1)]
         return c == "(" ||
                c == "{" ||
-               c == "[" ||
-               c == "<"
+               c == "["
     }
     
     /// Returns whether the character at the given position is a closing parenthesis.
@@ -401,8 +400,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         let c = string[string.index(string.startIndex, offsetBy: offset)]
         return c == ")" ||
                c == "}" ||
-               c == "]" ||
-               c == ">"
+               c == "]"
     }
     
     /// Returns whether only spaces preceed the given position in the given string.
@@ -482,7 +480,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         case "(": toReturn = ")"
         case "{": toReturn = "}"
         case "[": toReturn = "]"
-        case "<": toReturn = ">"
             
         default:  toReturn = opening
         }
@@ -562,6 +559,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         Task { loader.save(file: file!, content: content) }
         lastSaved = content
         window?.isDocumentEdited = false
+        setStatus(text: "\(file!) saved.")
     }
     
     /// Closes the editor.
