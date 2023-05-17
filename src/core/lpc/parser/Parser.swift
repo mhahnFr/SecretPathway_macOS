@@ -542,7 +542,8 @@ struct Parser {
             isType(current) && next.isType(.LEFT_BRACKET, .STAR, .RIGHT_BRACKET)           ||
             (isType(current) && isStopToken(next))                                         ||
             (isType(current) && next.isType(.LEFT_PAREN, .RIGHT_PAREN))                    ||
-            isType(current) && next.isType(.LESS, .STRING, .GREATER) {
+            isType(current) && next.isType(.LESS, .STRING, .GREATER)                       ||
+            isType(current) && next.isType(.PIPE) {
             return parseFancyVariableDeclaration()
         }
         
