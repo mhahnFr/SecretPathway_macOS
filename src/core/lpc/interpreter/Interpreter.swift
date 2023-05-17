@@ -512,7 +512,9 @@ class Interpreter: ASTVisitor {
             currentType = InterpreterType.void
             
         case .AST_INCLUDE:
-            await addIncluding(file: cast(type: ASTStrings.self, (expression as! ASTInclude).included)!)
+            if let file = await cast(type: ASTStrings.self, (expression as! ASTInclude).included) {
+                await addIncluding(file: file)
+            }
             
         case .AST_INHERITANCE:
             let inheritance = expression as! ASTInheritance
