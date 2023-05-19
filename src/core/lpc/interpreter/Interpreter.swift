@@ -779,6 +779,34 @@ class Interpreter: ASTVisitor {
                 current = current.popScope(end: tryCatch.catchExression.end)!
             }
             
+        case .AST_CLASS:
+            let c = expression as! ASTClass
+            let enclosing = current
+            current = Context()
+            let name = await cast(type: ASTName.self, c.name)!
+            if let inheritance = c.inheritance {
+                if let inherit = await cast(type: ASTInheritance.self, inheritance),
+                   let expr    = inherit.inherited,
+                   let file    = await cast(type: ASTStrings.self, expr),
+                   let context = await createContext(for: file) {
+                    current.inherited.append(context)
+                } else {
+                    addHighlight(MessagedHighlight(begin:   inheritance.begin,
+                                                   end:     inheritance.end,
+                                                   type:    .UNRESOLVED,
+                                                   message: "Could not resolve inheritance"))
+                }
+            }
+            for statement in c.statements {
+                await statement.visit(self)
+            }
+            current.enclosing = enclosing
+            if enclosing.addClass(context: current,
+                                   name:    name) {
+                addHighlight(MessagedHighlight(begin: c.name.begin, end: c.name.end, type: .ERROR, message: "Redeclaring class \"\(name.name ?? "<< unknown >>")\""))
+            }
+            current = enclosing
+            
         case .AST_STRING,
              .STRINGS:       currentType = InterpreterType.string
         case .AST_THIS:      currentType = InterpreterType(type: .OBJECT, file: current.fileGlobal.fileName)
@@ -814,6 +842,7 @@ class Interpreter: ASTVisitor {
         type != .AST_NEW             &&
         type != .AST_FOR             &&
         type != .AST_FOREACH         &&
-        type != .TRY_CATCH
+        type != .TRY_CATCH           &&
+        type != .AST_CLASS
     }
 }

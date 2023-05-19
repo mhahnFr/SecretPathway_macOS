@@ -31,10 +31,12 @@ class Context: Instruction {
     private(set) var instructions: [Int: Instruction] = [:]
     
     var end = 0
+    var enclosing: Context?
     /// The included context objects.
     var included: [Context] = []
     /// The inherited context objects.
     var inherited: [Context] = []
+    var classes = [String: Context]()
     /// The global scope in which this context is in.
     var fileGlobal: Context {
         if let parent {
@@ -247,6 +249,15 @@ class Context: Instruction {
                 return true
             }
         }
+        return false
+    }
+    
+    func addClass(context: Context, name: ASTName) -> Bool {
+        guard let n = name.name else { return false }
+        guard classes[n] == nil else { return true  }
+        
+        classes[n] = context
+        
         return false
     }
 }
