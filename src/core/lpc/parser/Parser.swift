@@ -408,10 +408,7 @@ struct Parser {
     private mutating func parseName() -> ASTExpression {
         let toReturn: ASTExpression
         
-        if isStopToken(current) {
-            toReturn = combine(ASTName(begin: previous.end, end: current.begin),
-                               ASTMissing(begin: previous.end, end: current.begin, message: "Missing name"))
-        } else if current.isType(.OPERATOR) {
+        if current.isType(.OPERATOR) {
             let begin = current.begin
             advance()
             
@@ -428,9 +425,13 @@ struct Parser {
             } else {
                 toReturn = identifier
             }
-        } else if !current.isType(.IDENTIFIER) {
+        } else if isType(current) || isModifier(current) {
             toReturn = combine(ASTName(begin: current.begin, end: current.end),
                                ASTWrong(token: current, message: "Expected a name"))
+            advance()
+        } else if !current.isType(.IDENTIFIER) {
+            toReturn = combine(ASTName(begin: previous.end, end: current.begin),
+                               ASTMissing(begin: previous.end, end: current.begin, message: "Missing name"))
         } else {
             toReturn = ASTName(token: current)
             advance()
@@ -502,15 +503,15 @@ struct Parser {
         return toReturn
     }
     
-    /// Returns whether the given token is a stop token.
-    ///
-    /// - Parameter token: The token to be checked.
-    /// - Returns: Whether the given token should stop a parsing loop.
-    private func isStopToken(_ token: Token) -> Bool {
-        token.isType(.EOF, .RIGHT_PAREN, .RIGHT_BRACKET, .RIGHT_CURLY, .COLON, .SEMICOLON,
-                     .ASSIGNMENT, .ASSIGNMENT_PLUS, .ASSIGNMENT_STAR, .ASSIGNMENT_MINUS,
-                     .ASSIGNMENT_SLASH, .ASSIGNMENT_PERCENT, .ELSE, .WHILE, .CATCH)
-    }
+//    /// Returns whether the given token is a stop token.
+//    ///
+//    /// - Parameter token: The token to be checked.
+//    /// - Returns: Whether the given token should stop a parsing loop.
+//    private func isStopToken(_ token: Token) -> Bool {
+//        token.isType(.EOF, .RIGHT_PAREN, .RIGHT_BRACKET, .RIGHT_CURLY, .COLON, .SEMICOLON,
+//                     .ASSIGNMENT, .ASSIGNMENT_PLUS, .ASSIGNMENT_STAR, .ASSIGNMENT_MINUS,
+//                     .ASSIGNMENT_SLASH, .ASSIGNMENT_PERCENT, .ELSE, .WHILE, .CATCH)
+//    }
     
     /// Returns whether the given type represents an operator.
     ///
@@ -541,7 +542,7 @@ struct Parser {
         if current.isType(.LET)                                                            ||
             ((current.isType(.IDENTIFIER) || isType(current)) && next.isType(.IDENTIFIER)) ||
             isType(current) && next.isType(.LEFT_BRACKET, .STAR, .RIGHT_BRACKET)           ||
-            (isType(current) && isStopToken(next))                                         ||
+//            (isType(current) && isStopToken(next))                                         ||
             (isType(current) && next.isType(.LEFT_PAREN, .RIGHT_PAREN))                    ||
             isType(current) && next.isType(.LESS, .STRING, .GREATER)                       ||
             isType(current) && next.isType(.PIPE) {
@@ -1278,7 +1279,7 @@ struct Parser {
         var list: [ASTExpression] = []
         
         var lastToken = Parser.startToken
-        while !current.isType(type) && !isStopToken(current) {
+        while !current.isType(type) {//} && !isStopToken(current) {
             if current == lastToken {
                 list.append(ASTWrong(token: current, message: "Unexpected token 4"))
                 advance()
@@ -1505,7 +1506,7 @@ struct Parser {
         
         var previousExpression = lhs;
         var lastToken = Parser.startToken
-        while isOperator(current) && !isStopToken(current) {
+        while isOperator(current) {//} && !isStopToken(current) {
             if current == lastToken {
                 previousExpression = combine(previousExpression, ASTWrong(token: current, message: "Unexpected token 3"))
                 advance()
