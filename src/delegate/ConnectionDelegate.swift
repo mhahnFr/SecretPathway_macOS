@@ -450,6 +450,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         protocols.connectionAvailable = available
         
         DispatchQueue.main.async {
+            if !available {
+                self.passwordMode = false
+                self.prompt       = nil
+            }
             if message { self.updateMessage(tmpMessage, color: tmpColor) }
             if let timeout {
                 self.messageTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(timeout), repeats: false) { _ in
