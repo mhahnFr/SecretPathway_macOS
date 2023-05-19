@@ -529,7 +529,8 @@ struct Parser {
     /// - Returns: Whether the given token represents a type.
     private func isType(_ token: Token) -> Bool {
         token.isType(.VOID, .CHAR_KEYWORD, .INT_KEYWORD, .BOOL, .OBJECT, .STRING_KEYWORD,
-                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR, .FLOAT_KEYWORD, .EXCEPTION)
+                     .SYMBOL_KEYWORD, .MAPPING, .ANY, .MIXED, .AUTO, .OPERATOR, .FLOAT_KEYWORD,
+                     .EXCEPTION, .FUNCTION)
     }
     
     /// Checks and parses a variable declaration. If no variable

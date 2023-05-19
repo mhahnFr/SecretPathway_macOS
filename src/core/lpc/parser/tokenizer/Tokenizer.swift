@@ -163,6 +163,7 @@ struct Tokenizer {
         case "try":        return Token(begin: begin, type: .TRY,            end: end)
         case "catch":      return Token(begin: begin, type: .CATCH,          end: end)
         case "operator":   return Token(begin: begin, type: .OPERATOR,       end: end)
+        case "function":   return Token(begin: begin, type: .FUNCTION,       end: end)
             
         default:
             let number: Int?
