@@ -803,7 +803,10 @@ class Interpreter: ASTVisitor {
             current.enclosing = enclosing
             if enclosing.addClass(context: current,
                                    name:    name) {
-                addHighlight(MessagedHighlight(begin: c.name.begin, end: c.name.end, type: .ERROR, message: "Redeclaring class \"\(name.name ?? "<< unknown >>")\""))
+                addHighlight(MessagedHighlight(begin:   c.name.begin,
+                                               end:     c.name.end,
+                                               type:    .ERROR,
+                                               message: "Redeclaring class \"\(name.name ?? "<< unknown >>")\""))
             }
             current = enclosing
             

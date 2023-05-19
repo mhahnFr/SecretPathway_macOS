@@ -92,6 +92,7 @@ struct DefaultTheme: SPTheme {
             .OPERATOR:       type,
             .LET:            type,
             .EXCEPTION:      type,
+            .FUNCTION:       type,
             
             .INTEGER:   const,
             .FLOAT:     const,
