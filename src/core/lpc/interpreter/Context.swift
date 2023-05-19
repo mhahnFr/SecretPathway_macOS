@@ -31,11 +31,13 @@ class Context: Instruction {
     private(set) var instructions: [Int: Instruction] = [:]
     
     var end = 0
+    /// The enclosing context, used for classes.
     var enclosing: Context?
     /// The included context objects.
     var included: [Context] = []
     /// The inherited context objects.
     var inherited: [Context] = []
+    /// The classes declared in this context.
     var classes = [String: Context]()
     /// The global scope in which this context is in.
     var fileGlobal: Context {
@@ -252,6 +254,13 @@ class Context: Instruction {
         return false
     }
     
+    /// Adds a class with the given context and the given name expression
+    /// ot this context.
+    ///
+    /// - Parameters:
+    ///   - context: The interpretation context of the new class.
+    ///   - name: The name expression of the new class.
+    /// - Returns: Whether a class with the same name already exists.
     func addClass(context: Context, name: ASTName) -> Bool {
         guard let n = name.name else { return false }
         guard classes[n] == nil else { return true  }
