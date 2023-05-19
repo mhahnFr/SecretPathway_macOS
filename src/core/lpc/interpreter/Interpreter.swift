@@ -305,7 +305,6 @@ class Interpreter: ASTVisitor {
         for id in ids {
             if let fd = id as? FunctionDefinition,
                fd.parameters.count == function.arguments.count || fd.variadic {
-                // TODO: Check types
                 await visitFunctionCall(function: function, id: fd)
                 return fd.returnType
             }
