@@ -527,15 +527,23 @@ class Interpreter: ASTVisitor {
             }
             
             let idName = await cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>"
+            let modifiers = await visitModifiers(varDefinition.modifiers)
             if !current.addIdentifier(begin:     varDefinition.begin,
                                       name:      idName,
                                       type:      type,
                                       .VARIABLE_DEFINITION,
-                                      modifiers: await visitModifiers(varDefinition.modifiers)) {
+                                      modifiers: modifiers) {
                 addHighlight(MessagedHighlight(begin:   varDefinition.name.begin,
                                                end:     varDefinition.name.end,
                                                type:    .ERROR,
                                                message: "Redeclaring identifier \"\(idName)\""))
+            }
+            if modifiers.isOverride,
+               current.getSuperIdentifiers(name: idName, includeProtected: true).isEmpty {
+                addHighlight(MessagedHighlight(begin:   varDefinition.name.begin,
+                                               end:     varDefinition.name.end,
+                                               type:    .WARNING,
+                                               message: "Identifier is marked override but overrides nothing"))
             }
             maybeWrongVoid(type)
             currentType = type
@@ -549,13 +557,23 @@ class Interpreter: ASTVisitor {
             await retType.visit(self)
             let params  = await visitParams(of: function)
 
+            let name = await cast(type: ASTName.self, function.name)!
+            let modifiers = await visitModifiers(function.modifiers)
             let (scope, redefs) = await current.addFunction(begin:      function.begin,
                                                             scopeBegin: block.begin,
-                                                            name:       cast(type: ASTName.self,      function.name)!,
+                                                            name:       name,
                                                             returnType: cast(type: AbstractType.self, function.returnType)!,
                                                             parameters: params,
                                                             variadic:   paramExpressions.last?.type == .AST_ELLIPSIS,
-                                                            modifiers:  await visitModifiers(function.modifiers))
+                                                            modifiers:  modifiers)
+            if modifiers.isOverride,
+               let n = name.name,
+               current.getSuperIdentifiers(name: n, includeProtected: true).isEmpty {
+                addHighlight(MessagedHighlight(begin:   name.begin,
+                                               end:     name.end,
+                                               type:    .WARNING,
+                                               message: "Identifier is marked override but overrides nothing"))
+            }
             current = scope
             redefs.forEach {
                 guard let name = $0 else { return }
