@@ -172,7 +172,8 @@ class Interpreter: ASTVisitor {
                 let definition = Definition(begin:      param.begin,
                                             returnType: type,
                                             name:       name?.name ?? "<< unknown >>",
-                                            kind:       .PARAMETER)
+                                            kind:       .PARAMETER,
+                                            modifiers:  Modifier())
                 definition.end = param.end
                 parameters.append((name, definition))
             }
@@ -430,6 +431,66 @@ class Interpreter: ASTVisitor {
         return InterpreterType(type: .OBJECT, file: strings.value)
     }
     
+    /// Visits the given modifiers.
+    ///
+    /// - Parameter modifiers: The modifier expressions to be visited.
+    /// - Returns: The modfiers abstraction.
+    private func visitModifiers(_ modifiers: [ASTExpression]) async -> Modifier {
+        var mods = Modifier()
+        var accessModifiers = [ASTModifier]()
+        
+        for modifier in modifiers {
+            if let actual = await cast(type: ASTModifier.self, modifier) {
+                let was: Bool
+                switch actual.modifier {
+                case .NOSAVE:
+                    was = mods.isNosave
+                    mods.isNosave = true
+                    
+                case .DEPRECATED:
+                    was = mods.isDeprecated
+                    mods.isDeprecated = true
+                    
+                case .OVERRIDE:
+                    was = mods.isOverride
+                    mods.isOverride = true
+                    
+                case .PUBLIC:
+                    was = mods.isPublic
+                    mods.isPublic = true
+                    accessModifiers.append(actual)
+                    
+                case .PRIVATE:
+                    was = mods.isPrivate
+                    mods.isPrivate = true
+                    accessModifiers.append(actual)
+
+                case .PROTECTED:
+                    was = mods.isProtected
+                    mods.isProtected = true
+                    accessModifiers.append(actual)
+
+                default: was = false
+                }
+                if was {
+                    addHighlight(MessagedHighlight(begin:   actual.begin,
+                                                   end:     actual.end,
+                                                   type:    .WARNING,
+                                                   message: "Already declared \(actual.modifier?.rawValue.lowercased() ?? "<unknown>")"))
+                }
+            }
+        }
+        if accessModifiers.count > 1 {
+            accessModifiers.forEach {
+                addHighlight(MessagedHighlight(begin:   $0.begin,
+                                               end:     $0.end,
+                                               type:    .WARNING,
+                                               message: "Mixing access modifiers"))
+            }
+        }
+        return mods
+    }
+    
     internal func visit(_ expression: ASTExpression) async {
         var highlight = true
         
@@ -459,10 +520,11 @@ class Interpreter: ASTVisitor {
             }
             
             let idName = await cast(type: ASTName.self, varDefinition.name)?.name ?? "<unknown>"
-            if !current.addIdentifier(begin: varDefinition.begin,
-                                      name:  idName,
-                                      type: type,
-                                      .VARIABLE_DEFINITION) {
+            if !current.addIdentifier(begin:     varDefinition.begin,
+                                      name:      idName,
+                                      type:      type,
+                                      .VARIABLE_DEFINITION,
+                                      modifiers: await visitModifiers(varDefinition.modifiers)) {
                 addHighlight(MessagedHighlight(begin:   varDefinition.name.begin,
                                                end:     varDefinition.name.end,
                                                type:    .ERROR,
@@ -485,7 +547,8 @@ class Interpreter: ASTVisitor {
                                                             name:       cast(type: ASTName.self,      function.name)!,
                                                             returnType: cast(type: AbstractType.self, function.returnType)!,
                                                             parameters: params,
-                                                            variadic:   paramExpressions.last?.type == .AST_ELLIPSIS)
+                                                            variadic:   paramExpressions.last?.type == .AST_ELLIPSIS,
+                                                            modifiers:  await visitModifiers(function.modifiers))
             current = scope
             redefs.forEach {
                 guard let name = $0 else { return }
@@ -770,7 +833,11 @@ class Interpreter: ASTVisitor {
                    let retType = v.returnType,
                    let type    = await cast(type: AbstractType.self, retType),
                    let name    = await cast(type: ASTName.self, v.name)?.name {
-                    _ = current.addIdentifier(begin: variable.begin, name: name, type: type, .VARIABLE_DEFINITION)
+                    _ = current.addIdentifier(begin:     variable.begin,
+                                              name:      name,
+                                              type:      type,
+                                              .VARIABLE_DEFINITION,
+                                              modifiers: Modifier())
                 }
             }
             await tryCatch.catchExression.visit(self)

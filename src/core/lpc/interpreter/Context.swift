@@ -88,10 +88,10 @@ class Context: Instruction {
     ///   - type: The return type of the identifier.
     ///   - kind: The AST type of the identifier.
     /// - Returns: Returns whether the added identifier does not redeclare another one.
-    func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType) -> Bool {
+    func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType, modifiers: Modifier) -> Bool {
         let notRedeclaring = instructions.first { ($0.value as? Definition)?.name == name } == nil
         if notRedeclaring {
-            instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind)
+            instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind, modifiers: modifiers)
         }
         return notRedeclaring
     }
@@ -112,7 +112,8 @@ class Context: Instruction {
                      name:       ASTName,
                      returnType: TypeProto,
                      parameters: [(ASTName?, Definition)],
-                     variadic: Bool) -> (Context, [ASTName?]) {
+                     variadic:   Bool,
+                     modifiers:  Modifier) -> (Context, [ASTName?]) {
         var redefinitions = [ASTName?]()
         let previous = instructions.first {
             if let fd = $0.value as? FunctionDefinition {
@@ -139,7 +140,8 @@ class Context: Instruction {
                                           name:       name.name ?? "<< unknown >>",
                                           returnType: returnType,
                                           parameters: paramDefs,
-                                          variadic:   variadic)
+                                          variadic:   variadic,
+                                          modifiers:  modifiers)
         if previous == nil {
             instructions[begin] = function
         } else {

@@ -54,10 +54,11 @@ class FunctionDefinition: Definition {
          name:       String,
          returnType: TypeProto,
          parameters: [Definition],
-         variadic:   Bool) {
+         variadic:   Bool,
+         modifiers:  Modifier) {
         self.parameters = parameters
         self.variadic   = variadic
         
-        super.init(begin: begin, returnType: returnType, name: name, kind: .FUNCTION_DEFINITION)
+        super.init(begin: begin, returnType: returnType, name: name, kind: .FUNCTION_DEFINITION, modifiers: modifiers)
     }
 }

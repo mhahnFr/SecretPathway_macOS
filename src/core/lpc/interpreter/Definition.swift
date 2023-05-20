@@ -26,6 +26,7 @@ class Definition: Instruction {
     let name: String
     /// The type of property definition.
     let kind: ASTType
+    let modifiers: Modifier
     
     var end: Int = -1
     
@@ -36,10 +37,11 @@ class Definition: Instruction {
     ///   - returnType: The return type.
     ///   - name: The name of this property.
     ///   - kind: The AST type of this property definition.
-    init(begin: Int, returnType: TypeProto, name: String, kind: ASTType) {
+    init(begin: Int, returnType: TypeProto, name: String, kind: ASTType, modifiers: Modifier) {
         self.begin      = begin
         self.returnType = returnType
         self.name       = name
         self.kind       = kind
+        self.modifiers  = modifiers
     }
 }

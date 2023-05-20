@@ -29,6 +29,7 @@
 		BF54F64D290D6F410093037F /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54F64C290D6F410093037F /* AboutView.swift */; };
 		BF551CB729AE7F3D004D1CFE /* ASTCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF551CB629AE7F3D004D1CFE /* ASTCharacter.swift */; };
 		BF551CB929AE8029004D1CFE /* ASTClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF551CB829AE8029004D1CFE /* ASTClass.swift */; };
+		BF570A6B2A1924F60097DEFA /* Modifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF570A6A2A1924F60097DEFA /* Modifier.swift */; };
 		BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF577EAC291BDF1900E7A897 /* Constants.swift */; };
 		BF5C0F3A29E74012007F49BA /* ASTTryCatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F3929E74012007F49BA /* ASTTryCatch.swift */; };
 		BF5C0F3C29E7435A007F49BA /* ASTSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F3B29E7435A007F49BA /* ASTSwitch.swift */; };
@@ -147,6 +148,7 @@
 		BF54F64C290D6F410093037F /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		BF551CB629AE7F3D004D1CFE /* ASTCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTCharacter.swift; sourceTree = "<group>"; };
 		BF551CB829AE8029004D1CFE /* ASTClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTClass.swift; sourceTree = "<group>"; };
+		BF570A6A2A1924F60097DEFA /* Modifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modifier.swift; sourceTree = "<group>"; };
 		BF577EAC291BDF1900E7A897 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		BF5C0F3929E74012007F49BA /* ASTTryCatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTTryCatch.swift; sourceTree = "<group>"; };
 		BF5C0F3B29E7435A007F49BA /* ASTSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTSwitch.swift; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 				BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */,
 				BF91EDDC2A02AA69008DA953 /* InterpreterFuncRefType.swift */,
 				BFC46CDB2A0FC2E200C1DC94 /* InterpreterOrType.swift */,
+				BF570A6A2A1924F60097DEFA /* Modifier.swift */,
 			);
 			path = interpreter;
 			sourceTree = "<group>";
@@ -713,6 +716,7 @@
 				BFB6CE2B29D49177004A49F2 /* ASTNil.swift in Sources */,
 				BFD9B0D52923F59700E59D00 /* DialogView.swift in Sources */,
 				BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */,
+				BF570A6B2A1924F60097DEFA /* Modifier.swift in Sources */,
 				BF916177294E2C8600C8B967 /* Protocols.swift in Sources */,
 				BFC6891C29BD11E5001E51C1 /* ASTEllipsis.swift in Sources */,
 				BF5C0F4029E745E9007F49BA /* ASTMapping.swift in Sources */,
