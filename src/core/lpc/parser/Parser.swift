@@ -757,7 +757,7 @@ struct Parser {
         var cases: [ASTExpression] = []
         
         var lastToken = Parser.startToken
-        while !current.isType(.RIGHT_CURLY) {
+        while !current.isType(.RIGHT_CURLY, .EOF) {
             if current == lastToken {
                 lastCaseExpressions.append(ASTWrong(token: current, message: "Unexpected token 6"))
                 advance()
@@ -1279,7 +1279,7 @@ struct Parser {
         var list: [ASTExpression] = []
         
         var lastToken = Parser.startToken
-        while !current.isType(type) {//} && !isStopToken(current) {
+        while !current.isType(type, .EOF, .SEMICOLON) {
             if current == lastToken {
                 list.append(ASTWrong(token: current, message: "Unexpected token 4"))
                 advance()
@@ -1506,7 +1506,7 @@ struct Parser {
         
         var previousExpression = lhs;
         var lastToken = Parser.startToken
-        while isOperator(current) {//} && !isStopToken(current) {
+        while isOperator(current) && !current.isType(.EOF) {
             if current == lastToken {
                 previousExpression = combine(previousExpression, ASTWrong(token: current, message: "Unexpected token 3"))
                 advance()
