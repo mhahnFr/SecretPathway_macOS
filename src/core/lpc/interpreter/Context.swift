@@ -165,13 +165,13 @@ class Context: Instruction {
     ///
     /// - Parameter name: The name of the searched identifier.
     /// - Returns: A list with all found identifiers.
-    func getSuperIdentifiers(name: String) -> [Definition] {
+    func getSuperIdentifiers(name: String, includeProtected: Bool) -> [Definition] {
         if let parent {
-            return parent.getSuperIdentifiers(name: name)
+            return parent.getSuperIdentifiers(name: name, includeProtected: includeProtected)
         }
         
         for context in inherited {
-            let identifiers = context.getIdentifiers(name: name, pos: Int.max)
+            let identifiers = context.getIdentifiers(name: name, pos: Int.max, includePrivate: false, includeProtected: includeProtected)
             if !identifiers.isEmpty {
                 return identifiers
             }
@@ -185,12 +185,14 @@ class Context: Instruction {
     ///   - name: The name of the requested identifiers.
     ///   - pos: The position.
     /// - Returns: A list with all found identifiers.
-    func getIdentifiers(name: String, pos: Int) -> [Definition] {
+    func getIdentifiers(name: String, pos: Int, includePrivate: Bool, includeProtected: Bool) -> [Definition] {
         var definitions: [Definition] = []
         for (begin, instruction) in instructions {
             if begin < pos,
                let definition = instruction as? Definition,
-               definition.name == name {
+               definition.name == name,
+               !definition.modifiers.isPrivate   || includePrivate,
+               !definition.modifiers.isProtected || includeProtected {
                 definitions.append(definition)
             }
         }
@@ -199,17 +201,17 @@ class Context: Instruction {
         }
         
         if let parent {
-            return parent.getIdentifiers(name: name, pos: pos)
+            return parent.getIdentifiers(name: name, pos: pos, includePrivate: includePrivate, includeProtected: includeProtected)
         }
         
         for incl in included {
-            let identifiers = incl.getIdentifiers(name: name, pos: Int.max)
+            let identifiers = incl.getIdentifiers(name: name, pos: Int.max, includePrivate: false, includeProtected: false)
             if !identifiers.isEmpty {
                 return identifiers
             }
         }
         
-        return getSuperIdentifiers(name: name)
+        return getSuperIdentifiers(name: name, includeProtected: includeProtected)
     }
     
     /// Returns the function definition this context is in.

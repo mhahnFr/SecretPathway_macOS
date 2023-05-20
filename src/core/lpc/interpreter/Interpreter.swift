@@ -325,7 +325,7 @@ class Interpreter: ASTVisitor {
     private func visitSuperFunc(_ operation: ASTUnaryOperation) async {
         if let f = await cast(type: ASTFunctionCall.self, operation.identifier),
            let n = await cast(type: ASTName.self, f.name)?.name {
-            let ids = current.getSuperIdentifiers(name: n)
+            let ids = current.getSuperIdentifiers(name: n, includeProtected: true)
             if ids.isEmpty {
                 addHighlight(MessagedHighlight(begin:   operation.begin,
                                                end:     operation.end,
@@ -344,7 +344,7 @@ class Interpreter: ASTVisitor {
         guard let name       = await cast(type: ASTName.self, operation.identifier),
               let nameString = name.name else { return }
         
-        let ids = current.getIdentifiers(name: nameString, pos: operation.begin)
+        let ids = current.getIdentifiers(name: nameString, pos: operation.begin, includePrivate: true, includeProtected: true)
         if !ids.isEmpty {
             for id in ids {
                 if let i = id as? FunctionDefinition {
@@ -371,7 +371,8 @@ class Interpreter: ASTVisitor {
     ///   - asFunction: Indicates whether to treat the given name expression as a function name.
     private func visitName(context: Context, name: ASTName, asFunction: Bool) {
         if let n = name.name {
-            let identifiers = context.getIdentifiers(name: n, pos: context === current ? name.begin : Int.max)
+            let thisContext = context === current
+            let identifiers = context.getIdentifiers(name: n, pos: thisContext ? name.begin : Int.max, includePrivate: thisContext, includeProtected: thisContext)
             if let first = identifiers.first {
                 if first is FunctionDefinition == asFunction {
                     addHighlight(Highlight(begin: name.begin,
@@ -384,6 +385,12 @@ class Interpreter: ASTVisitor {
                                                    type:    .TYPE_MISMATCH,
                                                    message: asFunction ? "Not a function"
                                                                        : "Not a variable"))
+                }
+                if first.modifiers.isDeprecated {
+                    addHighlight(MessagedHighlight(begin:   name.begin,
+                                                   end:     name.end,
+                                                   type:    .INTERPRETER_DEPRECATED,
+                                                   message: "Identifier is marked deprecated"))
                 }
             } else {
                 if n.starts(with: "$") {
@@ -418,7 +425,7 @@ class Interpreter: ASTVisitor {
             }
             return InterpreterType.object
         }
-        let ids = context.getIdentifiers(name: "create", pos: Int.max)
+        let ids = context.getIdentifiers(name: "create", pos: Int.max, includePrivate: false, includeProtected: false)
         if await visitFunctionCall(function: expression, ids: ids) == nil {
             addHighlight(MessagedHighlight(begin:   expression.instancingExpression.begin,
                                            end:     expression.instancingExpression.end,
@@ -597,7 +604,7 @@ class Interpreter: ASTVisitor {
             let name = await cast(type: ASTName.self, fc.name)!
             visitName(context: current, name: name, asFunction: true)
             if let n = name.name {
-                let ids = current.getIdentifiers(name: n, pos: name.begin)
+                let ids = current.getIdentifiers(name: n, pos: name.begin, includePrivate: true, includeProtected: true)
                 if !ids.isEmpty {
                     currentType = await visitFunctionCall(function: fc, ids: ids) ?? InterpreterType.unknown
                     break
@@ -643,16 +650,16 @@ class Interpreter: ASTVisitor {
                    let nameStr  = name.name {
                     if operation.lhs is ASTThis {
                         visitName(context: current.fileGlobal, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: true, includeProtected: true)) ?? InterpreterType.unknown
                     } else if let type     = lhsType as? BasicType,
                               let file     = type.typeFile as? ASTStrings,
                               let context  = await maybeCreateContext(for: file) {
                         visitName(context: context, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: false, includeProtected: false)) ?? InterpreterType.unknown
                     } else if let leftString = operation.lhs as? ASTStrings,
                               let context    = await maybeCreateContext(for: leftString) {
                         visitName(context: context, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max)) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: false, includeProtected: false)) ?? InterpreterType.unknown
                     } else {
                         for argument in funcCall.arguments { await argument.visit(self) }
                         currentType = InterpreterType.unknown

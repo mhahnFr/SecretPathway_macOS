@@ -103,8 +103,9 @@ struct DefaultTheme: SPTheme {
             .COMMENT_LINE:  comment,
             .COMMENT_BLOCK: comment,
             
-            .WARNING:           warning,
-            .NOT_FOUND_BUILTIN: warning,
+            .WARNING:                warning,
+            .NOT_FOUND_BUILTIN:      warning,
+            .INTERPRETER_DEPRECATED: warning,
             
             .WRONG: error,
             
