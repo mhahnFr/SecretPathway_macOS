@@ -18,15 +18,36 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This structure collects the possible modifiers of a definition.
 struct Modifier {
+    /// Indicates the access is public.
     var isPublic: Bool
+    /// Indicates the access is private.
     var isPrivate: Bool
+    /// Indicates the access is protected.
     var isProtected: Bool
+    /// Indicates the definition is nosave.
     var isNosave: Bool
+    /// Indicates the definition is deprecated.
     var isDeprecated: Bool
+    /// Indicated the definition is overritten.
     var isOverride: Bool
     
-    init(isPublic: Bool = false, isPrivate: Bool = false, isProtected: Bool = false, isNosave: Bool = false, isDeprecated: Bool = false, isOverride: Bool = false) {
+    /// Initializes this structure using the given values.
+    ///
+    /// - Parameters:
+    ///   - isPublic: Indicates public access.
+    ///   - isPrivate: Indicates private access.
+    ///   - isProtected: Indicates protected access.
+    ///   - isNosave: Indicates nosave.
+    ///   - isDeprecated: Indicates deprecation.
+    ///   - isOverride: Indicates overriding.
+    init(isPublic:     Bool = false,
+         isPrivate:    Bool = false,
+         isProtected:  Bool = false,
+         isNosave:     Bool = false,
+         isDeprecated: Bool = false,
+         isOverride:   Bool = false) {
         self.isPublic     = isPublic
         self.isPrivate    = isPrivate
         self.isProtected  = isProtected
