@@ -839,7 +839,8 @@ class Interpreter: ASTVisitor {
             } else {
                 type = currentType
             }
-            if await !isAssignable(varType, from: type ?? InterpreterType.unknown) {
+            if await !isAssignable(varType, from: type ?? InterpreterType.unknown),
+               !(varType.isAssignable(from: InterpreterType.char) && type?.isAssignable(from: InterpreterType.string) ?? true) {
                 addHighlight(MessagedHighlight(begin:   loop.variable.begin,
                                                end:     loop.variable.end,
                                                type:    .TYPE_MISMATCH,
