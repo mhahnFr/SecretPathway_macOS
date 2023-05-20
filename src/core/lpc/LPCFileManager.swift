@@ -22,7 +22,7 @@
 /// Do instantiate this class directly, use a subclass implementation!
 class LPCFileManager {
     /// A mapping of the file names to their cached context.
-    private var cachedContexts: [String: Context?] = [:]
+    private var cachedContexts = [String: [String: Context?]]()
     
     /// Loads the file whose name is given.
     ///
@@ -42,7 +42,7 @@ class LPCFileManager {
     /// - Parameter referrer: The file name from which to resolve the requested file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
     func loadAndParse(file name: String, referrer: String = "") async -> Context? {
-        if let context = cachedContexts[name] {
+        if let context = cachedContexts[name]?[referrer] {
             return context
         }
         return await loadAndParseIntern(file: name, referrer: referrer)
@@ -57,12 +57,20 @@ class LPCFileManager {
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
     private func loadAndParseIntern(file name: String, referrer: String) async -> Context? {
         guard let content = await load(file: name, referrer: referrer) else {
-            cachedContexts[name] = Context?.none
+            if cachedContexts[name] == nil {
+                cachedContexts[name] = [referrer: Context?.none]
+            } else {
+                cachedContexts[name]![referrer] = Context?.none
+            }
             return nil
         }
         var parser  = Parser(text: content)
         let context = await Interpreter(loader: self, referrer: referrer).createBackgroundContext(for: parser.parse(), file: name)
-        cachedContexts[name] = context
+        if cachedContexts[name] == nil {
+            cachedContexts[name] = [referrer: context]
+        } else {
+            cachedContexts[name]![referrer] = context
+        }
         return context
     }
     
