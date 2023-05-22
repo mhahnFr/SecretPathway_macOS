@@ -31,6 +31,9 @@ class SPPPlugin: ProtocolPlugin {
                     for (id, (file, _, _)) in fetchList {
                         fetchList.updateValue((file, nil, true), forKey: id)
                     }
+                    for (id, (file, _)) in existsList {
+                        existsList.updateValue((file, false), forKey: id)
+                    }
                 }
             }
         }
@@ -45,6 +48,7 @@ class SPPPlugin: ProtocolPlugin {
     private var buffer: [UInt8] = []
     /// The list used for fetching files using the SPP.
     private var fetchList: [UUID: (file: String, content: String?, error: Bool)] = [:]
+    private var existsList = [UUID: (file: String, exists: Bool?)]()
     
     /// Initializes this plugin using the given sender.
     ///
@@ -116,9 +120,29 @@ class SPPPlugin: ProtocolPlugin {
         let code      = message[..<index]
         let remainder = message[message.index(after: index)...]
         switch String(code) {
-        case "fetch": putFetchedFile(remainder)
-        case "error": putErrorFile(remainder)
-        default:      print("Unrecognized file command: \"\(message)\"")
+        case "fetch":  putFetchedFile(remainder)
+        case "error":  putErrorFile(remainder)
+        case "exists": putExistsFile(remainder)
+        default:       print("Unrecognized file command: \"\(message)\"")
+        }
+    }
+    
+    private func putExistsFile(_ message: any StringProtocol) {
+        guard let index = message.firstIndex(of: ":") else { return }
+        
+        let name      = message[..<index]
+        let existance = message[message.index(after: index)...]
+        
+        setExistsValue(file: name, existance.lowercased() == "yes")
+    }
+    
+    private func setExistsValue(file name: any StringProtocol, _ exists: Bool) {
+        syncer.sync {
+            for (id, (fileName, _)) in existsList {
+                if fileName == name {
+                    existsList.updateValue((fileName, exists), forKey: id)
+                }
+            }
         }
     }
     
@@ -245,6 +269,49 @@ class SPPPlugin: ProtocolPlugin {
         return ret
     }
     
+    private func addExistsFetcher(id: UUID, file name: String) {
+        syncer.sync {
+            existsList[id] = (file: name, exists: nil)
+        }
+    }
+    
+    private func existsFetcherWaiting(id: UUID) -> Bool {
+        var ret = true
+        
+        syncer.sync {
+            if let fetch = existsList[id] {
+                ret = fetch.exists == nil
+            }
+        }
+        
+        return ret
+    }
+    
+    private func getExistsFetcher(id: UUID) -> (file: String, exists: Bool?) {
+        var ret = ("", Bool?.none)
+        
+        syncer.sync {
+            if let result = existsList[id] {
+                ret = result
+                existsList.removeValue(forKey: id)
+            }
+        }
+        
+        return ret
+    }
+    
+    func exists(file name: String) async -> Bool {
+        guard connectionAvailable else { return false }
+        
+        let id = UUID()
+        addExistsFetcher(id: id, file: name)
+        send("file:exists:\(name)")
+        while existsFetcherWaiting(id: id) {
+            await Task.yield()
+        }
+        return getExistsFetcher(id: id).exists ?? false
+    }
+    
     /// Fetches the file of the given name.
     ///
     /// - Parameter name: The name of the file to be fetched.
@@ -259,7 +326,6 @@ class SPPPlugin: ProtocolPlugin {
         while fetcherWaiting(id: id) {
             await Task.yield()
         }
-        let result = getFetcher(id: id).content
-        return result
+        return getFetcher(id: id).content
     }
 }
