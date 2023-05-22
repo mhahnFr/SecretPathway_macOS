@@ -19,13 +19,23 @@
  */
 
 struct VFile {
+    var fullName: String {
+        "\(folder.fullName)/\(name)"
+    }
     let folder: VPath
     let name: String
     
-    init?(from: String) {
+    init?(from: String, relation: VPath = VPath("", absolute: true)) {
         guard let index = from.lastIndex(of: "/") else { return nil }
         
-        self.init(folder: VPath(from: String(from[..<index])),
+        let folderName = String(from[..<index])
+        let folder: VPath
+        if from.first == "/" {
+            folder = VPath(from: folderName)
+        } else {
+            folder = relation.relative(folderName)
+        }
+        self.init(folder: folder,
                   name:   String(from[from.index(after: index)...]))
     }
     

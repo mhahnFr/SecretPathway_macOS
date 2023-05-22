@@ -188,7 +188,7 @@ class Interpreter: ASTVisitor {
     /// - Parameter file: The strings expression evaluating to the file name.
     /// - Returns: The interpretation context or `nil` if the file could not be interpreted.
     private func createContext(for file: ASTStrings) async -> Context? {
-        let fileName = file.value
+        let fileName = resolve(file.value)
         
         if let referrer,
            referrer == fileName {
@@ -199,6 +199,12 @@ class Interpreter: ASTVisitor {
             return nil
         }
         return await loader.loadAndParse(file: fileName, referrer: current.fileGlobal.fileName ?? "")
+    }
+    
+    private func resolve(_ file: String) -> String {
+        if file.first == "/" { return file }
+        
+        return VFile(from: file, relation: VFile(from: current.fileGlobal.fileName ?? "")?.folder ?? VPath("", absolute: true))?.fullName ?? file
     }
     
     /// Creates and returns an interpretation context for the file
