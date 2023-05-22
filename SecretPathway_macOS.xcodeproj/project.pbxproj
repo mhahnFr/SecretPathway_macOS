@@ -44,6 +44,8 @@
 		BF7D3C3F29F99F5E008B42AC /* SPPFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3E29F99F5E008B42AC /* SPPFileManager.swift */; };
 		BF821D1529F843360053B00A /* TypeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF821D1429F843360053B00A /* TypeHelper.swift */; };
 		BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF832EC52927FBA000581CDA /* Int2Data.swift */; };
+		BF8340ED2A1BCCFD00AD0BE0 /* VPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8340EC2A1BCCFD00AD0BE0 /* VPath.swift */; };
+		BF8340EF2A1BD57300AD0BE0 /* VFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8340EE2A1BD57300AD0BE0 /* VFile.swift */; };
 		BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BDAD229D4B04400763C81 /* ASTFunctionCall.swift */; };
 		BF8BDAD529D4B26F00763C81 /* ASTInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8BDAD429D4B26F00763C81 /* ASTInteger.swift */; };
 		BF916177294E2C8600C8B967 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF916176294E2C8600C8B967 /* Protocols.swift */; };
@@ -163,6 +165,8 @@
 		BF7D3C3E29F99F5E008B42AC /* SPPFileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SPPFileManager.swift; sourceTree = "<group>"; };
 		BF821D1429F843360053B00A /* TypeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeHelper.swift; sourceTree = "<group>"; };
 		BF832EC52927FBA000581CDA /* Int2Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int2Data.swift; sourceTree = "<group>"; };
+		BF8340EC2A1BCCFD00AD0BE0 /* VPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPath.swift; sourceTree = "<group>"; };
+		BF8340EE2A1BD57300AD0BE0 /* VFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VFile.swift; sourceTree = "<group>"; };
 		BF8BDAD229D4B04400763C81 /* ASTFunctionCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTFunctionCall.swift; sourceTree = "<group>"; };
 		BF8BDAD429D4B26F00763C81 /* ASTInteger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTInteger.swift; sourceTree = "<group>"; };
 		BF916176294E2C8600C8B967 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
@@ -430,6 +434,8 @@
 				BFD9B0CD2923DE6000E59D00 /* net */,
 				BF11297F2854EBDC00EACD21 /* Settings.swift */,
 				BF577EAC291BDF1900E7A897 /* Constants.swift */,
+				BF8340EC2A1BCCFD00AD0BE0 /* VPath.swift */,
+				BF8340EE2A1BD57300AD0BE0 /* VFile.swift */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -650,6 +656,7 @@
 			files = (
 				BF5C0F3E29E744FE007F49BA /* ASTSubscript.swift in Sources */,
 				BFC2AE8B296D6B0200592450 /* DefaultTheme.swift in Sources */,
+				BF8340EF2A1BD57300AD0BE0 /* VFile.swift in Sources */,
 				BF832EC62927FBA000581CDA /* Int2Data.swift in Sources */,
 				BF0D297429F1AE2900AB4E87 /* Context.swift in Sources */,
 				BFDCA77D29AD2634005B8AA9 /* ASTBreak.swift in Sources */,
@@ -657,6 +664,7 @@
 				BFB6CE2729D48ED6004A49F2 /* ASTForEach.swift in Sources */,
 				BF2DAAD92965DE170063F91C /* StringStream.swift in Sources */,
 				BFE2926629DB31AA00185467 /* ASTOperation.swift in Sources */,
+				BF8340ED2A1BCCFD00AD0BE0 /* VPath.swift in Sources */,
 				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
 				BFE44D0929EB0975001C86FB /* ASTNew.swift in Sources */,
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
