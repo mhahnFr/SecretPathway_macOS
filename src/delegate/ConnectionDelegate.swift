@@ -121,10 +121,23 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         
         super.init()
         
-        self.protocols.add(plugin: ANSIPlugin(self))
-        
         self.connection.connectionListener = self
         self.connection.start()
+    }
+    
+    private func resetBuffers() {
+        escapeIAC     = false
+        wasSpecial    = false
+        lastWasIAC    = false
+        unicodeBuffer = Data()
+        charset       = Settings.shared.useUTF8 ? String.Encoding.utf8 : String.Encoding.ascii
+        sppPlugin     = SPPPlugin(sender: self)
+        protocols     = Protocols(sender: self, plugins: sppPlugin,
+                                                         TelnetPlugin(),
+                                                         ANSIPlugin(self))
+        currentStyle  = SPStyle()
+        passwordMode  = false
+        prompt        = nil
     }
     
     /// Creates a string from the given block of data.
@@ -512,6 +525,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
     /// Closes the connection controlled by this delegate.
     func closeConnection() {
         connection.close()
+        resetBuffers()
         
         retryTimer?.invalidate()
         retryTimer = nil
