@@ -315,14 +315,13 @@ class SPPPlugin: ProtocolPlugin {
     /// Fetches the file of the given name.
     ///
     /// - Parameter name: The name of the file to be fetched.
-    /// - Parameter referrer: The file referencing the requested file.
     /// - Returns: The content of the file or `nil` if an error occurred.
-    func fetch(file name: String, referrer: String) async -> String? {
+    func fetch(file name: String) async -> String? {
         guard connectionAvailable else { return nil }
         
         let id = UUID()
         addFetcher(id: id, file: name)
-        send("file:fetch:\(name):\(referrer)")
+        send("file:fetch:\(name)")
         while fetcherWaiting(id: id) {
             await Task.yield()
         }
