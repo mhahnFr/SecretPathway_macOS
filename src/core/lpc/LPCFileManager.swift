@@ -42,10 +42,35 @@ class LPCFileManager {
     /// - Parameter referrer: The file name from which to resolve the requested file.
     /// - Returns: The interpretation context or `nil` if the file could not be loaded.
     func loadAndParse(file name: String, referrer: String = "") async -> Context? {
-        if let context = cachedContexts[name] {
+        let index = name.firstIndex(of: ":")
+        let actualName = String(name[..<(index ?? name.endIndex)])
+        if let context = cachedContexts[actualName] {
+            if index != nil,
+               let context {
+                // Dig out class context
+                var tmp = context
+                let names = name[name.index(index!, offsetBy: 2)...].components(separatedBy: "::")
+                for name in names {
+                    guard let classContext = tmp.classes[name] else { return nil }
+                    tmp = classContext
+                }
+                return tmp
+            }
             return context
         }
-        return await loadAndParseIntern(file: name, referrer: referrer)
+        let context = await loadAndParseIntern(file: actualName, referrer: referrer)
+        if index != nil,
+           let context {
+            // Dig out class context
+            var tmp = context
+            let names = name[name.index(index!, offsetBy: 2)...].components(separatedBy: "::")
+            for name in names {
+                guard let classContext = tmp.classes[name] else { return nil }
+                tmp = classContext
+            }
+            return tmp
+        }
+        return context
     }
     
     /// Loads and parses the content of the file whose name is given.
@@ -95,6 +120,9 @@ class LPCFileManager {
     /// - Parameter file: The name of the file to be checked.
     /// - Returns: Whether the file exists.
     func exists(file: String) async -> Bool {
+        if let index = file.firstIndex(of: ":") {
+            return await loadAndParse(file: file) != nil
+        }
         if let cached = cachedExists[file] {
             return cached
         }
