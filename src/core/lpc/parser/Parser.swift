@@ -521,7 +521,7 @@ struct Parser {
         token.isType(.DOT, .ARROW, .PIPE, .LEFT_SHIFT, .RIGHT_SHIFT, .DOUBLE_QUESTION, .QUESTION,
                      .PLUS, .MINUS, .STAR, .SLASH, .PERCENT, .LESS, .LESS_OR_EQUAL, .GREATER, .IS,
                      .GREATER_OR_EQUAL, .EQUALS, .NOT_EQUAL, .AMPERSAND, .AND, .OR, .LEFT_BRACKET,
-                     .BIT_XOR, .BIT_NOT)
+                     .BIT_XOR, .BIT_NOT, .SCOPE)
     }
     
     /// Returns whether the given token represents a type.
@@ -1410,6 +1410,16 @@ struct Parser {
         return toReturn
     }
     
+    private mutating func parseScopeChain() -> ASTExpression {
+        var names = [ASTExpression]()
+        let begin = current.begin
+        repeat {
+            advance()
+            names.append(parseName())
+        } while current.isType(.SCOPE) && !current.isType(.EOF)
+        return ASTScopeChain(begin: begin, end: previous.end, names: names)
+    }
+    
     /// Parses an operation.
     ///
     /// - Parameter priority: The priority used to arse the operation.
@@ -1417,6 +1427,8 @@ struct Parser {
     private mutating func parseOperation(priority: Int) -> ASTExpression? {
         if priority >= 1 && current.isType(.DOT, .ARROW) {
             return parseFunctionCall()
+        } else if priority >= 1 && current.isType(.SCOPE) {
+            return parseScopeChain()
         } else if current.isType(.LEFT_BRACKET) {
             return parseSubscript(priority: priority)
         } else if priority >= 13 && current.isType(.QUESTION) {
