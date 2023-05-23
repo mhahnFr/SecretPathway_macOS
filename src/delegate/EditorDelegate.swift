@@ -79,6 +79,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     /// The lastly generated interpretation context.
     private var context = Context()     // FIXME: Synchronise over multiple threads!!!
     private var visitor = SuggestionVisitor()
+    private var interpreterTimer: Timer?
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -617,6 +618,37 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, textStorage.length))
     }
     
+    private func interpretCode() {
+        Task {
+            let interpreter = Interpreter(loader: loader)
+            var parser      = Parser(text: textStorage.string)
+            self.ast        = parser.parse()
+            self.context    = await interpreter.createContext(for: self.ast, file: self.file)
+            self.highlights = interpreter.highlights
+            
+            DispatchQueue.main.async {
+                self.textStorage.beginEditing()
+                self.textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, self.textStorage.length))
+                self.tokens.forEach {
+                    self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
+                }
+                
+                for range in self.highlights {
+                    if let style = self.theme.styleFor(type: range.type) {
+                        self.textStorage.addAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
+                    }
+                }
+                self.tokens.forEach {
+                    if $0.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
+                        self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
+                    }
+                }
+                self.textStorage.endEditing()
+                self.updateStatus()
+            }
+        }
+    }
+    
     /// Performs the highlighting of the text.
     private func highlight() {
         textStorage.beginEditing()
@@ -642,35 +674,11 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
         
         textStorage.endEditing()
-        Task {
-            let interpreter = Interpreter(loader: loader)
-            var parser      = Parser(text: textStorage.string)
-            self.ast        = parser.parse()
-            self.context    = await interpreter.createContext(for: self.ast, file: self.file)
-            self.highlights = interpreter.highlights
-            
-            DispatchQueue.main.async {
-                self.textStorage.beginEditing()
-                self.textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, self.textStorage.length))
-                self.tokens.forEach {
-                    self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
-                }
-                
-                for range in self.highlights {
-                    if let style = self.theme.styleFor(type: range.type) {
-                        self.textStorage.addAttributes(style.native, range: NSMakeRange(range.begin, range.end - range.begin))
-                    }
-                }
-                // Setting twice makes them flicker - maybe improve.
-                //                                      - mhahnFr
-                self.tokens.forEach {
-                    if $0.isType(.COMMENT_LINE, .COMMENT_BLOCK) {
-                        self.textStorage.setAttributes((self.theme.styleFor(type: $0.type) ?? SPStyle()).native, range: NSMakeRange($0.begin, $0.end - $0.begin))
-                    }
-                }
-                self.textStorage.endEditing()
-                self.updateStatus()
-            }
-        }
+        // TODO: if !suggestionWindow.isShowing {}
+        interpreterTimer?.invalidate()
+        interpreterTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+            self.interpretCode()
+            self.interpreterTimer = nil
+        })
     }
 }
