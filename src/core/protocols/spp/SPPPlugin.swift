@@ -317,8 +317,9 @@ class SPPPlugin: ProtocolPlugin {
         let id = UUID()
         addExistsFetcher(id: id, file: name)
         send("file:exists:\(name)")
-        while existsFetcherWaiting(id: id) {
-            await Task.yield()
+        let startTime = Date()
+        while existsFetcherWaiting(id: id) && startTime.timeIntervalSinceNow > -5 {
+            try? await Task.sleep(nanoseconds: 100_000)
         }
         return getExistsFetcher(id: id).exists ?? false
     }
@@ -333,8 +334,9 @@ class SPPPlugin: ProtocolPlugin {
         let id = UUID()
         addFetcher(id: id, file: name)
         send("file:fetch:\(name)")
-        while fetcherWaiting(id: id) {
-            await Task.yield()
+        let startTime = Date()
+        while fetcherWaiting(id: id) && startTime.timeIntervalSinceNow > -5 {
+            try? await Task.sleep(nanoseconds: 100_000)
         }
         return getFetcher(id: id).content
     }
@@ -365,8 +367,9 @@ class SPPPlugin: ProtocolPlugin {
         if let defaultInheritance = getDefaultInheritanceImpl() { return defaultInheritance }
         
         send("file:defaultInheritance:")
-        while diWaiting() {
-            await Task.yield()
+        let startTime = Date()
+        while diWaiting() && startTime.timeIntervalSinceNow > -5 {
+            try? await Task.sleep(nanoseconds: 100_000)
         }
         return getDefaultInheritanceImpl()
     }
