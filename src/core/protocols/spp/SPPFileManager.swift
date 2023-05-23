@@ -45,7 +45,7 @@ class SPPFileManager: LPCFileManager {
         plugin.compile(file: name)
     }
     
-    override func exists(file: String) async -> Bool {
+    override func existsImpl(file: String) async -> Bool {
         await plugin.exists(file: file)
     }
     

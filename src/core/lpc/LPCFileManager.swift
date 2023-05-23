@@ -23,6 +23,7 @@
 class LPCFileManager {
     /// A mapping of the file names to their cached context.
     private var cachedContexts = [String: Context?]()
+    private var cachedExists   = [String: Bool]()
     
     /// Loads the file whose name is given.
     ///
@@ -93,7 +94,16 @@ class LPCFileManager {
     ///
     /// - Parameter file: The name of the file to be checked.
     /// - Returns: Whether the file exists.
-    func exists(file: String) async -> Bool { false }
+    func exists(file: String) async -> Bool {
+        if let cached = cachedExists[file] {
+            return cached
+        }
+        let existance = await existsImpl(file: file)
+        cachedExists[file] = existance
+        return existance
+    }
+    
+    func existsImpl(file: String) async -> Bool { false }
     
     func getDefaultInheritance() async -> String? { nil }
 }

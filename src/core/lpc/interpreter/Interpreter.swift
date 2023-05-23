@@ -692,6 +692,7 @@ class Interpreter: ASTVisitor {
             
             let lhsType = currentType
             
+            // TODO: Scopechain
             if operation.operatorType == .ARROW ||
                operation.operatorType == .DOT {
                 if let funcCall = await cast(type: ASTFunctionCall.self, rhs),
