@@ -503,16 +503,6 @@ struct Parser {
         return toReturn
     }
     
-//    /// Returns whether the given token is a stop token.
-//    ///
-//    /// - Parameter token: The token to be checked.
-//    /// - Returns: Whether the given token should stop a parsing loop.
-//    private func isStopToken(_ token: Token) -> Bool {
-//        token.isType(.EOF, .RIGHT_PAREN, .RIGHT_BRACKET, .RIGHT_CURLY, .COLON, .SEMICOLON,
-//                     .ASSIGNMENT, .ASSIGNMENT_PLUS, .ASSIGNMENT_STAR, .ASSIGNMENT_MINUS,
-//                     .ASSIGNMENT_SLASH, .ASSIGNMENT_PERCENT, .ELSE, .WHILE, .CATCH)
-//    }
-    
     /// Returns whether the given type represents an operator.
     ///
     /// - Parameter token: The token to be checked.
@@ -542,7 +532,6 @@ struct Parser {
         if current.isType(.LET)                                                            ||
             ((current.isType(.IDENTIFIER) || isType(current)) && next.isType(.IDENTIFIER)) ||
             isType(current) && next.isType(.LEFT_BRACKET, .STAR, .RIGHT_BRACKET)           ||
-//            (isType(current) && isStopToken(next))                                         ||
             (isType(current) && next.isType(.LEFT_PAREN, .RIGHT_PAREN))                    ||
             isType(current) && next.isType(.LESS, .STRING, .GREATER)                       ||
             isType(current) && next.isType(.PIPE) {
