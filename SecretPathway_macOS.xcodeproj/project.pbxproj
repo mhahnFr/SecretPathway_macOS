@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF088CFD2A1D0BAD00F1D5FA /* ASTScopeChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF088CFC2A1D0BAD00F1D5FA /* ASTScopeChain.swift */; };
 		BF0D297429F1AE2900AB4E87 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297329F1AE2900AB4E87 /* Context.swift */; };
 		BF0D297729F1AECA00AB4E87 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297629F1AECA00AB4E87 /* Highlight.swift */; };
 		BF0D297929F1B0CA00AB4E87 /* ASTHighlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297829F1B0CA00AB4E87 /* ASTHighlight.swift */; };
@@ -128,6 +129,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF088CFC2A1D0BAD00F1D5FA /* ASTScopeChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTScopeChain.swift; sourceTree = "<group>"; };
 		BF0D297329F1AE2900AB4E87 /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		BF0D297629F1AECA00AB4E87 /* Highlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highlight.swift; sourceTree = "<group>"; };
 		BF0D297829F1B0CA00AB4E87 /* ASTHighlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTHighlight.swift; sourceTree = "<group>"; };
@@ -577,6 +579,7 @@
 				BFE44D0829EB0975001C86FB /* ASTNew.swift */,
 				BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */,
 				BF69AEB42A0ED37E00B961FC /* ASTFloat.swift */,
+				BF088CFC2A1D0BAD00F1D5FA /* ASTScopeChain.swift */,
 			);
 			path = ast;
 			sourceTree = "<group>";
@@ -693,6 +696,7 @@
 				BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */,
 				BF551CB729AE7F3D004D1CFE /* ASTCharacter.swift in Sources */,
 				BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */,
+				BF088CFD2A1D0BAD00F1D5FA /* ASTScopeChain.swift in Sources */,
 				BF96A02D2A0BCC34004FAAA0 /* SuggestionVisitor.swift in Sources */,
 				BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */,
 				BFFD268A29A69759002998E8 /* ASTType.swift in Sources */,
