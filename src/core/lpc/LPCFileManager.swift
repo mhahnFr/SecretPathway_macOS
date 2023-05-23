@@ -94,4 +94,6 @@ class LPCFileManager {
     /// - Parameter file: The name of the file to be checked.
     /// - Returns: Whether the file exists.
     func exists(file: String) async -> Bool { false }
+    
+    func getDefaultInheritance() async -> String? { nil }
 }

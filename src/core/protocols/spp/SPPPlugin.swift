@@ -34,6 +34,9 @@ class SPPPlugin: ProtocolPlugin {
                     for (id, (file, _)) in existsList {
                         existsList.updateValue((file, false), forKey: id)
                     }
+                    if defaultInheritance == nil {
+                        defaultInheritance = ""
+                    }
                 }
             }
         }
@@ -49,6 +52,7 @@ class SPPPlugin: ProtocolPlugin {
     /// The list used for fetching files using the SPP.
     private var fetchList: [UUID: (file: String, content: String?, error: Bool)] = [:]
     private var existsList = [UUID: (file: String, exists: Bool?)]()
+    private var defaultInheritance = String?.none
     
     /// Initializes this plugin using the given sender.
     ///
@@ -120,10 +124,17 @@ class SPPPlugin: ProtocolPlugin {
         let code      = message[..<index]
         let remainder = message[message.index(after: index)...]
         switch String(code) {
-        case "fetch":  putFetchedFile(remainder)
-        case "error":  putErrorFile(remainder)
-        case "exists": putExistsFile(remainder)
-        default:       print("Unrecognized file command: \"\(message)\"")
+        case "fetch":              putFetchedFile(remainder)
+        case "error":              putErrorFile(remainder)
+        case "exists":             putExistsFile(remainder)
+        case "defaultInheritance": putDefaultInheritance(remainder)
+        default:                   print("Unrecognized file command: \"\(message)\"")
+        }
+    }
+    
+    private func putDefaultInheritance(_ message: any StringProtocol) {
+        syncer.sync {
+            defaultInheritance = String(message)
         }
     }
     
@@ -326,5 +337,37 @@ class SPPPlugin: ProtocolPlugin {
             await Task.yield()
         }
         return getFetcher(id: id).content
+    }
+    
+    private func diWaiting() -> Bool {
+        var ret = true
+        
+        syncer.sync {
+            ret = defaultInheritance == nil
+        }
+        
+        return ret
+    }
+    
+    private func getDefaultInheritanceImpl() -> String? {
+        var ret = String?.none
+        
+        syncer.sync {
+            ret = defaultInheritance
+        }
+        
+        return ret
+    }
+    
+    func getDefaultInheritance() async -> String? {
+        guard connectionAvailable else { return nil }
+        
+        if let defaultInheritance = getDefaultInheritanceImpl() { return defaultInheritance }
+        
+        send("file:defaultInheritance:")
+        while diWaiting() {
+            await Task.yield()
+        }
+        return getDefaultInheritanceImpl()
     }
 }

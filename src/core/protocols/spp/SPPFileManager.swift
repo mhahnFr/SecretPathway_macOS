@@ -48,4 +48,8 @@ class SPPFileManager: LPCFileManager {
     override func exists(file: String) async -> Bool {
         await plugin.exists(file: file)
     }
+    
+    override func getDefaultInheritance() async -> String? {
+        await plugin.getDefaultInheritance()
+    }
 }

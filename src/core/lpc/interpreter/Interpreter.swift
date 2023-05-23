@@ -55,6 +55,9 @@ class Interpreter: ASTVisitor {
         current    = Context(fileName: name)
         
         for node in ast { await node.visit(self) }
+        
+        await assertInheritance(for: current)
+        
         return current
     }
     
@@ -71,7 +74,23 @@ class Interpreter: ASTVisitor {
         current = Context(fileName: name)
         
         for node in ast { await node.visit(self) }
+        
+        await assertInheritance(for: current)
+        
         return current
+    }
+    
+    private func assertInheritance(for context: Context) async {
+        guard context.inherited.isEmpty else { return }
+        
+        guard let defaultInheritance = await loader.getDefaultInheritance(),
+              let inheritance = await createContext(for: ASTStrings(strings: [ASTString(token: Token(begin:   0,
+                                                                                                     type:    .STRING,
+                                                                                                     payload: defaultInheritance,
+                                                                                                     end:     0))]))
+        else { return }
+        
+        context.inherited.append(inheritance)
     }
     
     /// Adds the highlight resulting of the given closure if this
@@ -331,6 +350,7 @@ class Interpreter: ASTVisitor {
     private func visitSuperFunc(_ operation: ASTUnaryOperation) async {
         if let f = await cast(type: ASTFunctionCall.self, operation.identifier),
            let n = await cast(type: ASTName.self, f.name)?.name {
+            await assertInheritance(for: current.fileGlobal)
             let ids = current.getSuperIdentifiers(name: n, includeProtected: true)
             if ids.isEmpty {
                 addHighlight(MessagedHighlight(begin:   operation.begin,
@@ -350,6 +370,7 @@ class Interpreter: ASTVisitor {
         guard let name       = await cast(type: ASTName.self, operation.identifier),
               let nameString = name.name else { return }
         
+        await assertInheritance(for: current.fileGlobal)
         let ids = current.getIdentifiers(name: nameString, pos: operation.begin, includePrivate: true, includeProtected: true)
         if !ids.isEmpty {
             for id in ids {
@@ -544,6 +565,7 @@ class Interpreter: ASTVisitor {
                                                type:    .ERROR,
                                                message: "Redeclaring identifier \"\(idName)\""))
             }
+            await assertInheritance(for: current.fileGlobal)
             if modifiers.isOverride,
                current.getSuperIdentifiers(name: idName, includeProtected: true).isEmpty {
                 addHighlight(MessagedHighlight(begin:   varDefinition.name.begin,
@@ -572,6 +594,7 @@ class Interpreter: ASTVisitor {
                                                             parameters: params,
                                                             variadic:   paramExpressions.last?.type == .AST_ELLIPSIS,
                                                             modifiers:  modifiers)
+            await assertInheritance(for: current.fileGlobal)
             if modifiers.isOverride,
                let n = name.name,
                current.getSuperIdentifiers(name: n, includeProtected: true).isEmpty {
@@ -626,6 +649,7 @@ class Interpreter: ASTVisitor {
             let fc = expression as! ASTFunctionCall
             
             let name = await cast(type: ASTName.self, fc.name)!
+            await assertInheritance(for: current.fileGlobal)
             visitName(context: current, name: name, asFunction: true)
             if let n = name.name {
                 let ids = current.getIdentifiers(name: n, pos: name.begin, includePrivate: true, includeProtected: true)
@@ -638,6 +662,7 @@ class Interpreter: ASTVisitor {
             currentType = InterpreterType.unknown
             
         case .NAME:
+            await assertInheritance(for: current.fileGlobal)
             visitName(context: current, name: expression as! ASTName, asFunction: false)
             highlight = false
             
@@ -673,15 +698,18 @@ class Interpreter: ASTVisitor {
                    let name     = await cast(type: ASTName.self, funcCall.name),
                    let nameStr  = name.name {
                     if operation.lhs is ASTThis {
+                        await assertInheritance(for: current.fileGlobal)
                         visitName(context: current.fileGlobal, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: true, includeProtected: true)) ?? InterpreterType.unknown
                     } else if let type     = lhsType as? BasicType,
                               let file     = type.typeFile as? ASTStrings,
                               let context  = await maybeCreateContext(for: file) {
+                        await assertInheritance(for: context)
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: false, includeProtected: false)) ?? InterpreterType.unknown
                     } else if let leftString = operation.lhs as? ASTStrings,
                               let context    = await maybeCreateContext(for: leftString) {
+                        await assertInheritance(for: context)
                         visitName(context: context, name: name, asFunction: true)
                         currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: false, includeProtected: false)) ?? InterpreterType.unknown
                     } else {
