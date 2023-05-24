@@ -962,8 +962,8 @@ class Interpreter: ASTVisitor {
         case .AST_CLASS:
             let c = expression as! ASTClass
             let enclosing = current
-            current = Context()
             let name = await cast(type: ASTName.self, c.name)!
+            current = Context(fileName: "\(enclosing.fileGlobal.fileName ?? referrer ?? "")::\(name.name ?? "<unknown>")")
             if let inheritance = c.inheritance {
                 if let inherit = await cast(type: ASTInheritance.self, inheritance),
                    let expr    = inherit.inherited,
