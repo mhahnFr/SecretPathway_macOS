@@ -62,6 +62,15 @@ extension ArrayTypeProto {
         }
         return true
     }
+    
+    func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
+        guard let o = other as? ArrayTypeProto else { return false }
+        
+        if let underlying, let otherUnder = o.underlying {
+            return await underlying.isAssignable(from: otherUnder, loader: loader)
+        }
+        return true
+    }
 }
 
 /// This protocoll defines the base of a function reference type.
@@ -119,6 +128,24 @@ extension FunctionReferenceTypeProto {
         }
         return true
     }
+    
+    func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
+        guard let o = other as? FunctionReferenceTypeProto,
+              (parameterTypes.count == o.parameterTypes.count ||
+               (parameterTypes.count < o.parameterTypes.count && variadic)),
+              let returnType,
+              let oRet = o.returnType,
+              await returnType.isAssignable(from: oRet, loader: loader)
+        else { return false }
+        
+        for i in 0 ..< parameterTypes.count {
+            guard let type  = parameterTypes[i],
+                  let oType = o.parameterTypes[i],
+                  await type.isAssignable(from: oType, loader: loader)
+            else { return false }
+        }
+        return true
+    }
 }
 
 /// This protocol defines the base of `|` types.
@@ -141,6 +168,18 @@ extension OrTypeProto {
         }
         
         return lhs?.isAssignable(from: other) ?? true || rhs?.isAssignable(from: other) ?? true
+    }
+    
+    func isAssignable(from other: TypeProto, loader: LPCFileManager?) async -> Bool {
+        if let o = other as? OrTypeProto {
+            return o.lhs == nil ? true : await lhs?.isAssignable(from: o.lhs!, loader: loader) ?? true &&
+                   o.rhs == nil ? true : await rhs?.isAssignable(from: o.rhs!, loader: loader) ?? true
+        }
+        
+        if await lhs?.isAssignable(from: other, loader: loader) ?? true {
+            return true
+        }
+        return await rhs?.isAssignable(from: other, loader: loader) ?? true
     }
 }
 
