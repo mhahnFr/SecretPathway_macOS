@@ -687,7 +687,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                 
                 end   = end   >= length ? length : end
                 start = start >= length ? length : start
-                textStorage.addAttributes(style.native, range: NSMakeRange(start, end - start))
+                textStorage.addAttributes(style.native, range: NSMakeRange(start, end > start ? end - start
+                                                                                              : 0))
             }
         }
         
