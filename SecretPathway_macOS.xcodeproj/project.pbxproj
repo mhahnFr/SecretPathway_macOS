@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF0609662A1E7AE800E48C96 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0609652A1E7AE800E48C96 /* SuggestionsView.swift */; };
+		BF0609682A1E7DB300E48C96 /* SuggestionsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0609672A1E7DB300E48C96 /* SuggestionsDelegate.swift */; };
+		BF06096A2A1E7E2E00E48C96 /* Suggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0609692A1E7E2E00E48C96 /* Suggestion.swift */; };
 		BF088CFD2A1D0BAD00F1D5FA /* ASTScopeChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF088CFC2A1D0BAD00F1D5FA /* ASTScopeChain.swift */; };
 		BF0D297429F1AE2900AB4E87 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297329F1AE2900AB4E87 /* Context.swift */; };
 		BF0D297729F1AECA00AB4E87 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297629F1AECA00AB4E87 /* Highlight.swift */; };
@@ -129,6 +132,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF0609652A1E7AE800E48C96 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
+		BF0609672A1E7DB300E48C96 /* SuggestionsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsDelegate.swift; sourceTree = "<group>"; };
+		BF0609692A1E7E2E00E48C96 /* Suggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Suggestion.swift; sourceTree = "<group>"; };
 		BF088CFC2A1D0BAD00F1D5FA /* ASTScopeChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTScopeChain.swift; sourceTree = "<group>"; };
 		BF0D297329F1AE2900AB4E87 /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
 		BF0D297629F1AECA00AB4E87 /* Highlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highlight.swift; sourceTree = "<group>"; };
@@ -321,6 +327,7 @@
 				BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */,
 				BF2DDF632A0AACA80069E194 /* SuggestionType.swift */,
 				BF96A02C2A0BCC34004FAAA0 /* SuggestionVisitor.swift */,
+				BF0609692A1E7E2E00E48C96 /* Suggestion.swift */,
 			);
 			path = suggestions;
 			sourceTree = "<group>";
@@ -412,6 +419,7 @@
 				BF54F64C290D6F410093037F /* AboutView.swift */,
 				BFEA07B629043DB500294822 /* SettingsView.swift */,
 				BF9B7B952932810F00AACF0F /* SPStyle.swift */,
+				BF0609652A1E7AE800E48C96 /* SuggestionsView.swift */,
 			);
 			path = gui;
 			sourceTree = "<group>";
@@ -424,6 +432,7 @@
 				BFA5CF31290D7DC500010BD6 /* ConnectionDelegate.swift */,
 				BF6AF3552965CD6900DF333D /* EditorDelegate.swift */,
 				BFEA07B829043DCC00294822 /* SettingsDelegate.swift */,
+				BF0609672A1E7DB300E48C96 /* SuggestionsDelegate.swift */,
 			);
 			path = delegate;
 			sourceTree = "<group>";
@@ -687,6 +696,7 @@
 				BFC5140B29F01FA600382D64 /* FunctionReferenceType.swift in Sources */,
 				BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */,
 				BF7D3C3B29F99C2F008B42AC /* LPCFileManager.swift in Sources */,
+				BF0609662A1E7AE800E48C96 /* SuggestionsView.swift in Sources */,
 				BF7D3C3F29F99F5E008B42AC /* SPPFileManager.swift in Sources */,
 				BF92224D29E5D7D7001085B9 /* ASTSymbol.swift in Sources */,
 				BF0D297F29F1B4CB00AB4E87 /* InterpreterType.swift in Sources */,
@@ -714,6 +724,7 @@
 				BFC46CDA2A0FB74500C1DC94 /* OrType.swift in Sources */,
 				BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */,
 				BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */,
+				BF0609682A1E7DB300E48C96 /* SuggestionsDelegate.swift in Sources */,
 				BFDCA77F29AD26C9005B8AA9 /* ASTCase.swift in Sources */,
 				BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */,
 				BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */,
@@ -750,6 +761,7 @@
 				BFE2DB7E29A7E466003E2BFF /* ASTVisitor.swift in Sources */,
 				BFC46CDC2A0FC2E200C1DC94 /* InterpreterOrType.swift in Sources */,
 				BFC6891A29BD1177001E51C1 /* ASTDefault.swift in Sources */,
+				BF06096A2A1E7E2E00E48C96 /* Suggestion.swift in Sources */,
 				BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */,
 				BF0D297D29F1B29F00AB4E87 /* HighlightType.swift in Sources */,
 				BF2DAAD52965DC870063F91C /* TokenType.swift in Sources */,
