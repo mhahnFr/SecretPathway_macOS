@@ -75,9 +75,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     /// The tokens lastly recognized in the text.
     private var tokens = [Token]()
     /// The AST lastly parsed.
-    private var ast = [ASTExpression]() // FIXME: Synchronise over multiple threads!!!
+    private var ast = [ASTExpression]()
     /// The lastly generated interpretation context.
-    private var context = Context()     // FIXME: Synchronise over multiple threads!!!
+    private var context = Context()
     private var visitor = SuggestionVisitor()
     private var interpreterTimer: Timer?
     private var editedRange: (Int, Int)?
@@ -261,7 +261,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     
     private func computeSuggestionContext(position: Int, begin: Bool) {
         Task {
-//            visit(position: position)
+            visit(position: position)
             DispatchQueue.main.async {
                 let type = self.visitor.suggestionType
                 
