@@ -525,6 +525,42 @@ class Interpreter: ASTVisitor {
         return mods
     }
     
+    private func visitScopeChain(lhsType: TypeProto, rhs: ASTScopeChain) async -> TypeProto {
+        guard let type     = lhsType as? BasicType,
+              let typeFile = (type.typeFile as? ASTStrings),
+              let context  = await maybeCreateContext(for: typeFile)
+        else { return InterpreterType.unknown }
+        
+        var nameString = typeFile.value
+        var error      = false
+        var tmp        = context
+        for name in rhs.names {
+            if let name = await cast(type: ASTName.self, name),
+               let n    = name.name {
+                nameString.append("::\(n)")
+                if !error {
+                    if let classContext = tmp.classes[n] {
+                        tmp = classContext
+                    } else {
+                        error = true
+                        addHighlight(MessagedHighlight(begin:   name.begin,
+                                                       end:     name.end,
+                                                       type:    .NOT_FOUND,
+                                                       message: "Class \"\(n)\" not found"))
+                    }
+                }
+            }
+        }
+        
+        return BasicType(begin:           0,
+                         representedType: .OBJECT,
+                         end:             0,
+                         typeFile:        ASTStrings(strings: [ASTString(token: Token(begin:   0,
+                                                                                      type:    .STRING,
+                                                                                      payload: nameString,
+                                                                                      end:     0))]))
+    }
+    
     internal func visit(_ expression: ASTExpression) async {
         var highlight = true
         
@@ -692,7 +728,6 @@ class Interpreter: ASTVisitor {
             
             let lhsType = currentType
             
-            // TODO: Scopechain
             if operation.operatorType == .ARROW ||
                operation.operatorType == .DOT {
                 if let funcCall = await cast(type: ASTFunctionCall.self, rhs),
@@ -720,6 +755,9 @@ class Interpreter: ASTVisitor {
                 } else {
                     currentType = InterpreterType.unknown
                 }
+            } else if operation.operatorType == .SCOPE,
+                      let chain = await cast(type: ASTScopeChain.self, operation.rhs) {
+                currentType = await visitScopeChain(lhsType: lhsType, rhs: chain)
             } else {
                 await rhs.visit(self)
             }
@@ -747,6 +785,7 @@ class Interpreter: ASTVisitor {
                  .MINUS,           .STAR,
                  .SLASH,           .PERCENT,
                  .ARROW,           .DOT,
+                 .SCOPE,
                  .ASSIGNMENT_PLUS,
                  .ASSIGNMENT_MINUS,
                  .ASSIGNMENT_STAR,
