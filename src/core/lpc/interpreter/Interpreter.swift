@@ -209,15 +209,29 @@ class Interpreter: ASTVisitor {
     private func createContext(for file: ASTStrings) async -> Context? {
         let fileName = resolve(file.value)
         
-        if let referrer,
-           referrer == fileName {
-            addHighlight(MessagedHighlight(begin:   file.begin,
-                                           end:     file.end,
-                                           type:    .ERROR,
-                                           message: "Inheriting from itself"))
-            return nil
+        if let referrer {
+            var tmpReferrer = referrer
+            var tmpFileName = fileName[..<(fileName.firstIndex(of: ":") ?? fileName.endIndex)]
+            if tmpReferrer.hasPrefix("/") && !tmpFileName.hasPrefix("/") {
+                tmpFileName.insert("/", at: tmpFileName.startIndex)
+            } else if tmpFileName.hasPrefix("/") && !tmpReferrer.hasPrefix("/") {
+                tmpReferrer.insert("/", at: tmpReferrer.startIndex)
+            }
+            if tmpReferrer.hasSuffix(".lpc") && !tmpFileName.hasSuffix(".lpc") {
+                tmpFileName.append(contentsOf: ".lpc")
+            } else if tmpFileName.hasSuffix(".lpc") && !tmpReferrer.hasSuffix(".lpc") {
+                tmpReferrer.append(contentsOf: ".lpc")
+            }
+            
+            if tmpReferrer == tmpFileName {
+                addHighlight(MessagedHighlight(begin:   file.begin,
+                                               end:     file.end,
+                                               type:    .ERROR,
+                                               message: "Inheriting from itself"))
+                return nil
+            }
         }
-        return await loader.loadAndParse(file: fileName, referrer: current.fileGlobal.fileName ?? "")
+        return await loader.loadAndParse(file: fileName, referrer: current.fileGlobal.fileName ?? referrer ?? "")
     }
     
     private func resolve(_ file: String) -> String {
@@ -241,7 +255,7 @@ class Interpreter: ASTVisitor {
     /// - Parameter file: The strings expression evaluating to the file name.
     /// - Returns: Whether the file exists.
     private func fileExists(file: ASTStrings) async -> Bool {
-        return await loader.exists(file: resolve(file.value))
+        background ? true : await loader.exists(file: file.value)
     }
     
     /// Adds the context of the file represented by the given string nodes

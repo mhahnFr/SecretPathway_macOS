@@ -120,7 +120,7 @@ class LPCFileManager {
     /// - Parameter file: The name of the file to be checked.
     /// - Returns: Whether the file exists.
     func exists(file: String) async -> Bool {
-        if let index = file.firstIndex(of: ":") {
+        if file.firstIndex(of: ":") != nil {
             return await loadAndParse(file: file) != nil
         }
         if let cached = cachedExists[file] {

@@ -628,7 +628,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     
     private func interpretCode() {
         Task {
-            let interpreter = Interpreter(loader: loader)
+            let interpreter = Interpreter(loader: loader, referrer: file)
             var parser      = Parser(text: textStorage.string)
             self.ast        = parser.parse()
             self.context    = await interpreter.createContext(for: self.ast, file: self.file)
