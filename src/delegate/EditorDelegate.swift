@@ -80,6 +80,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var context = Context()     // FIXME: Synchronise over multiple threads!!!
     private var visitor = SuggestionVisitor()
     private var interpreterTimer: Timer?
+    private var editedRange: (Int, Int)?
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -150,7 +151,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             else if beginSuperSuggestions { startSuperSuggestions()               }
             else if beginDotSuggestions   { startDotSuggestions()                 }
             else if endSuggestions        { stopSuggestions()                     }
-            highlight()
+            highlight(range: editedRange ?? (0, 0))
         }
     }
     
@@ -164,6 +165,13 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     
     internal func textStorage(_ textStorage: NSTextStorage, willProcessEditing editedMask: NSTextStorageEditActions, range editedRange: NSRange, changeInLength delta: Int) {
         guard editedMask.contains(.editedCharacters) else { return }
+        
+        let tmp = (editedRange.location, delta)
+        if self.editedRange != nil {
+            self.editedRange!.1 += tmp.1
+        } else {
+            self.editedRange = tmp
+        }
         
         if editedRange.length == 0 { /* TODO: Handle deletions */ }
         
@@ -625,6 +633,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             self.ast        = parser.parse()
             self.context    = await interpreter.createContext(for: self.ast, file: self.file)
             self.highlights = interpreter.highlights
+            self.editedRange = nil
             
             DispatchQueue.main.async {
                 self.textStorage.beginEditing()
@@ -650,7 +659,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     }
     
     /// Performs the highlighting of the text.
-    private func highlight() {
+    private func highlight(range: (editPosition: Int, delta: Int) = (0, 0)) {
         textStorage.beginEditing()
         textStorage.setAttributes(SPStyle().native, range: NSRange(0 ..< textStorage.length))
         var tokenizer = Tokenizer(stream: StringStream(text: textStorage.string), commentTokens: true)
@@ -667,9 +676,18 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         let length = textStorage.length
         highlights.forEach {
             if let style = theme.styleFor(type: $0.type) {
-                let end   = $0.end   >= length ? length : $0.end
-                let begin = $0.begin >= length ? length : $0.begin
-                textStorage.addAttributes(style.native, range: NSMakeRange(begin, end - begin))
+                var start = $0.begin
+                if range.editPosition < start {
+                    start = start + range.delta
+                }
+                var end = $0.end
+                if range.editPosition < end {
+                    end = end + range.delta
+                }
+                
+                end   = end   >= length ? length : end
+                start = start >= length ? length : start
+                textStorage.addAttributes(style.native, range: NSMakeRange(start, end - start))
             }
         }
         
