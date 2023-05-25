@@ -27,6 +27,8 @@ class Definition: Instruction {
     /// The type of property definition.
     let kind: ASTType
     let modifiers: Modifier
+    /// The string description of this definition.
+    var string: String { name }
     
     var end: Int = -1
     

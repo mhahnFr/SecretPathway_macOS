@@ -26,7 +26,7 @@ class FunctionDefinition: Definition {
     let variadic: Bool
     
     /// The string description of this function definition.
-    var string: String {
+    override var string: String {
         var buffer = "\(name)("
         
         let last = parameters.last

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF03A9952A1FD61F0063E794 /* DefinitionSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF03A9942A1FD61F0063E794 /* DefinitionSuggestion.swift */; };
 		BF0609662A1E7AE800E48C96 /* SuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0609652A1E7AE800E48C96 /* SuggestionsView.swift */; };
 		BF0609682A1E7DB300E48C96 /* SuggestionsDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0609672A1E7DB300E48C96 /* SuggestionsDelegate.swift */; };
 		BF06096A2A1E7E2E00E48C96 /* Suggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0609692A1E7E2E00E48C96 /* Suggestion.swift */; };
@@ -146,6 +147,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF03A9942A1FD61F0063E794 /* DefinitionSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefinitionSuggestion.swift; sourceTree = "<group>"; };
 		BF0609652A1E7AE800E48C96 /* SuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsView.swift; sourceTree = "<group>"; };
 		BF0609672A1E7DB300E48C96 /* SuggestionsDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsDelegate.swift; sourceTree = "<group>"; };
 		BF0609692A1E7E2E00E48C96 /* Suggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Suggestion.swift; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 				BFA81AD32A1F7A7200017316 /* TypeSuggestion.swift */,
 				BFA81AD52A1F7ACF00017316 /* ValueReturnSuggestion.swift */,
 				BFA81AD72A1F7C2F00017316 /* ValueSuggestion.swift */,
+				BF03A9942A1FD61F0063E794 /* DefinitionSuggestion.swift */,
 			);
 			path = suggestions;
 			sourceTree = "<group>";
@@ -798,6 +801,7 @@
 				BF5C0F3A29E74012007F49BA /* ASTTryCatch.swift in Sources */,
 				BFEA07B929043DCC00294822 /* SettingsDelegate.swift in Sources */,
 				BF1129802854EBDC00EACD21 /* Settings.swift in Sources */,
+				BF03A9952A1FD61F0063E794 /* DefinitionSuggestion.swift in Sources */,
 				BF2DAAD32965DC7B0063F91C /* Token.swift in Sources */,
 				BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */,
 				BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */,
