@@ -18,7 +18,22 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-class Suggestion: Identifiable {
-    let left = "left"
-    let right = "right"
+/// This protocol defines suggestion types.
+protocol Suggestion: Hashable {
+    /// The actual suggestion to be inserted.
+    var suggestion: String { get }
+    /// The description to be displayed.
+    var description: String { get }
+    /// The text to be displayed on the right side.
+    var rightSide: String { get }
+    /// The relative cursor position.
+    var relativeCursorPosition: Int { get }
+}
+
+extension Suggestion {
+    var description: String { suggestion }
+    
+    var rightSide: String { "" }
+    
+    var relativeCursorPosition: Int { -1 }
 }

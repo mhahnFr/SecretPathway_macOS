@@ -21,5 +21,5 @@
 import Foundation
 
 class SuggestionsDelegate: ObservableObject {
-    @Published private(set) var suggestions = [Suggestion]()
+    @Published private(set) var suggestions = [any Suggestion]()
 }

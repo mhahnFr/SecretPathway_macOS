@@ -24,11 +24,11 @@ struct SuggestionsView: View {
     @ObservedObject var delegate: SuggestionsDelegate
     
     var body: some View {
-        ForEach(delegate.suggestions) { suggestion in
+        ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
             HStack {
-                Text(suggestion.left)
+                Text(suggestion.description)
                 Spacer()
-                Text(suggestion.right)
+                Text(suggestion.rightSide)
             }
         }
     }
