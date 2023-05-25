@@ -29,14 +29,21 @@ struct SuggestionsView: View {
                 .padding(.horizontal, 5)
         } else {
             VStack {
-                ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
+//                ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
+                List(delegate.suggestions, id: \.hashValue) { suggestion in
+                    let selected = suggestion.hashValue == delegate.selected?.hashValue
                     HStack {
                         Text(suggestion.description)
+                            .foregroundColor(selected ? Color.white : nil)
                             .padding(.horizontal, 5)
+//                            .padding(.vertical, 1)
                         Spacer()
                         Text(suggestion.rightSide)
                             .padding(.horizontal, 5)
-                    }.padding(.vertical, 1)
+                            .foregroundColor(.gray)
+//                            .padding(.vertical, 1)
+                    }.background(selected ? Color.blue : Color?.none)
+//                        .padding(.vertical, 1)
                 }
                 Text("Insert using <ENTER> or replace using <TAB>")
                     .padding(.horizontal, 5)
@@ -48,6 +55,6 @@ struct SuggestionsView: View {
 
 struct SuggestionsView_Previews: PreviewProvider {
     static var previews: some View {
-        SuggestionsView(delegate: SuggestionsDelegate(suggestions: [DoSuggestion()]))
+        SuggestionsView(delegate: SuggestionsDelegate(suggestions: [SwitchSuggestion(), DoSuggestion(), ThisSuggestion()]))
     }
 }
