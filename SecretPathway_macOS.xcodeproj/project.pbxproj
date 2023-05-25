@@ -70,6 +70,20 @@
 		BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF33290D7E4300010BD6 /* Connection.swift */; };
 		BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */; };
 		BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */; };
+		BFA81ABE2A1F742D00017316 /* DoSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81ABD2A1F742D00017316 /* DoSuggestion.swift */; };
+		BFA81AC02A1F743600017316 /* IncludeSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81ABF2A1F743600017316 /* IncludeSuggestion.swift */; };
+		BFA81AC22A1F744300017316 /* InheritSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AC12A1F744300017316 /* InheritSuggestion.swift */; };
+		BFA81AC42A1F744B00017316 /* NewSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AC32A1F744B00017316 /* NewSuggestion.swift */; };
+		BFA81AC62A1F746000017316 /* SwitchSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AC52A1F746000017316 /* SwitchSuggestion.swift */; };
+		BFA81AC82A1F746700017316 /* ThisSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AC72A1F746700017316 /* ThisSuggestion.swift */; };
+		BFA81ACA2A1F747200017316 /* TrySuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AC92A1F747200017316 /* TrySuggestion.swift */; };
+		BFA81ACC2A1F748000017316 /* ClassSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81ACB2A1F748000017316 /* ClassSuggestion.swift */; };
+		BFA81ACE2A1F786C00017316 /* ParenthesizedSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81ACD2A1F786C00017316 /* ParenthesizedSuggestion.swift */; };
+		BFA81AD02A1F79B400017316 /* PlainSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81ACF2A1F79B400017316 /* PlainSuggestion.swift */; };
+		BFA81AD22A1F7A2500017316 /* ReturnSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AD12A1F7A2500017316 /* ReturnSuggestion.swift */; };
+		BFA81AD42A1F7A7200017316 /* TypeSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AD32A1F7A7200017316 /* TypeSuggestion.swift */; };
+		BFA81AD62A1F7ACF00017316 /* ValueReturnSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AD52A1F7ACF00017316 /* ValueReturnSuggestion.swift */; };
+		BFA81AD82A1F7C2F00017316 /* ValueSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA81AD72A1F7C2F00017316 /* ValueSuggestion.swift */; };
 		BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB9037292E99A400854C71 /* TextViewBridgeDelegate.swift */; };
 		BFB6CE2329D48B8F004A49F2 /* ASTFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6CE2229D48B8F004A49F2 /* ASTFor.swift */; };
 		BFB6CE2729D48ED6004A49F2 /* ASTForEach.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB6CE2629D48ED6004A49F2 /* ASTForEach.swift */; };
@@ -195,6 +209,20 @@
 		BFA5CF33290D7E4300010BD6 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
 		BFA5CF37290D7EDF00010BD6 /* ConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		BFA5CF39290D866400010BD6 /* ConnectionPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionPromptView.swift; sourceTree = "<group>"; };
+		BFA81ABD2A1F742D00017316 /* DoSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoSuggestion.swift; sourceTree = "<group>"; };
+		BFA81ABF2A1F743600017316 /* IncludeSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncludeSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AC12A1F744300017316 /* InheritSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AC32A1F744B00017316 /* NewSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AC52A1F746000017316 /* SwitchSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AC72A1F746700017316 /* ThisSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThisSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AC92A1F747200017316 /* TrySuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrySuggestion.swift; sourceTree = "<group>"; };
+		BFA81ACB2A1F748000017316 /* ClassSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassSuggestion.swift; sourceTree = "<group>"; };
+		BFA81ACD2A1F786C00017316 /* ParenthesizedSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParenthesizedSuggestion.swift; sourceTree = "<group>"; };
+		BFA81ACF2A1F79B400017316 /* PlainSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AD12A1F7A2500017316 /* ReturnSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReturnSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AD32A1F7A7200017316 /* TypeSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AD52A1F7ACF00017316 /* ValueReturnSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueReturnSuggestion.swift; sourceTree = "<group>"; };
+		BFA81AD72A1F7C2F00017316 /* ValueSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueSuggestion.swift; sourceTree = "<group>"; };
 		BFAB9037292E99A400854C71 /* TextViewBridgeDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewBridgeDelegate.swift; sourceTree = "<group>"; };
 		BFB6CE2229D48B8F004A49F2 /* ASTFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTFor.swift; sourceTree = "<group>"; };
 		BFB6CE2629D48ED6004A49F2 /* ASTForEach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTForEach.swift; sourceTree = "<group>"; };
@@ -328,6 +356,20 @@
 				BF2DDF632A0AACA80069E194 /* SuggestionType.swift */,
 				BF96A02C2A0BCC34004FAAA0 /* SuggestionVisitor.swift */,
 				BF0609692A1E7E2E00E48C96 /* Suggestion.swift */,
+				BFA81ABD2A1F742D00017316 /* DoSuggestion.swift */,
+				BFA81ABF2A1F743600017316 /* IncludeSuggestion.swift */,
+				BFA81AC12A1F744300017316 /* InheritSuggestion.swift */,
+				BFA81AC32A1F744B00017316 /* NewSuggestion.swift */,
+				BFA81AC52A1F746000017316 /* SwitchSuggestion.swift */,
+				BFA81AC72A1F746700017316 /* ThisSuggestion.swift */,
+				BFA81AC92A1F747200017316 /* TrySuggestion.swift */,
+				BFA81ACB2A1F748000017316 /* ClassSuggestion.swift */,
+				BFA81ACD2A1F786C00017316 /* ParenthesizedSuggestion.swift */,
+				BFA81ACF2A1F79B400017316 /* PlainSuggestion.swift */,
+				BFA81AD12A1F7A2500017316 /* ReturnSuggestion.swift */,
+				BFA81AD32A1F7A7200017316 /* TypeSuggestion.swift */,
+				BFA81AD52A1F7ACF00017316 /* ValueReturnSuggestion.swift */,
+				BFA81AD72A1F7C2F00017316 /* ValueSuggestion.swift */,
 			);
 			path = suggestions;
 			sourceTree = "<group>";
@@ -678,6 +720,7 @@
 				BFE2926629DB31AA00185467 /* ASTOperation.swift in Sources */,
 				BF8340ED2A1BCCFD00AD0BE0 /* VPath.swift in Sources */,
 				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
+				BFA81AC42A1F744B00017316 /* NewSuggestion.swift in Sources */,
 				BFE44D0929EB0975001C86FB /* ASTNew.swift in Sources */,
 				BFC2AE89296D6AF600592450 /* SPTheme.swift in Sources */,
 				BFC5140D29F01FDA00382D64 /* ArrayType.swift in Sources */,
@@ -690,6 +733,8 @@
 				BFC6891829BD10E5001E51C1 /* ASTContinue.swift in Sources */,
 				BFE2926E29DB442500185467 /* ASTStrings.swift in Sources */,
 				BFE06F24296DA5B9004A3C1F /* JSONTheme.swift in Sources */,
+				BFA81AD22A1F7A2500017316 /* ReturnSuggestion.swift in Sources */,
+				BFA81ACA2A1F747200017316 /* TrySuggestion.swift in Sources */,
 				BFFD268C29A69C18002998E8 /* ASTInclude.swift in Sources */,
 				BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */,
 				BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */,
@@ -706,12 +751,14 @@
 				BFE2DB8029A7EE5C003E2BFF /* ASTWrong.swift in Sources */,
 				BF551CB729AE7F3D004D1CFE /* ASTCharacter.swift in Sources */,
 				BFA5CF3A290D866400010BD6 /* ConnectionPromptView.swift in Sources */,
+				BFA81ACC2A1F748000017316 /* ClassSuggestion.swift in Sources */,
 				BF088CFD2A1D0BAD00F1D5FA /* ASTScopeChain.swift in Sources */,
 				BF96A02D2A0BCC34004FAAA0 /* SuggestionVisitor.swift in Sources */,
 				BFCF15A22916C34C00A37F5D /* ConnectionPromptDelegate.swift in Sources */,
 				BFFD268A29A69759002998E8 /* ASTType.swift in Sources */,
 				BFE2926A29DB3CF800185467 /* ASTOperatorName.swift in Sources */,
 				BF54A3F629FDAA6F008E5BC2 /* ASTHole.swift in Sources */,
+				BFA81AC62A1F746000017316 /* SwitchSuggestion.swift in Sources */,
 				BF94661529294DB00005B2EA /* NSTextViewBridge.swift in Sources */,
 				BF92225529E5DD91001085B9 /* ASTParameter.swift in Sources */,
 				BFDCA78129AD2A4A005B8AA9 /* ASTCast.swift in Sources */,
@@ -720,6 +767,7 @@
 				BF8BDAD529D4B26F00763C81 /* ASTInteger.swift in Sources */,
 				BF92225129E5DA30001085B9 /* ASTWhile.swift in Sources */,
 				BF5C0F3C29E7435A007F49BA /* ASTSwitch.swift in Sources */,
+				BFA81ABE2A1F742D00017316 /* DoSuggestion.swift in Sources */,
 				BFD5A14529EF107C009E5409 /* ASTFunctionDefinition.swift in Sources */,
 				BFC46CDA2A0FB74500C1DC94 /* OrType.swift in Sources */,
 				BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */,
@@ -733,6 +781,7 @@
 				BF54F64D290D6F410093037F /* AboutView.swift in Sources */,
 				BF7D3C3929F97E3C008B42AC /* InterpreterArrayType.swift in Sources */,
 				BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */,
+				BFA81AD62A1F7ACF00017316 /* ValueReturnSuggestion.swift in Sources */,
 				BFC6891E29BD1258001E51C1 /* ASTEmpty.swift in Sources */,
 				BFD9B0D72923FBE800E59D00 /* Dialog.swift in Sources */,
 				BF91EDDD2A02AA69008DA953 /* InterpreterFuncRefType.swift in Sources */,
@@ -742,6 +791,8 @@
 				BF570A6B2A1924F60097DEFA /* Modifier.swift in Sources */,
 				BF916177294E2C8600C8B967 /* Protocols.swift in Sources */,
 				BFC6891C29BD11E5001E51C1 /* ASTEllipsis.swift in Sources */,
+				BFA81AD42A1F7A7200017316 /* TypeSuggestion.swift in Sources */,
+				BFA81AC82A1F746700017316 /* ThisSuggestion.swift in Sources */,
 				BF5C0F4029E745E9007F49BA /* ASTMapping.swift in Sources */,
 				BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */,
 				BF5C0F3A29E74012007F49BA /* ASTTryCatch.swift in Sources */,
@@ -750,6 +801,7 @@
 				BF2DAAD32965DC7B0063F91C /* Token.swift in Sources */,
 				BF91617B294E32EF00C8B967 /* ConnectionSender.swift in Sources */,
 				BFA5CF38290D7EDF00010BD6 /* ConnectionView.swift in Sources */,
+				BFA81AC22A1F744300017316 /* InheritSuggestion.swift in Sources */,
 				BF92224F29E5D8CB001085B9 /* ASTUnaryOperation.swift in Sources */,
 				BFA5CF32290D7DC500010BD6 /* ConnectionDelegate.swift in Sources */,
 				BFDCA77729AD1C5D005B8AA9 /* ASTArray.swift in Sources */,
@@ -763,18 +815,22 @@
 				BFC6891A29BD1177001E51C1 /* ASTDefault.swift in Sources */,
 				BF06096A2A1E7E2E00E48C96 /* Suggestion.swift in Sources */,
 				BF916179294E306700C8B967 /* ProtocolPlugin.swift in Sources */,
+				BFA81AD82A1F7C2F00017316 /* ValueSuggestion.swift in Sources */,
 				BF0D297D29F1B29F00AB4E87 /* HighlightType.swift in Sources */,
 				BF2DAAD52965DC870063F91C /* TokenType.swift in Sources */,
 				BF0D297729F1AECA00AB4E87 /* Highlight.swift in Sources */,
 				BFE2926429DB2B8A00185467 /* ASTVariableDefinition.swift in Sources */,
 				BFC5140F29F0200300382D64 /* BasicType.swift in Sources */,
 				BFD9049D29252289006B728B /* ConnectionError.swift in Sources */,
+				BFA81ACE2A1F786C00017316 /* ParenthesizedSuggestion.swift in Sources */,
 				BFD9B0CC2923CFF500E59D00 /* ConnectionRecord.swift in Sources */,
 				BF69AEB52A0ED37E00B961FC /* ASTFloat.swift in Sources */,
+				BFA81AD02A1F79B400017316 /* PlainSuggestion.swift in Sources */,
 				BF2DC09229F2FD6E00CE0E00 /* FunctionDefinition.swift in Sources */,
 				BFE06F28296DAC88004A3C1F /* JSONColor.swift in Sources */,
 				BF5C0F4229E7473D007F49BA /* ASTIf.swift in Sources */,
 				BFDDA0E228119FEC00C3E84A /* AppDelegate.swift in Sources */,
+				BFA81AC02A1F743600017316 /* IncludeSuggestion.swift in Sources */,
 				BF821D1529F843360053B00A /* TypeHelper.swift in Sources */,
 				BFB6CE2929D490E6004A49F2 /* ASTThis.swift in Sources */,
 				BFC5140929F01F5C00382D64 /* AbstractType.swift in Sources */,
