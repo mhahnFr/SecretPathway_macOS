@@ -24,11 +24,23 @@ struct SuggestionsView: View {
     @ObservedObject var delegate: SuggestionsDelegate
     
     var body: some View {
-        ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
-            HStack {
-                Text(suggestion.description)
-                Spacer()
-                Text(suggestion.rightSide)
+        if delegate.suggestions.isEmpty {
+            Text("No suggestions available")
+                .padding(.horizontal, 5)
+        } else {
+            VStack {
+                ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
+                    HStack {
+                        Text(suggestion.description)
+                            .padding(.horizontal, 5)
+                        Spacer()
+                        Text(suggestion.rightSide)
+                            .padding(.horizontal, 5)
+                    }.padding(.vertical, 1)
+                }
+                Text("Insert using <ENTER> or replace using <TAB>")
+                    .padding(.horizontal, 5)
+                    .foregroundColor(.gray)
             }
         }
     }
@@ -36,6 +48,6 @@ struct SuggestionsView: View {
 
 struct SuggestionsView_Previews: PreviewProvider {
     static var previews: some View {
-        SuggestionsView(delegate: SuggestionsDelegate())
+        SuggestionsView(delegate: SuggestionsDelegate(suggestions: [DoSuggestion()]))
     }
 }

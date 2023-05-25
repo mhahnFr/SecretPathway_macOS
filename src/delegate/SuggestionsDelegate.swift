@@ -22,4 +22,8 @@ import Foundation
 
 class SuggestionsDelegate: ObservableObject {
     @Published private(set) var suggestions = [any Suggestion]()
+    
+    init(suggestions: [any Suggestion] = [any Suggestion]()) {
+        self.suggestions = suggestions
+    }
 }
