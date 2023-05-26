@@ -26,8 +26,8 @@ class ASTMissing: ASTHole {
     /// - Parameter begin: The beginning position.
     /// - Parameter end: The end position.
     /// - Parameter message: The error message.
-    init(begin: Int, end: Int, message: String) {
-        super.init(begin: begin, end: end, message: message, type: .MISSING)
+    init(begin: Int, end: Int, message: String, expected: HighlightType?) {
+        super.init(begin: begin, end: end, message: message, type: .MISSING, expected: expected)
     }
     
     override func describe(_ indentation: Int) -> String {

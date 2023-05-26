@@ -22,6 +22,7 @@
 class ASTHole: ASTExpression {
     /// The associated message.
     let message: String
+    let expected: HighlightType?
     
     /// Constructs this AST node using the given information.
     ///
@@ -30,8 +31,13 @@ class ASTHole: ASTExpression {
     ///   - end: The end position.
     ///   - message: The associated message.
     ///   - type: The ASTType.
-    init(begin: Int, end: Int, message: String, type: ASTType) {
-        self.message = message
+    init(begin:    Int,
+         end:      Int,
+         message:  String,
+         type:     ASTType,
+         expected: HighlightType?) {
+        self.message  = message
+        self.expected = expected
         
         super.init(begin: begin, end: end, type: type)
     }

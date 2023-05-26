@@ -25,8 +25,8 @@ class ASTWrong: ASTHole {
     ///
     /// - Parameter token: The token to be represented.
     /// - Parameter message: The reasoning message.
-    init(token: Token, message: String) {
-        super.init(begin: token.begin, end: token.end, message: message, type: .WRONG)
+    init(token: Token, message: String, expected: HighlightType?) {
+        super.init(begin: token.begin, end: token.end, message: message, type: .WRONG, expected: expected)
     }
     
     override func describe(_ indentation: Int) -> String {

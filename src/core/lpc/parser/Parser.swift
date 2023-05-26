@@ -85,7 +85,7 @@ struct Parser {
             advance()
         } else if next.isType(.SEMICOLON) && !current.isType(.STRING) {
             toReturn = combine(ASTInheritance(begin: previous.begin, end: next.end, inherited: nil),
-                               ASTWrong(token: current, message: "Expected a string literal"))
+                               ASTWrong(token: current, message: "Expected a string literal", expected: .STRINGS))
         } else if current.isType(.STRING) {
             let begin   = previous.begin
             let strings = parseStrings()
@@ -93,7 +93,10 @@ struct Parser {
             toReturn = assertSemicolon(for: ASTInheritance(begin: begin, end: (current.isType(.SEMICOLON) ? current : previous).end, inherited: strings))
         } else if !current.isType(.SEMICOLON) && !next.isType(.SEMICOLON) {
             toReturn = combine(ASTInheritance(begin: previous.begin, end: previous.end, inherited: nil),
-                               ASTMissing(begin: previous.end, end: current.begin, message: "Expected ';'"))
+                               ASTMissing(begin:    previous.end,
+                                          end:      current.begin,
+                                          message:  "Expected ';'",
+                                          expected: .SEMICOLON))
         } else {
             toReturn = ASTInheritance(begin: previous.begin, end: next.end, inherited: nil)
             advance()
@@ -109,7 +112,10 @@ struct Parser {
         
         if !current.isType(.STRING) {
             return ASTInclude(begin: previous.begin, end: current.begin, included:
-                   ASTMissing(begin: previous.end, end: current.begin, message: "Expected a string literal"))
+                                ASTMissing(begin:    previous.end,
+                                           end:      current.begin,
+                                           message:  "Expected a string literal",
+                                           expected: .STRINGS))
         }
         let begin   = previous.begin
         let strings = parseStrings()
@@ -138,23 +144,29 @@ struct Parser {
                 inheritance = nil
             } else {
                 inheritance = combine(ASTInheritance(begin: current.begin, end: current.end, inherited: nil),
-                                      ASTWrong(token: current, message: "Expected a string literal"))
+                                      ASTWrong(token: current, message: "Expected a string literal", expected: .STRINGS))
             }
             return assertSemicolon(for: ASTClass(begin: begin, name: name, inheritance: inheritance))
         } else if !current.isType(.LEFT_CURLY) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing '{'",
+                                    expected: .LEFT_CURLY))
         } else {
             advance()
         }
         
         let statements = parse(end: .RIGHT_CURLY)
         if !current.isType(.RIGHT_CURLY) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing '}'",
+                                    expected: .RIGHT_CURLY))
         } else {
             advance()
         }
         if !current.isType(.SEMICOLON) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'", expected: .SEMICOLON))
         } else {
             advance()
         }
@@ -184,7 +196,7 @@ struct Parser {
                 toReturn.append(ASTModifier(token: current))
             } else if isModifier(next) /* || isType(next) */ {
                 toReturn.append(combine(ASTModifier(begin: current.begin, end: current.end),
-                                        ASTWrong(token: current, message: "Expected a modifier")))
+                                        ASTWrong(token: current, message: "Expected a modifier", expected: .MODIFIER)))
             } else {
                 break
             }
@@ -204,7 +216,10 @@ struct Parser {
         var variadic = false
         
         if !current.isType(.LEFT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing '('",
+                                    expected: .LEFT_PAREN))
         } else {
             advance()
         }
@@ -213,18 +228,24 @@ struct Parser {
             repeat {
                 if current.isType(.DOT, .RANGE, .ELLIPSIS) {
                     if !current.isType(.ELLIPSIS) {
-                        parts.append(ASTWrong(token: current, message: "Expected '...'"))
+                        parts.append(ASTWrong(token: current, message: "Expected '...'", expected: .ELLIPSIS))
                     }
                     advance()
                     if !current.isType(.RIGHT_PAREN) {
-                        parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                        parts.append(ASTMissing(begin:    previous.end,
+                                                end:      current.begin,
+                                                message:  "Missing ')'",
+                                                expected: .RIGHT_PAREN))
                     } else {
                         advance()
                     }
                     variadic = true
                     break
                 } else if current.isType(.RIGHT_PAREN) {
-                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type"))
+                    parts.append(ASTMissing(begin:    previous.end,
+                                            end:      current.begin,
+                                            message:  "Missing type",
+                                            expected: .TYPE))
                 } else {
                     paramTypes.append(parseType())
                 }
@@ -233,7 +254,10 @@ struct Parser {
                     advance()
                     break
                 } else if !current.isType(.COMMA) {
-                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
+                    parts.append(ASTMissing(begin:    previous.end,
+                                            end:      current.begin,
+                                            message:  "Missing ','",
+                                            expected: .COMMA))
                 } else {
                     advance()
                 }
@@ -254,9 +278,9 @@ struct Parser {
         let part: ASTExpression?
         if current.isType(.LEFT_BRACKET) && !next.isType(.RIGHT_BRACKET) {
             advance()
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'", expected: .RIGHT_BRACKET)
         } else if current.isType(.RIGHT_BRACKET) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '['")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '['", expected: .LEFT_BRACKET)
             advance()
         } else if current.isType(.LEFT_BRACKET) && next.isType(.RIGHT_BRACKET) {
             advance(count: 2)
@@ -308,13 +332,16 @@ struct Parser {
         
         let type: ASTExpression
         if current.isType(.RIGHT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type", expected: .TYPE))
             type = ASTEmpty(previous.end, current.begin)
         } else {
             type = parseType()
         }
         if !current.isType(.RIGHT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing ')'",
+                                    expected: .RIGHT_PAREN))
         } else {
             advance()
         }
@@ -340,11 +367,11 @@ struct Parser {
         
         let type: TokenType?
         if !isType(current) && !current.isType(.LESS, .GREATER, .STRING) {
-            parts.append(ASTWrong(token: current, message: "Expected a type"))
+            parts.append(ASTWrong(token: current, message: "Expected a type", expected: .TYPE))
             type = nil
             advance()
         } else if !isType(current) && current.isType(.LESS, .GREATER, .STRING) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing type", expected: .TYPE))
             type = nil
         } else {
             type = current.type
@@ -356,7 +383,7 @@ struct Parser {
             // Has type file
             let typeToken = previous
             if !current.isType(.LESS) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '<'"))
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '<'", expected: .LESS))
             } else {
                 advance()
             }
@@ -367,12 +394,15 @@ struct Parser {
                         stringPart = ASTName(token: current)
                     } else {
                         stringPart = nil
-                        parts.append(ASTWrong(token: current, message: "Expected string literal"))
+                        parts.append(ASTWrong(token: current, message: "Expected string literal", expected: .STRINGS))
                     }
                     advance()
                 } else {
                     stringPart = nil
-                    parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing annotation"))
+                    parts.append(ASTMissing(begin:    previous.end,
+                                            end:      current.begin,
+                                            message:  "Missing annotation",
+                                            expected: .NAME))
                 }
             } else {
                 stringPart = parseStrings()
@@ -380,16 +410,21 @@ struct Parser {
             
             if isType(typeToken) {
                 if stringPart?.type == .STRINGS && type != .OBJECT {
-                    parts.append(ASTWrong(token:   typeToken,
-                                          message: "File annotation is only allowed for 'object'"))
+                    parts.append(ASTWrong(token:    typeToken,
+                                          message:  "File annotation is only allowed for 'object'",
+                                          expected: .OBJECT))
                 } else if type != .EXCEPTION && type != .OBJECT {
-                    parts.append(ASTWrong(token:   typeToken,
-                                          message: "Type annotation is only allowed for 'object' and 'exception'"))
+                    parts.append(ASTWrong(token:    typeToken,
+                                          message:  "Type annotation is only allowed for 'object' and 'exception'",
+                                          expected: nil))
                 }
             }
             
             if !current.isType(.GREATER) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '>'"))
+                parts.append(ASTMissing(begin:    previous.end,
+                                        end:      current.begin,
+                                        message:  "Missing '>'",
+                                        expected: .GREATER))
             } else {
                 advance()
             }
@@ -414,7 +449,10 @@ struct Parser {
             
             let part: ASTExpression?
             if !isOperator(current) {
-                part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing operator")
+                part = ASTMissing(begin:    previous.end,
+                                  end:      current.begin,
+                                  message:  "Missing operator",
+                                  expected: .OPERATION)
             } else {
                 part = nil
                 advance()
@@ -427,11 +465,14 @@ struct Parser {
             }
         } else if isType(current) || isModifier(current) {
             toReturn = combine(ASTName(begin: current.begin, end: current.end),
-                               ASTWrong(token: current, message: "Expected a name"))
+                               ASTWrong(token: current, message: "Expected a name", expected: .NAME))
             advance()
         } else if !current.isType(.IDENTIFIER) {
             toReturn = combine(ASTName(begin: previous.end, end: current.begin),
-                               ASTMissing(begin: previous.end, end: current.begin, message: "Missing name"))
+                               ASTMissing(begin:    previous.end,
+                                          end:      current.begin,
+                                          message:  "Missing name",
+                                          expected: .NAME))
         } else {
             toReturn = ASTName(token: current)
             advance()
@@ -452,14 +493,20 @@ struct Parser {
                 if current.isType(.ELLIPSIS) && next.isType(.RIGHT_PAREN, .LEFT_CURLY) {
                     toReturn.append(ASTEllipsis(current))
                     if next.isType(.LEFT_CURLY) {
-                        toReturn.append(ASTMissing(begin: current.end, end: next.begin, message: "Expected ')'"))
+                        toReturn.append(ASTMissing(begin:    current.end,
+                                                   end:      next.begin,
+                                                   message:  "Expected ')'",
+                                                   expected: .RIGHT_PAREN))
                         advance()
                     } else {
                         advance(count: 2)
                     }
                     break
                 } else if current.isType(.RIGHT_PAREN) {
-                    toReturn.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing parameter"))
+                    toReturn.append(ASTMissing(begin:    previous.end,
+                                               end:      current.begin,
+                                               message:  "Missing parameter",
+                                               expected: .PARAMETER))
                     advance()
                     break
                 }
@@ -470,10 +517,13 @@ struct Parser {
                 if !current.isType(.IDENTIFIER) {
                     if current.isType(.COMMA, .RIGHT_PAREN) {
                         name = combine(ASTName(begin: previous.end, end: current.begin),
-                                       ASTMissing(begin: previous.end, end: current.begin, message: "Parameter's name missing"))
+                                       ASTMissing(begin:    previous.end,
+                                                  end:      current.begin,
+                                                  message:  "Parameter's name missing",
+                                                  expected: .NAME))
                     } else {
                         name = combine(ASTName(begin: current.begin, end: current.end),
-                                       ASTWrong(token: current, message: "Expected parameter's name"))
+                                       ASTWrong(token: current, message: "Expected parameter's name", expected: .NAME))
                         advance()
                     }
                 } else {
@@ -486,12 +536,18 @@ struct Parser {
                 if current.isType(.RIGHT_PAREN, .LEFT_CURLY) {
                     stop = true
                     if current.isType(.LEFT_CURLY) {
-                        toReturn.append(ASTMissing(begin: previous.end, end: current.begin, message: "Expected ')'"))
+                        toReturn.append(ASTMissing(begin:    previous.end,
+                                                   end:      current.begin,
+                                                   message:  "Expected ')'",
+                                                   expected: .RIGHT_PAREN))
                     } else {
                         advance()
                     }
                 } else if !current.isType(.COMMA) {
-                    toReturn.append(ASTMissing(begin: previous.end, end: current.begin, message: "Expected ','"))
+                    toReturn.append(ASTMissing(begin:    previous.end,
+                                               end:      current.begin,
+                                               message:  "Expected ','",
+                                               expected: .COMMA))
                 } else {
                     advance()
                 }
@@ -558,7 +614,7 @@ struct Parser {
                 advance()
                 type = parseType()
             } else if next.isType(.ASSIGNMENT) && (current.isType(.IDENTIFIER) || isType(current)) {
-                let missing = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'")
+                let missing = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'", expected: .COLON)
                 type = combine(parseType(), missing)
             } else {
                 type = nil
@@ -588,13 +644,19 @@ struct Parser {
         var parts: [ASTExpression] = []
         
         if !current.isType(.LEFT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing '('",
+                                    expected: .LEFT_PAREN))
         } else {
             advance()
         }
         let expression = parseExpression()
         if !current.isType(.RIGHT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing ')'",
+                                    expected: .RIGHT_PAREN))
         } else {
             advance()
         }
@@ -652,7 +714,10 @@ struct Parser {
         advance()
         
         if !current.isType(.LEFT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing '('",
+                                    expected: .LEFT_PAREN))
         } else {
             advance()
         }
@@ -662,25 +727,30 @@ struct Parser {
                                                                              type:      nil,
                                                                              name:      combine(ASTName(begin:  previous.end,
                                                                                                         end:    current.begin),
-                                                                                                ASTMissing(begin:   previous.end,
-                                                                                                           end:     current.begin,
-                                                                                                           message: "Missing variable"))),
-                                                       ASTMissing(begin:   previous.end,
-                                                                  end:     current.begin,
-                                                                  message: "Missing variable"))
+                                                                                                ASTMissing(begin:    previous.end,
+                                                                                                           end:      current.begin,
+                                                                                                           message:  "Missing variable",
+                                                                                                           expected: .VARIABLE_DEFINITION))),
+                                                       ASTMissing(begin:    previous.end,
+                                                                  end:      current.begin,
+                                                                  message:  "Missing variable",
+                                                                  expected: .VARIABLE_DEFINITION))
         if !current.isType(.COLON) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'", expected: .COLON))
         } else {
             advance()
         }
         let expression: ASTExpression
         if current.isType(.RIGHT_PAREN) {
-            expression = ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression")
+            expression = ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression", expected: nil)
             advance()
         } else {
             expression = parseExpression()
             if !current.isType(.RIGHT_PAREN) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                parts.append(ASTMissing(begin:    previous.end,
+                                        end:      current.begin,
+                                        message:  "Missing ')'",
+                                        expected: .RIGHT_PAREN))
             } else {
                 advance()
             }
@@ -702,7 +772,10 @@ struct Parser {
         advance()
         
         if !current.isType(.LEFT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing '('",
+                                    expected: .LEFT_PAREN))
         } else {
             advance()
         }
@@ -711,7 +784,10 @@ struct Parser {
         let after          = parseExpression()
         
         if !current.isType(.RIGHT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing ')'",
+                                    expected: .RIGHT_PAREN))
         } else {
             advance()
         }
@@ -734,7 +810,7 @@ struct Parser {
         
         let part: ASTExpression?
         if !current.isType(.LEFT_CURLY) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'", expected: .LEFT_CURLY)
         } else {
             part = nil
             advance()
@@ -748,7 +824,7 @@ struct Parser {
         var lastToken = Parser.startToken
         while !current.isType(.RIGHT_CURLY, .EOF) {
             if current == lastToken {
-                lastCaseExpressions.append(ASTWrong(token: current, message: "Unexpected token 6"))
+                lastCaseExpressions.append(ASTWrong(token: current, message: "Unexpected token 6", expected: nil))
                 advance()
                 continue
             } else {
@@ -763,7 +839,10 @@ struct Parser {
                 
                 lastCase = parseExpression()
                 if !current.isType(.COLON) {
-                    lastCase = combine(lastCase, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
+                    lastCase = combine(lastCase, ASTMissing(begin:    previous.end,
+                                                            end:      current.begin,
+                                                            message:  "Missing ':'",
+                                                            expected: .COLON))
                 } else {
                     advance()
                 }
@@ -774,7 +853,10 @@ struct Parser {
                 lastCase = ASTDefault(current)
                 advance()
                 if !current.isType(.COLON) {
-                    lastCase = combine(lastCase, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'"))
+                    lastCase = combine(lastCase, ASTMissing(begin:    previous.end,
+                                                            end:      current.begin,
+                                                            message:  "Missing ':'",
+                                                            expected: .COLON))
                 } else {
                     advance()
                 }
@@ -807,7 +889,7 @@ struct Parser {
         
         let part: ASTExpression?
         if !current.isType(.WHILE) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing 'while'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing 'while'", expected: .WHILE)
         } else {
             part = nil
             advance()
@@ -867,7 +949,7 @@ struct Parser {
         
         let toTry = parseInstruction()
         if !current.isType(.CATCH) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing 'catch'"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing 'catch'", expected: .CATCH))
         } else {
             advance()
         }
@@ -881,14 +963,17 @@ struct Parser {
         }
         let exception = parseMaybeVariable()
         if lp == nil && exception == nil {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing exception variable"))
+            parts.append(ASTMissing(begin:    previous.end,
+                                    end:      current.begin,
+                                    message:  "Missing exception variable",
+                                    expected: .VARIABLE_DEFINITION))
         }
         if exception != nil || lp == nil {
             if let lp {
-                parts.append(ASTMissing(begin: lp.0, end: lp.1, message: "Missing '('"))
+                parts.append(ASTMissing(begin: lp.0, end: lp.1, message: "Missing '('", expected: .LEFT_PAREN))
             }
             if !current.isType(.RIGHT_PAREN) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'", expected: .RIGHT_PAREN))
             } else {
                 advance()
             }
@@ -940,7 +1025,10 @@ struct Parser {
         let begin = current.begin
         
         if !current.isType(.LEFT_CURLY) {
-            expressions.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '{'"))
+            expressions.append(ASTMissing(begin:    previous.end,
+                                          end:      current.begin,
+                                          message:  "Missing '{'",
+                                          expected: .LEFT_CURLY))
         } else {
             advance()
         }
@@ -948,7 +1036,7 @@ struct Parser {
         var lastToken = Parser.startToken
         while !current.isType(.RIGHT_CURLY, .EOF) {
             if current == lastToken {
-                expressions.append(ASTWrong(token: current, message: "Unexpected token 2"))
+                expressions.append(ASTWrong(token: current, message: "Unexpected token 2", expected: nil))
                 advance()
                 continue
             } else {
@@ -958,7 +1046,10 @@ struct Parser {
         }
         
         if current.isType(.EOF) {
-            expressions.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'"))
+            expressions.append(ASTMissing(begin:    previous.end,
+                                          end:      current.begin,
+                                          message:  "Missing '}'",
+                                          expected: .RIGHT_CURLY))
         } else {
             advance()
         }
@@ -1009,7 +1100,10 @@ struct Parser {
         let toReturn: ASTExpression
         
         if !current.isType(.SEMICOLON) {
-            toReturn = combine(expression, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
+            toReturn = combine(expression, ASTMissing(begin:    previous.end,
+                                                      end:      current.begin,
+                                                      message:  "Missing ';'",
+                                                      expected: .SEMICOLON))
         } else {
             advance()
             toReturn = expression
@@ -1036,7 +1130,7 @@ struct Parser {
                 
                 let part: ASTExpression?
                 if !current.isType(.RIGHT_PAREN) {
-                    part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'")
+                    part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'", expected: .RIGHT_PAREN)
                 } else {
                     part = nil
                     advance()
@@ -1105,14 +1199,17 @@ struct Parser {
             } else {
                 let expression = parseExpression()
                 if !current.isType(.RIGHT_PAREN) {
-                    toReturn = combine(expression, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                    toReturn = combine(expression, ASTMissing(begin:    previous.end,
+                                                              end:      current.begin,
+                                                              message:  "Missing ')'",
+                                                              expected: .RIGHT_PAREN))
                 } else {
                     advance()
                     toReturn = expression
                 }
             }
                         
-        default: toReturn = ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression")
+        default: toReturn = ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression", expected: nil)
         }
         
         return toReturn
@@ -1126,7 +1223,7 @@ struct Parser {
         
         advance()
         if !previous.isType(.ELLIPSIS) {
-            return combine(ellipsis, ASTWrong(token: previous, message: "Expected '...'"))
+            return combine(ellipsis, ASTWrong(token: previous, message: "Expected '...'", expected: .ELLIPSIS))
         }
         return ellipsis
     }
@@ -1141,7 +1238,7 @@ struct Parser {
         let begin = previous.begin
         
         if !current.isType(.LEFT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('", expected: .LEFT_PAREN))
         } else {
             advance()
         }
@@ -1150,13 +1247,13 @@ struct Parser {
         let arguments: [ASTExpression]
         if !current.isType(.RIGHT_PAREN) {
             if !current.isType(.COMMA) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','", expected: .COMMA))
             } else {
                 advance()
             }
             arguments = parseCallArguments(until: .RIGHT_PAREN)
             if !current.isType(.RIGHT_PAREN) {
-                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+                parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'", expected: .RIGHT_PAREN))
             } else {
                 advance()
             }
@@ -1182,7 +1279,7 @@ struct Parser {
         
         let part: ASTExpression?
         if !current.isType(.RIGHT_CURLY) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing '}'", expected: .RIGHT_CURLY)
         } else {
             part = nil
             advance()
@@ -1206,7 +1303,7 @@ struct Parser {
         
         let part: ASTExpression?
         if !current.isType(.RIGHT_BRACKET) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'", expected: .RIGHT_BRACKET)
         } else {
             part = nil
             advance()
@@ -1244,7 +1341,7 @@ struct Parser {
         
         let part: ASTExpression?
         if !current.isType(.RIGHT_PAREN) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'", expected: .RIGHT_PAREN)
         } else {
             part = nil
             advance()
@@ -1270,7 +1367,7 @@ struct Parser {
         var lastToken = Parser.startToken
         while !current.isType(type, .EOF, .SEMICOLON) {
             if current == lastToken {
-                list.append(ASTWrong(token: current, message: "Unexpected token 4"))
+                list.append(ASTWrong(token: current, message: "Unexpected token 4", expected: nil))
                 advance()
                 continue
             } else {
@@ -1278,13 +1375,13 @@ struct Parser {
             }
             list.append(parseExpression())
             if !current.isType(.COMMA, type) {
-                list.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','"))
+                list.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ','", expected: .COMMA))
             } else if current.isType(.COMMA) {
                 advance()
             }
         }
         if previous.isType(.COMMA) {
-            list.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression"))
+            list.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing expression", expected: nil))
         }
         
         return list
@@ -1303,7 +1400,7 @@ struct Parser {
         let name = parseName()
         
         if !current.isType(.LEFT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing '('", expected: .LEFT_PAREN))
         } else {
             advance()
         }
@@ -1311,7 +1408,7 @@ struct Parser {
         let arguments = parseCallArguments(until: .RIGHT_PAREN)
         
         if !current.isType(.RIGHT_PAREN) {
-            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'"))
+            parts.append(ASTMissing(begin: previous.end, end: current.begin, message: "Missing ')'", expected: .RIGHT_PAREN))
         } else {
             advance()
         }
@@ -1340,7 +1437,10 @@ struct Parser {
             
             let result = ASTOperation(lhs: expression, rhs: rhs, operatorType: .RANGE)
             if !current.isType(.RIGHT_BRACKET) {
-                toReturn = ASTSubscript(expression: combine(result, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")))
+                toReturn = ASTSubscript(expression: combine(result, ASTMissing(begin:    previous.end,
+                                                                               end:      current.begin,
+                                                                               message:  "Missing ']'",
+                                                                               expected: .RIGHT_BRACKET)))
             } else {
                 advance()
                 toReturn = ASTSubscript(expression: result)
@@ -1348,7 +1448,7 @@ struct Parser {
         } else {
             let part: ASTExpression?
             if !current.isType(.RIGHT_BRACKET) {
-                part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'")
+                part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ']'", expected: .RIGHT_BRACKET)
             } else {
                 advance()
                 part = nil
@@ -1383,7 +1483,7 @@ struct Parser {
         
         let part: ASTExpression?
         if !current.isType(.COLON) {
-            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'")
+            part = ASTMissing(begin: previous.end, end: current.begin, message: "Missing ':'", expected: .COLON)
         } else {
             part = nil
             advance()
@@ -1473,7 +1573,10 @@ struct Parser {
             if !next.isType(.IDENTIFIER) {
                 lhs = ASTUnaryOperation(begin: current.begin, operatorType: .AMPERSAND,
                                         identifier: combine(ASTName(begin: current.end, end: next.begin),
-                                                            ASTMissing(begin: current.end, end: next.begin, message: "Missing identifier")))
+                                                            ASTMissing(begin:    current.end,
+                                                                       end:      next.begin,
+                                                                       message:  "Missing identifier",
+                                                                       expected: .IDENTIFIER)))
             } else {
                 advance()
                 lhs = ASTUnaryOperation(begin: previous.begin, operatorType: .AMPERSAND, identifier: ASTName(token: current))
@@ -1509,7 +1612,9 @@ struct Parser {
         var lastToken = Parser.startToken
         while isOperator(current) && !current.isType(.EOF) {
             if current == lastToken {
-                previousExpression = combine(previousExpression, ASTWrong(token: current, message: "Unexpected token 3"))
+                previousExpression = combine(previousExpression, ASTWrong(token:    current,
+                                                                          message:  "Unexpected token 3",
+                                                                          expected: nil))
                 advance()
                 continue
             } else {
@@ -1548,7 +1653,10 @@ struct Parser {
             advance()
             toReturn = assertSemicolon(for: ASTOperation(lhs: variable, rhs: parseExpression(), operatorType: .ASSIGNMENT))
         } else {
-            toReturn = combine(variable, ASTMissing(begin: previous.end, end: current.begin, message: "Missing ';'"))
+            toReturn = combine(variable, ASTMissing(begin:    previous.end,
+                                                    end:      current.begin,
+                                                    message:  "Missing ';'",
+                                                    expected: .SEMICOLON))
         }
         
         return toReturn
@@ -1592,7 +1700,7 @@ struct Parser {
         var lastToken = Parser.startToken
         while !current.isType(.EOF) && !current.isType(end) {
             if current == lastToken {
-                expressions.append(ASTWrong(token: current, message: "Unexpected token 1"))
+                expressions.append(ASTWrong(token: current, message: "Unexpected token 1", expected: nil))
                 advance()
                 continue
             } else {
