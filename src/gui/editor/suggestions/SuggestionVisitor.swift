@@ -81,18 +81,18 @@ struct SuggestionVisitor {
         case .PARAMETER: return position <= (node as! ASTParameter).declaredType.end ? .type : .literal
             
         // TODO: .FUNC_CALL, .OPERATION, .UNARY_OPERATION?
-//        case .AST_RETURN:
-//            let ret = node as! ASTReturn
-//
-//            if let fun = context.queryEnclosingFunction(at: position) {
-//                expectedType = fun.returnType
-//            }
-//            if let returned = ret.returned,
-//               position >= returned.begin,
-//               position <= returned.end {
-//                return returned.hasSubExpressions ? visitImpl(node: returned, position: position, context: context)
-//                                                  : .literalIdentifier
-//            }
+        case .AST_RETURN:
+            let ret = node as! ASTReturn
+
+            if let fun = context.queryEnclosingFunction(at: position) {
+                expectedType = fun.returnType
+            }
+            if let returned = ret.returned,
+               position >= returned.begin,
+               position <= returned.end {
+                return returned.hasSubNodes ? visitImpl(node: returned, position: position, context: context)
+                                            : .literalIdentifier
+            }
             
         case .CAST:
             let c = node as! ASTCast

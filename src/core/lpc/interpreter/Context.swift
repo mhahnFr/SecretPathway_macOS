@@ -404,4 +404,12 @@ class Context: Instruction {
         
         return toReturn
     }
+    
+    func queryEnclosingFunction(at position: Int) -> FunctionDefinition? {
+        if let previous = Array(instructions.keys).sorted(by: <).last(where: { $0 < position}),
+           let function = instructions[previous] as? FunctionDefinition {
+            return function
+        }
+        return nil
+    }
 }
