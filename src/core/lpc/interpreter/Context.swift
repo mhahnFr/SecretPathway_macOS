@@ -273,4 +273,135 @@ class Context: Instruction {
         
         return false
     }
+    
+    func isGlobalScope(at position: Int) -> Bool {
+        for (pos, instruction) in instructions {
+            if pos < position,
+               instruction.end > position {
+                return instruction is Context
+            }
+        }
+        return true
+    }
+    
+    func createSuperSuggestions() -> [any Suggestion] {
+        var set = Set<AnyHashable>()
+        
+        inherited.forEach { $0.availableDefinitions(at: .max, with: .literal).forEach { set.insert(AnyHashable($0)) } }
+        set.remove(AnyHashable(PlainSuggestion("...")))
+        set.remove(AnyHashable(ReturnSuggestion()))
+        set.remove(AnyHashable(ValueReturnSuggestion(value: true)))
+        set.remove(AnyHashable(ValueReturnSuggestion(value: false)))
+        set.remove(AnyHashable(ValueReturnSuggestion()))
+        set.remove(AnyHashable(ThisSuggestion()))
+        
+        var toReturn = [any Suggestion]()
+        set.forEach { toReturn.append($0.base as! any Suggestion) }
+        return toReturn
+    }
+    
+    private func availableDefinitions(at position: Int, with type: SuggestionType) -> [any Suggestion] {
+        // Note from the author: The following code is by far the worst Swift code that I have written so far.
+        var set = Set<AnyHashable>()
+        
+        for (pos, instruction) in instructions {
+            if pos < position {
+                if let value = instruction as? Definition {
+                    set.insert(AnyHashable(DefinitionSuggestion(definition: value)))
+                } else if let value = instruction as? Context,
+                          position < value.end {
+                    value.availableDefinitions(at: position, with: type).forEach { set.insert(AnyHashable($0)) }
+                }
+            }
+        }
+        
+        var superSuggestions = createSuperSuggestions()
+        for (i, element) in superSuggestions.enumerated() {
+            if let suggestion = element as? DefinitionSuggestion,
+               set.contains(where: { ($0.base as! any Suggestion).suggestion == suggestion.suggestion }) { // set.contains(AnyHashable(suggestion))
+                superSuggestions[i] = DefinitionSuggestion(suggestion, isSuper: true)
+            }
+        }
+        superSuggestions.forEach { set.insert(AnyHashable($0)) }
+        
+        included.forEach { $0.availableDefinitions(at: .max, with: type).forEach { set.insert(AnyHashable($0)) } }
+        
+        if let definition = queryEnclosingFunction() {
+            set.insert(AnyHashable(ThisSuggestion()))
+            if definition.variadic { set.insert(AnyHashable(PlainSuggestion("..."))) }
+            if type.isType(.any) {
+                if InterpreterType.bool.isAssignable(from: definition.returnType) {
+                    set.insert(AnyHashable(ValueReturnSuggestion(value: true)))
+                    set.insert(AnyHashable(ValueReturnSuggestion(value: false)))
+                } else if InterpreterType.void.isAssignable(from: definition.returnType) {
+                    set.insert(AnyHashable(ReturnSuggestion()))
+                } else {
+                    set.insert(AnyHashable(ValueReturnSuggestion()))
+                }
+            }
+        }
+        
+        var toReturn = [any Suggestion]()
+        set.forEach { toReturn.append($0.base as! any Suggestion) }
+        return toReturn
+    }
+    
+    func createSuggestions(at position: Int, with type: SuggestionType) -> [any Suggestion] {
+        guard !type.isType(.literal) else { return [] }
+        
+        var toReturn = [any Suggestion]()
+        
+        if type.isType(.any, .identifier, .literalIdentifier) {
+            toReturn.append(contentsOf: availableDefinitions(at: position, with: type))
+        }
+        
+        if type.isType(.any, .type, .typeModifier) {
+            toReturn.append(TypeSuggestion(type: .OBJECT))
+            toReturn.append(TypeSuggestion(type: .ANY))
+            toReturn.append(TypeSuggestion(type: .INT_KEYWORD))
+            toReturn.append(TypeSuggestion(type: .STRING_KEYWORD))
+            toReturn.append(TypeSuggestion(type: .CHAR_KEYWORD))
+            toReturn.append(TypeSuggestion(type: .SYMBOL_KEYWORD))
+            toReturn.append(TypeSuggestion(type: .VOID))
+            toReturn.append(TypeSuggestion(type: .BOOL))
+            toReturn.append(TypeSuggestion(type: .MIXED))
+            toReturn.append(TypeSuggestion(type: .MAPPING))
+        }
+        
+        if type.isType(.any, .literalIdentifier) {
+            toReturn.append(ValueSuggestion(value: TokenType.NIL))
+            toReturn.append(ValueSuggestion(value: TokenType.TRUE))
+            toReturn.append(ValueSuggestion(value: TokenType.FALSE))
+        }
+        
+        if isGlobalScope(at: position) {
+            toReturn.append(InheritSuggestion())
+            toReturn.append(IncludeSuggestion())
+            toReturn.append(ClassSuggestion())
+            
+            if type.isType(.any, .modifier, .typeModifier) {
+                toReturn.append(TypeSuggestion(type: .PRIVATE))
+                toReturn.append(TypeSuggestion(type: .PROTECTED))
+                toReturn.append(TypeSuggestion(type: .PUBLIC))
+                toReturn.append(TypeSuggestion(type: .OVERRIDE))
+                toReturn.append(TypeSuggestion(type: .NOSAVE))
+                toReturn.append(TypeSuggestion(type: .DEPRECATED))
+            }
+        } else {
+            if type.isType(.any, .identifier, .literalIdentifier) {
+                toReturn.append(NewSuggestion())
+            }
+            if type.isType(.any) {
+                toReturn.append(ParenthesizedSuggestion(keyword: .IF))
+                toReturn.append(TrySuggestion())
+                toReturn.append(ParenthesizedSuggestion(keyword: .FOR))
+                toReturn.append(ParenthesizedSuggestion(keyword: .FOREACH))
+                toReturn.append(ParenthesizedSuggestion(keyword: .WHILE))
+                toReturn.append(DoSuggestion())
+                toReturn.append(SwitchSuggestion())
+            }
+        }
+        
+        return toReturn
+    }
 }

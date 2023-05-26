@@ -36,6 +36,13 @@ struct DefinitionSuggestion: Suggestion {
         self.rightSide   = type.string
     }
     
+    init(_ other: DefinitionSuggestion, isSuper: Bool) {
+        self.type        = other.type
+        self.suggestion  = "\(isSuper ? "::" : "")\(other.suggestion)"
+        self.description = "\(isSuper ? "::" : "")\(other.description)"
+        self.rightSide   = other.rightSide
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(suggestion)
         hasher.combine(description)
