@@ -103,16 +103,16 @@ struct SuggestionVisitor {
             expectedType = cast(TypeProto.self, c.castType)
             return .literalIdentifier
             
-//        case .MISSING, .WRONG:
-//            let hole = node as! ASTHole
-//
-//            if hole.expected == .NAME {
-//                return .literal
-//            } else if hole.expected == .TYPE {
-//                return .type
-//            } else if hole.expected == .IDENTIFIER {
-//                return .identifier
-//            }
+        case .MISSING, .WRONG:
+            let hole = node as! ASTHole
+
+            if hole.expected == .NAME {
+                return .literal
+            } else if hole.expected == .TYPE {
+                return .type
+            } else if hole.expected == .IDENTIFIER {
+                return .identifier
+            }
             
         default: break
 //            for subNode in node.subExpressions {
