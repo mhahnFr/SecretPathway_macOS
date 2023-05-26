@@ -29,7 +29,7 @@ class ASTCombination: ASTExpression {
     init(_ expressions: [ASTExpression]) {
         self.expressions = expressions
         
-        super.init(begin: expressions.first!.begin, end: expressions.last!.end, type: .COMBINATION)
+        super.init(begin: expressions.first!.begin, end: expressions.last!.end, type: .COMBINATION, subNodes: expressions)
     }
     
     override func describe(_ indentation: Int) -> String {

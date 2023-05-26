@@ -26,6 +26,10 @@ class ASTExpression {
     let end: Int
     /// The actual type of this expression.
     let type: ASTType
+    var hasSubNodes: Bool {
+        !subNodes.isEmpty
+    }
+    let subNodes: [ASTExpression]
     
     /// Initializes this AST node using the given beginning and ending position
     /// and its type.
@@ -33,10 +37,11 @@ class ASTExpression {
     /// - Parameter begin: The beginning position.
     /// - Parameter end: The end position.
     /// - Parameter type: The type.
-    init(begin: Int, end: Int, type: ASTType) {
-        self.begin = begin
-        self.end = end
-        self.type = type
+    init(begin: Int, end: Int, type: ASTType, subNodes: [ASTExpression] = []) {
+        self.begin    = begin
+        self.end      = end
+        self.type     = type
+        self.subNodes = subNodes
     }
     
     /// Visits the given visitor on this node.

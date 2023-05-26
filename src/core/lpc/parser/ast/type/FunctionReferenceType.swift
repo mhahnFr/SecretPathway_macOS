@@ -51,7 +51,12 @@ class FunctionReferenceType: AbstractType, FunctionReferenceTypeProto {
         }
         self.parameterTypes = parameterTypes
         
-        super.init(begin: returnType.begin, end: end, type: .FUNCTION_REFERENCE)
+        var subs = [returnTypeExpression]
+        subs.append(contentsOf: parameterTypeExpressions)
+        super.init(begin:    returnType.begin,
+                   end:      end,
+                   type:     .FUNCTION_REFERENCE,
+                   subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

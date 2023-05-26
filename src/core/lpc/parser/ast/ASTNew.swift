@@ -35,7 +35,16 @@ class ASTNew: ASTFunctionCall {
          arguments:            [ASTExpression]) {
         self.instancingExpression = instancingExpression
         
-        super.init(name: ASTName(token: Token(begin: begin, type: .STRING, payload: "new", end: instancingExpression.end)), arguments: arguments, end: end, type: .AST_NEW)
+        var subs = [instancingExpression]
+        subs.append(contentsOf: arguments)
+        super.init(name:      ASTName(token: Token(begin:   begin,
+                                                   type:    .STRING,
+                                                   payload: "new",
+                                                   end:     instancingExpression.end)),
+                   arguments: arguments,
+                   end:       end,
+                   type:      .AST_NEW,
+                   subNodes:  subs)
     }
     
     override func describe(_ indentation: Int) -> String {

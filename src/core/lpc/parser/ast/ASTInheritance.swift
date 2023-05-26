@@ -31,7 +31,10 @@ class ASTInheritance: ASTExpression {
     init(begin: Int, end: Int, inherited: ASTExpression?) {
         self.inherited = inherited
         
-        super.init(begin: begin, end: end, type: .AST_INHERITANCE)
+        super.init(begin:    begin,
+                   end:      end,
+                   type:     .AST_INHERITANCE,
+                   subNodes: inherited == nil ? [] : [inherited!])
     }
     
     override func describe(_ indentation: Int) -> String {

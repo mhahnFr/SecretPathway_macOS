@@ -38,7 +38,9 @@ class ASTSwitch: ASTExpression {
         self.variableExpression = variableExpression
         self.cases              = cases
         
-        super.init(begin: begin, end: end, type: .AST_SWITCH)
+        var subs = [variableExpression]
+        subs.append(contentsOf: cases)
+        super.init(begin: begin, end: end, type: .AST_SWITCH, subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

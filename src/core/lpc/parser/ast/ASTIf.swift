@@ -41,7 +41,9 @@ class ASTIf: ASTExpression {
         self.instruction     = instruction
         self.elseInstruction = elseInstruction
         
-        super.init(begin: begin, end: elseInstruction?.end ?? instruction.end, type: .AST_IF)
+        var subs = [condition, instruction]
+        if let elseInstruction { subs.append(elseInstruction) }
+        super.init(begin: begin, end: elseInstruction?.end ?? instruction.end, type: .AST_IF, subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

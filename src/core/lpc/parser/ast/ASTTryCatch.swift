@@ -41,7 +41,12 @@ class ASTTryCatch: ASTExpression {
         self.catchExression    = catchExression
         self.exceptionVariable = exceptionVariable
         
-        super.init(begin: begin, end: catchExression.end, type: .TRY_CATCH)
+        var subs = [tryExpression, catchExression]
+        if let exceptionVariable { subs.append(exceptionVariable) }
+        super.init(begin:    begin,
+                   end:      catchExression.end,
+                   type:     .TRY_CATCH,
+                   subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

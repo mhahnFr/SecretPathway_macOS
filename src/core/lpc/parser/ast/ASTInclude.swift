@@ -31,7 +31,7 @@ class ASTInclude: ASTExpression {
     init(begin: Int, end: Int, included: ASTExpression) {
         self.included = included
         
-        super.init(begin: begin, end: end, type: .AST_INCLUDE)
+        super.init(begin: begin, end: end, type: .AST_INCLUDE, subNodes: [included])
     }
     
     override func describe(_ indentation: Int) -> String {

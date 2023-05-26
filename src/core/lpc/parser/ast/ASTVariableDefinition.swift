@@ -43,7 +43,10 @@ class ASTVariableDefinition: ASTExpression {
         self.returnType = type
         self.name       = name
         
-        super.init(begin: begin, end: end, type: .VARIABLE_DEFINITION)
+        var subs = modifiers
+        if let type { subs.append(type) }
+        subs.append(name)
+        super.init(begin: begin, end: end, type: .VARIABLE_DEFINITION, subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

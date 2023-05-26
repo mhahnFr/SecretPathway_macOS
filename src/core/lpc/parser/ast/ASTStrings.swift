@@ -42,7 +42,10 @@ class ASTStrings: ASTExpression {
     init(strings: [ASTExpression]) {
         self.strings = strings
         
-        super.init(begin: strings.first!.begin, end: strings.last!.end, type: .STRINGS)
+        super.init(begin:    strings.first!.begin,
+                   end:      strings.last!.end,
+                   type:     .STRINGS,
+                   subNodes: strings)
     }
     
     override func describe(_ indentation: Int) -> String {

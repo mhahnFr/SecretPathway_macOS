@@ -34,7 +34,7 @@ class ASTUnaryOperation: ASTExpression {
         self.operatorType = operatorType
         self.identifier   = identifier
         
-        super.init(begin: begin, end: identifier.end, type: .UNARY_OPERATOR)
+        super.init(begin: begin, end: identifier.end, type: .UNARY_OPERATOR, subNodes: [identifier])
     }
     
     override func describe(_ indentation: Int) -> String {

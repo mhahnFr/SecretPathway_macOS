@@ -29,7 +29,7 @@ class ASTSubscript: ASTExpression {
     init(expression: ASTExpression) {
         self.expression = expression
         
-        super.init(begin: expression.begin, end: expression.end, type: .SUBSCRIPT)
+        super.init(begin: expression.begin, end: expression.end, type: .SUBSCRIPT, subNodes: [expression])
     }
     
     override func describe(_ indentation: Int) -> String {

@@ -41,7 +41,10 @@ class ASTForEach: ASTExpression {
         self.rangeExpression = rangeExpression
         self.body            = body
         
-        super.init(begin: begin, end: body.end, type: .AST_FOREACH)
+        super.init(begin:    begin,
+                   end:      body.end,
+                   type:     .AST_FOREACH,
+                   subNodes: [variable, rangeExpression, body])
     }
     
     override func describe(_ indentation: Int) -> String {

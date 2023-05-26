@@ -35,7 +35,7 @@ class ASTParameter: ASTExpression {
         self.declaredType = type
         self.name         = name
         
-        super.init(begin: type.begin, end: name.end, type: .PARAMETER)
+        super.init(begin: type.begin, end: name.end, type: .PARAMETER, subNodes: [type, name])
     }
     
     override func describe(_ indentation: Int) -> String {

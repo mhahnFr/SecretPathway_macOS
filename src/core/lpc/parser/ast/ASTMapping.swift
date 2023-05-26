@@ -33,7 +33,7 @@ class ASTMapping: ASTExpression {
          content: [ASTExpression]) {
         self.content = content
         
-        super.init(begin: begin, end: end, type: .AST_MAPPING)
+        super.init(begin: begin, end: end, type: .AST_MAPPING, subNodes: content)
     }
     
     override func describe(_ indentation: Int) -> String {

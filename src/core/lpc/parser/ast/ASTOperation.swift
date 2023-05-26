@@ -37,7 +37,7 @@ class ASTOperation: ASTExpression {
         self.rhs          = rhs
         self.operatorType = operatorType
         
-        super.init(begin: lhs.begin, end: rhs.end, type: .OPERATION)
+        super.init(begin: lhs.begin, end: rhs.end, type: .OPERATION, subNodes: [lhs, rhs])
     }
     
     override func describe(_ indentation: Int) -> String {

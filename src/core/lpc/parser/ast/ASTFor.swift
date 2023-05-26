@@ -46,7 +46,10 @@ class ASTFor: ASTExpression {
         self.afterExpression = afterExpression
         self.body            = body
         
-        super.init(begin: begin, end: body.end, type: .AST_FOR)
+        super.init(begin:    begin,
+                   end:      body.end,
+                   type:     .AST_FOR,
+                   subNodes: [initExpression, condition, afterExpression, body])
     }
     
     override func describe(_ indentation: Int) -> String {

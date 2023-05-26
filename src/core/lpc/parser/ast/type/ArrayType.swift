@@ -40,7 +40,10 @@ class ArrayType: AbstractType, ArrayTypeProto {
         self.underlyingType = underlyingType
         self.underlying     = TypeHelper.unwrap(underlyingType)
         
-        super.init(begin: underlyingType.begin, end: end, type: .ARRAY_TYPE)
+        super.init(begin:    underlyingType.begin,
+                   end:      end,
+                   type:     .ARRAY_TYPE,
+                   subNodes: [underlyingType])
     }
     
     override func describe(_ indentation: Int) -> String {

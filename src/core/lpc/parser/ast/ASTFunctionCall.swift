@@ -35,11 +35,15 @@ class ASTFunctionCall: ASTExpression {
     init(name:      ASTExpression,
          arguments: [ASTExpression],
          end:       Int,
-         type:      ASTType = .FUNCTION_CALL) {
+         type:      ASTType = .FUNCTION_CALL,
+         subNodes:  [ASTExpression] = []) {
         self.name      = name
         self.arguments = arguments
         
-        super.init(begin: name.begin, end: end, type: type)
+        var subs = subNodes
+        subs.append(name)
+        subs.append(contentsOf: arguments)
+        super.init(begin: name.begin, end: end, type: type, subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

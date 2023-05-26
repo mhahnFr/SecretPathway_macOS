@@ -49,7 +49,17 @@ class ASTFunctionDefinition: ASTExpression {
         self.parameters = parameters
         self.body       = body
         
-        super.init(begin: modifiers.first?.begin ?? type.begin, end: body.end, type: .FUNCTION_DEFINITION)
+        var subs = [ASTExpression]()
+        subs.append(contentsOf: modifiers)
+        subs.append(type)
+        subs.append(name)
+        subs.append(contentsOf: parameters)
+        subs.append(body)
+        
+        super.init(begin:    modifiers.first?.begin ?? type.begin,
+                   end:      body.end,
+                   type:     .FUNCTION_DEFINITION,
+                   subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

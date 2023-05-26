@@ -31,7 +31,7 @@ class ASTArray: ASTExpression {
     init(begin: Int, end: Int, content: [ASTExpression]) {
         self.content = content
         
-        super.init(begin: begin, end: end, type: .ARRAY)
+        super.init(begin: begin, end: end, type: .ARRAY, subNodes: content)
     }
     
     override func describe(_ indentation: Int) -> String {

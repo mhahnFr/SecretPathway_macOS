@@ -34,7 +34,10 @@ class ASTCast: ASTExpression {
         self.castType       = castType
         self.castExpression = castExpression
         
-        super.init(begin: begin, end: castExpression.end, type: .CAST)
+        super.init(begin:    begin,
+                   end:      castExpression.end,
+                   type:     .CAST,
+                   subNodes: [castType, castExpression])
     }
     
     override func describe(_ indentation: Int) -> String {

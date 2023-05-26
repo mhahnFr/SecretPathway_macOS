@@ -33,7 +33,7 @@ class ASTReturn: ASTExpression {
          end:      Int) {
         self.returned = returned
         
-        super.init(begin: begin, end: end, type: .AST_RETURN)
+        super.init(begin: begin, end: end, type: .AST_RETURN, subNodes: returned == nil ? [] : [returned!])
     }
     
     override func describe(_ indentation: Int) -> String {

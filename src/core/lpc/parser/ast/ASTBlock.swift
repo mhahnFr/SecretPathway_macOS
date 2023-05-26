@@ -31,7 +31,7 @@ class ASTBlock: ASTExpression {
     init(begin: Int, end: Int, body: [ASTExpression]) {
         self.body = body
         
-        super.init(begin: begin, end: end, type: .BLOCK)
+        super.init(begin: begin, end: end, type: .BLOCK, subNodes: body)
     }
     
     override func describe(_ indentation: Int) -> String {

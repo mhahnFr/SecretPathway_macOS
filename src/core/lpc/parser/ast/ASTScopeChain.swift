@@ -32,7 +32,7 @@ class ASTScopeChain: ASTExpression {
     init(begin: Int, end: Int, names: [ASTExpression]) {
         self.names = names
         
-        super.init(begin: begin, end: end, type: .SCOPE_CHAIN)
+        super.init(begin: begin, end: end, type: .SCOPE_CHAIN, subNodes: names)
     }
     
     override func describe(_ indentation: Int) -> String {

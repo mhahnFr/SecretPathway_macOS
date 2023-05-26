@@ -38,7 +38,7 @@ class ASTWhile: ASTExpression {
         self.condition = condition
         self.body      = body
         
-        super.init(begin: begin, end: body.end, type: doWhile ? .DO_WHILE : .AST_WHILE)
+        super.init(begin: begin, end: body.end, type: doWhile ? .DO_WHILE : .AST_WHILE, subNodes: [condition, body])
     }
     
     override func describe(_ indentation: Int) -> String {

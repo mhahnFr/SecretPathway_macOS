@@ -37,7 +37,9 @@ class ASTClass: ASTExpression {
         self.inheritance = inheritance
         self.statements  = []
         
-        super.init(begin: begin, end: inheritance?.end ?? name.end, type: .AST_CLASS)
+        var subs = [name]
+        if let inheritance { subs.append(inheritance) }
+        super.init(begin: begin, end: inheritance?.end ?? name.end, type: .AST_CLASS, subNodes: subs)
     }
     
     /// Initializes this AST node as a class in the traditional form.
@@ -50,7 +52,9 @@ class ASTClass: ASTExpression {
         self.statements  = statements
         self.inheritance = nil
         
-        super.init(begin: begin, end: statements.last?.end ?? name.end, type: .AST_CLASS)
+        var subs = [name]
+        subs.append(contentsOf: statements)
+        super.init(begin: begin, end: statements.last?.end ?? name.end, type: .AST_CLASS, subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {

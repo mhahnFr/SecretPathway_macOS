@@ -33,7 +33,13 @@ class ASTCase: ASTExpression {
         self.caseStatement = caseStatement
         self.expressions   = expressions
         
-        super.init(begin: caseStatement.begin, end: expressions.last?.end ?? caseStatement.end, type: .AST_CASE)
+        var subs = [ASTExpression]()
+        subs.append(caseStatement)
+        subs.append(contentsOf: expressions)
+        super.init(begin:    caseStatement.begin,
+                   end:      expressions.last?.end ?? caseStatement.end,
+                   type:     .AST_CASE,
+                   subNodes: subs)
     }
     
     override func describe(_ indentation: Int) -> String {
