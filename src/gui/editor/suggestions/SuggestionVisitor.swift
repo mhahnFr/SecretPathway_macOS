@@ -94,14 +94,14 @@ struct SuggestionVisitor {
 //                                                  : .literalIdentifier
 //            }
             
-//        case .CAST:
-//            let c = node as! ASTCast
-//
-//            if position <= c.castType.end {
-//                return .type
-//            }
-//            expectedType = cast(TypeProto.self, c.castType)
-//            return .literalIdentifier
+        case .CAST:
+            let c = node as! ASTCast
+
+            if position <= c.castType.end {
+                return .type
+            }
+            expectedType = cast(TypeProto.self, c.castType)
+            return .literalIdentifier
             
 //        case .MISSING, .WRONG:
 //            let hole = node as! ASTHole
@@ -123,5 +123,18 @@ struct SuggestionVisitor {
 //            }
         }
         return .any
+    }
+    
+    private func cast<T>(_ type: T.Type, _ expression: ASTExpression) -> T? {
+        if let node = expression as? T {
+            return node
+        } else if let combination = expression as? ASTCombination {
+            for e in combination.expressions {
+                if let node = e as? T {
+                    return node
+                }
+            }
+        }
+        return nil
     }
 }
