@@ -114,13 +114,13 @@ struct SuggestionVisitor {
                 return .identifier
             }
             
-        default: break
-//            for subNode in node.subExpressions {
-//                if position >= subNode.begin,
-//                   position <= subNode.end {
-//                    return visitImpl(node: subNode, position: position, context: context)
-//                }
-//            }
+        default:
+            for subNode in node.subNodes {
+                if position >= subNode.begin,
+                   position <= subNode.end {
+                    return visitImpl(node: subNode, position: position, context: context)
+                }
+            }
         }
         return .any
     }
