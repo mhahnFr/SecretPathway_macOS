@@ -81,6 +81,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var visitor = SuggestionVisitor()
     private var interpreterTimer: Timer?
     private var editedRange: (Int, Int)?
+    private var suggestionWindow = NSWindow(contentRect: NSMakeRect(0, 0, 100, 100),
+                                            styleMask:   [],
+                                            backing:     .buffered,
+                                            defer:       false)
 
     /// Initializes this delegate using the given file loader.
     ///
@@ -596,6 +600,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             default: return false
             }
         }
+        suggestionWindow.close()
         onClose?()
         return true
     }
