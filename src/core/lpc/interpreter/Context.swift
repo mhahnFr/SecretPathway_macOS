@@ -412,4 +412,12 @@ class Context: Instruction {
         }
         return nil
     }
+    
+    func digOutIdentifiers(_ name: String, for position: Int) -> [Definition] {
+        if let subEntry   = Array(instructions.keys).sorted(by: <).last(where: { $0 < position}),
+           let subContext = instructions[subEntry] as? Context {
+            return subContext.digOutIdentifiers(name, for: position)
+        }
+        return getIdentifiers(name: name, pos: position, includePrivate: true, includeProtected: true)
+    }
 }

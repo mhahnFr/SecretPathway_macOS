@@ -80,7 +80,7 @@ struct SuggestionVisitor {
             
         case .PARAMETER: return position <= (node as! ASTParameter).declaredType.end ? .type : .literal
             
-        // TODO: .OPERATION, .UNARY_OPERATION?
+        // TODO: .UNARY_OPERATION?
         case .AST_RETURN:
             let ret = node as! ASTReturn
 
@@ -156,6 +156,34 @@ struct SuggestionVisitor {
                 expectedType = args[0].returnType
             }
             return .literalIdentifier
+            
+        case .OPERATION:
+            let op = node as! ASTOperation
+            
+            switch op.operatorType {
+            case .ASSIGNMENT:
+                switch op.lhs.type {
+                case .VARIABLE_DEFINITION:
+                    if let typeEx = (op.lhs as! ASTVariableDefinition).returnType {
+                        expectedType = cast(TypeProto.self, typeEx)
+                    }
+                    
+                case .NAME:
+                    let defs = context.digOutIdentifiers((op.lhs as! ASTName).name ?? "<unknown>", for: position)
+                    if !defs.isEmpty {
+                        expectedType = defs[0].returnType
+                    }
+                    
+                default: break
+                }
+                
+            default: break
+            }
+            if position <= op.lhs.end {
+                return visitImpl(node: op.lhs, position: position, context: context)
+            } else {
+                return visitImpl(node: op.rhs, position: position, context: context)
+            }
             
         default:
             for subNode in node.subNodes {
