@@ -80,6 +80,9 @@ class Interpreter: ASTVisitor {
         return current
     }
     
+    /// Asserts the validity of the inheritition of the given context.
+    ///
+    /// - Parameter context: The context to be validated.
     private func assertInheritance(for context: Context) async {
         guard context.inherited.isEmpty,
               !context.noInheritance
@@ -236,6 +239,10 @@ class Interpreter: ASTVisitor {
         return await loader.loadAndParse(file: fileName, referrer: current.fileGlobal.fileName ?? referrer ?? "")
     }
     
+    /// Resolves the given file name using the file name of the current context.
+    ///
+    /// - Parameter file: The file name to be resolved.
+    /// - Returns: The resolved file name.
     private func resolve(_ file: String) -> String {
         if file.first == "/" { return file }
         
@@ -541,6 +548,12 @@ class Interpreter: ASTVisitor {
         return mods
     }
     
+    /// Visits the given scope chain relative to the given type.
+    ///
+    /// - Parameters:
+    ///   - lhsType: The type on the left-hand-side.
+    ///   - rhs: The scope chain on the right-hand-side.
+    /// - Returns: The appopriate type representation.
     private func visitScopeChain(lhsType: TypeProto, rhs: ASTScopeChain) async -> TypeProto {
         guard let type     = lhsType as? BasicType,
               let typeFile = (type.typeFile as? ASTStrings),
@@ -753,18 +766,33 @@ class Interpreter: ASTVisitor {
                     if operation.lhs is ASTThis {
                         await assertInheritance(for: current.fileGlobal)
                         visitName(context: current.fileGlobal, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall, ids: current.fileGlobal.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: true, includeProtected: true)) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall,
+                                                              ids:      current.fileGlobal.getIdentifiers(name:             nameStr,
+                                                                                                          pos:              Int.max,
+                                                                                                          includePrivate:   true,
+                                                                                                          includeProtected: true))
+                                      ?? InterpreterType.unknown
                     } else if let type     = lhsType as? BasicType,
                               let file     = type.typeFile as? ASTStrings,
                               let context  = await maybeCreateContext(for: file) {
                         await assertInheritance(for: context)
                         visitName(context: context, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: false, includeProtected: false)) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall,
+                                                              ids:      context.getIdentifiers(name:             nameStr,
+                                                                                               pos:              Int.max,
+                                                                                               includePrivate:   false,
+                                                                                               includeProtected: false))
+                                      ?? InterpreterType.unknown
                     } else if let leftString = operation.lhs as? ASTStrings,
                               let context    = await maybeCreateContext(for: leftString) {
                         await assertInheritance(for: context)
                         visitName(context: context, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall, ids: context.getIdentifiers(name: nameStr, pos: Int.max, includePrivate: false, includeProtected: false)) ?? InterpreterType.unknown
+                        currentType = await visitFunctionCall(function: funcCall,
+                                                              ids:      context.getIdentifiers(name:             nameStr,
+                                                                                               pos:              Int.max,
+                                                                                               includePrivate:   false,
+                                                                                               includeProtected: false))
+                                      ?? InterpreterType.unknown
                     } else {
                         for argument in funcCall.arguments { await argument.visit(self) }
                         currentType = InterpreterType.unknown
