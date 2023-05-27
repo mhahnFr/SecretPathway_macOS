@@ -81,6 +81,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var visitor = SuggestionVisitor()
     private var interpreterTimer: Timer?
     private var editedRange: (Int, Int)?
+    private var suggestionDelegate = SuggestionsDelegate(suggestions: [])
     private var suggestionWindow = NSWindow(contentRect: NSMakeRect(0, 0, 100, 100),
                                             styleMask:   [],
                                             backing:     .buffered,
@@ -99,6 +100,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         self.referrer  = referrer
         self.file      = name
         self.lastSaved = content
+        
+        super.init()
+        
+        self.suggestionWindow.setFrameAutosaveName("Suggestions")
+        self.suggestionWindow.isReleasedWhenClosed = false
+        self.suggestionWindow.contentView = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
     }
     
     /// Attempts to restore the theme used for the editor.
