@@ -37,6 +37,7 @@ class Context: Instruction {
     var included: [Context] = []
     /// The inherited context objects.
     var inherited: [Context] = []
+    var noInheritance = false
     /// The classes declared in this context.
     var classes = [String: Context]()
     /// The global scope in which this context is in.

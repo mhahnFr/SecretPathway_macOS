@@ -81,7 +81,9 @@ class Interpreter: ASTVisitor {
     }
     
     private func assertInheritance(for context: Context) async {
-        guard context.inherited.isEmpty else { return }
+        guard context.inherited.isEmpty,
+              !context.noInheritance
+        else { return }
         
         guard let defaultInheritance = await loader.getDefaultInheritance(),
               let inheritance = await createContext(for: ASTStrings(strings: [ASTString(token: Token(begin:   0,
@@ -688,7 +690,8 @@ class Interpreter: ASTVisitor {
             if let inherited = inheritance.inherited {
                 await addInheriting(from: cast(type: ASTStrings.self, inherited)!)
             } else {
-                highlight = false
+                current.noInheritance = true
+                highlight             = false
                 addHighlight(MessagedHighlight(begin:   inheritance.begin,
                                                end:     inheritance.end,
                                                type:    .WARNING,
