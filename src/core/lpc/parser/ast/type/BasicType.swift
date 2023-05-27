@@ -54,7 +54,7 @@ class BasicType: AbstractType {
         super.init(begin:    begin,
                    end:      end,
                    type:     .TYPE,
-                   subNodes: representedType == nil ? [] : [typeFile!])
+                   subNodes: typeFile == nil ? [] : [typeFile!])
     }
     
     override func describe(_ indentation: Int) -> String {

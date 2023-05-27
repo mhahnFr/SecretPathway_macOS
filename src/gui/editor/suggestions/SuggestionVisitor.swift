@@ -60,14 +60,15 @@ struct SuggestionVisitor {
             }
             
         case .VARIABLE_DEFINITION:
-            let variable = node as! ASTFunctionDefinition
+            let variable = node as! ASTVariableDefinition
             
             // TODO: isOnSameLine
             if let begin = variable.modifiers.first, position >= begin.begin,
                let end   = variable.modifiers.last,  position <= end.end {
                 return .typeModifier
-            } else if position >= variable.returnType.begin,
-                      position <= variable.returnType.end {
+            } else if let returnType = variable.returnType,
+                      position >= returnType.begin,
+                      position <= returnType.end {
                 return .typeModifier
             } else if position >= variable.name.begin,
                       position <= variable.name.end {
