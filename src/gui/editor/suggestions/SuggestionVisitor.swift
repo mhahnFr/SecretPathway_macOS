@@ -25,17 +25,15 @@ struct SuggestionVisitor {
     private var position = -1
     private var lastVisited: ASTExpression?
     
-    mutating func visit(node: ASTExpression, position: Int, context: Context) -> SuggestionType {
+    mutating func visit(node: ASTExpression, position: Int, context: Context) {
         guard self.position    !=  position,
               self.lastVisited !== node
-        else { return suggestionType }
+        else { return }
         
         self.position    = position
         self.lastVisited = node
         expectedType     = nil
         suggestionType   = visitImpl(node: node, position: position, context: context)
-        
-        return suggestionType
     }
     
     mutating func visitImpl(node: ASTExpression, position: Int, context: Context) -> SuggestionType {
