@@ -80,7 +80,7 @@ struct SuggestionVisitor {
             
         case .PARAMETER: return position <= (node as! ASTParameter).declaredType.end ? .type : .literal
             
-        // TODO: .FUNC_CALL, .OPERATION, .UNARY_OPERATION?
+        // TODO: .OPERATION, .UNARY_OPERATION?
         case .AST_RETURN:
             let ret = node as! ASTReturn
 
@@ -113,6 +113,49 @@ struct SuggestionVisitor {
             } else if hole.expected == .IDENTIFIER {
                 return .identifier
             }
+            
+        case .FUNCTION_CALL:
+            let call = node as! ASTFunctionCall
+            
+            if position <= call.name.end { return .identifier }
+            
+            let funs = context.getIdentifiers(name:             cast(ASTName.self, call.name)?.name ?? "<unknown>",
+                                              pos:              position,
+                                              includePrivate:   true,
+                                              includeProtected: true)
+            let args: [Definition]?
+            let funcDef: FunctionDefinition?
+            if let def = funs.first(where: {
+                guard let f = $0 as? FunctionDefinition else { return false }
+                
+                return f.parameters.count == call.arguments.count || f.variadic
+            }) as? FunctionDefinition {
+                args    = def.parameters
+                funcDef = def
+            } else {
+                args    = nil
+                funcDef = nil
+            }
+            
+            for (i, param) in call.arguments.enumerated() {
+                if position >= param.begin,
+                   position <= param.end {
+                    if param.hasSubNodes { return visitImpl(node: param, position: position, context: context) }
+                    if let args,
+                       i < args.count {
+                        expectedType = args[i].returnType
+                    } else if let funcDef,
+                              funcDef.variadic {
+                        expectedType = InterpreterType.unknown // or any?
+                    }
+                    return .identifier
+                }
+            }
+            if expectedType == nil,
+               let args, !args.isEmpty {
+                expectedType = args[0].returnType
+            }
+            return .literalIdentifier
             
         default:
             for subNode in node.subNodes {
