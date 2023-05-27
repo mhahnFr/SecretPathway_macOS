@@ -37,6 +37,7 @@ class Context: Instruction {
     var included: [Context] = []
     /// The inherited context objects.
     var inherited: [Context] = []
+    /// Indicates whether this context explicitly does not inherit from anything.
     var noInheritance = false
     /// The classes declared in this context.
     var classes = [String: Context]()
@@ -88,8 +89,13 @@ class Context: Instruction {
     ///   - name: The name of the identifier.
     ///   - type: The return type of the identifier.
     ///   - kind: The AST type of the identifier.
+    ///   - modifiers: The modifiers of the identifier to be added.
     /// - Returns: Returns whether the added identifier does not redeclare another one.
-    func addIdentifier(begin: Int, name: String, type: TypeProto, _ kind: ASTType, modifiers: Modifier) -> Bool {
+    func addIdentifier(begin:     Int,
+                       name:      String,
+                       type:      TypeProto,
+                       _ kind:    ASTType,
+                       modifiers: Modifier) -> Bool {
         let notRedeclaring = instructions.first { ($0.value as? Definition)?.name == name } == nil
         if notRedeclaring {
             instructions[begin] = Definition(begin: begin, returnType: type, name: name, kind: kind, modifiers: modifiers)
@@ -107,6 +113,7 @@ class Context: Instruction {
     ///   - returnType: The return type of the function.
     ///   - parameters: The parameter definitions and name expressions.
     ///   - variadic: Indicates whether the function has variadic parameters.
+    ///   - modifiers: The modifiers of the function to be added.
     /// - Returns: The subscope context object of the function's body and the redeclared name expressions.
     func addFunction(begin:      Int,
                      scopeBegin: Int,
@@ -165,6 +172,7 @@ class Context: Instruction {
     /// contexts.
     ///
     /// - Parameter name: The name of the searched identifier.
+    /// - Parameter includeProtected: Indicates whether to include protected identifiers as well.
     /// - Returns: A list with all found identifiers.
     func getSuperIdentifiers(name: String, includeProtected: Bool) -> [Definition] {
         if let parent {
@@ -185,6 +193,8 @@ class Context: Instruction {
     /// - Parameters:
     ///   - name: The name of the requested identifiers.
     ///   - pos: The position.
+    ///   - includePrivate: Indicates whether to include private identifiers.
+    ///   - includeProtected: Indicates whether to include protected identifiers.
     /// - Returns: A list with all found identifiers.
     func getIdentifiers(name: String, pos: Int, includePrivate: Bool, includeProtected: Bool) -> [Definition] {
         var definitions: [Definition] = []
@@ -275,6 +285,10 @@ class Context: Instruction {
         return false
     }
     
+    /// Returns whether the given position is in the global scope.
+    ///
+    /// - Parameter position: The position to be checked.
+    /// - Returns: Whether the position is at global scope.
     func isGlobalScope(at position: Int) -> Bool {
         for (pos, instruction) in instructions {
             if pos < position,
@@ -285,6 +299,9 @@ class Context: Instruction {
         return true
     }
     
+    /// Creates the super send suggestions.
+    ///
+    /// - Returns: The computed suggestions.
     func createSuperSuggestions() -> [any Suggestion] {
         var set = Set<AnyHashable>()
         
@@ -301,6 +318,12 @@ class Context: Instruction {
         return toReturn
     }
     
+    /// Returns the available definitions at the given position.
+    ///
+    /// - Parameters:
+    ///   - position: The position.
+    ///   - type: The type of the suggestions.
+    /// - Returns: The computed suggestions.
     private func availableDefinitions(at position: Int, with type: SuggestionType) -> [any Suggestion] {
         // Note from the author: The following code is by far the worst Swift code that I have written so far.
         var set = Set<AnyHashable>()
@@ -347,6 +370,12 @@ class Context: Instruction {
         return toReturn
     }
     
+    /// Creates the possible suggestions at the given position of the given type.
+    ///
+    /// - Parameters:
+    ///   - position: The position.
+    ///   - type: The type of suggestions.
+    /// - Returns: The computed suggestions.
     func createSuggestions(at position: Int, with type: SuggestionType) -> [any Suggestion] {
         guard !type.isType(.literal) else { return [] }
         
@@ -406,6 +435,10 @@ class Context: Instruction {
         return toReturn
     }
     
+    /// Returns the function enclosing the given position.
+    ///
+    /// - Parameter position: The position.
+    /// - Returns: The found function definition or `nil`.
     func queryEnclosingFunction(at position: Int) -> FunctionDefinition? {
         if let previous = Array(instructions.keys).sorted(by: <).last(where: { $0 < position}),
            let function = instructions[previous] as? FunctionDefinition {
@@ -414,6 +447,12 @@ class Context: Instruction {
         return nil
     }
     
+    /// Digs out the identifiers of the given name available at the given position.
+    ///
+    /// - Parameters:
+    ///   - name: The name of the identifiers.
+    ///   - position: The position.
+    /// - Returns: The found identifiers.
     func digOutIdentifiers(_ name: String, for position: Int) -> [Definition] {
         if let subEntry   = Array(instructions.keys).sorted(by: <).last(where: { $0 < position}),
            let subContext = instructions[subEntry] as? Context {
