@@ -20,6 +20,7 @@
 		BF0D298329F1C10B00AB4E87 /* MessagedHighlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D298229F1C10B00AB4E87 /* MessagedHighlight.swift */; };
 		BF1129802854EBDC00EACD21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11297F2854EBDC00EACD21 /* Settings.swift */; };
 		BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */; };
+		BF2AE4F12A265D6E0082EABB /* SuggestionShower.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2AE4F02A265D6E0082EABB /* SuggestionShower.swift */; };
 		BF2DAAD32965DC7B0063F91C /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DAAD22965DC7B0063F91C /* Token.swift */; };
 		BF2DAAD52965DC870063F91C /* TokenType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DAAD42965DC870063F91C /* TokenType.swift */; };
 		BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DAAD62965DC910063F91C /* Tokenizer.swift */; };
@@ -27,7 +28,7 @@
 		BF2DC08E29F2EF7C00CE0E00 /* Instruction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC08D29F2EF7C00CE0E00 /* Instruction.swift */; };
 		BF2DC09029F2F12B00CE0E00 /* Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC08F29F2F12B00CE0E00 /* Definition.swift */; };
 		BF2DC09229F2FD6E00CE0E00 /* FunctionDefinition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */; };
-		BF2DDF612A0AA9CE0069E194 /* SuggestionShower.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */; };
+		BF2DDF612A0AA9CE0069E194 /* SuggestionShowerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DDF602A0AA9CE0069E194 /* SuggestionShowerOld.swift */; };
 		BF2DDF642A0AACA80069E194 /* SuggestionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DDF632A0AACA80069E194 /* SuggestionType.swift */; };
 		BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3572632964A206002661B5 /* ANSIPlugin.swift */; };
 		BF54A3F629FDAA6F008E5BC2 /* ASTHole.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */; };
@@ -160,6 +161,7 @@
 		BF0D298229F1C10B00AB4E87 /* MessagedHighlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagedHighlight.swift; sourceTree = "<group>"; };
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelnetPlugin.swift; sourceTree = "<group>"; };
+		BF2AE4F02A265D6E0082EABB /* SuggestionShower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionShower.swift; sourceTree = "<group>"; };
 		BF2DAAD22965DC7B0063F91C /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		BF2DAAD42965DC870063F91C /* TokenType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenType.swift; sourceTree = "<group>"; };
 		BF2DAAD62965DC910063F91C /* Tokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
@@ -167,7 +169,7 @@
 		BF2DC08D29F2EF7C00CE0E00 /* Instruction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instruction.swift; sourceTree = "<group>"; };
 		BF2DC08F29F2F12B00CE0E00 /* Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Definition.swift; sourceTree = "<group>"; };
 		BF2DC09129F2FD6E00CE0E00 /* FunctionDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionDefinition.swift; sourceTree = "<group>"; };
-		BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionShower.swift; sourceTree = "<group>"; };
+		BF2DDF602A0AA9CE0069E194 /* SuggestionShowerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionShowerOld.swift; sourceTree = "<group>"; };
 		BF2DDF632A0AACA80069E194 /* SuggestionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionType.swift; sourceTree = "<group>"; };
 		BF3572632964A206002661B5 /* ANSIPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIPlugin.swift; sourceTree = "<group>"; };
 		BF54A3F529FDAA6F008E5BC2 /* ASTHole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTHole.swift; sourceTree = "<group>"; };
@@ -354,7 +356,7 @@
 		BF2DDF622A0AAA3D0069E194 /* suggestions */ = {
 			isa = PBXGroup;
 			children = (
-				BF2DDF602A0AA9CE0069E194 /* SuggestionShower.swift */,
+				BF2DDF602A0AA9CE0069E194 /* SuggestionShowerOld.swift */,
 				BF2DDF632A0AACA80069E194 /* SuggestionType.swift */,
 				BF96A02C2A0BCC34004FAAA0 /* SuggestionVisitor.swift */,
 				BF0609692A1E7E2E00E48C96 /* Suggestion.swift */,
@@ -373,6 +375,7 @@
 				BFA81AD52A1F7ACF00017316 /* ValueReturnSuggestion.swift */,
 				BFA81AD72A1F7C2F00017316 /* ValueSuggestion.swift */,
 				BF03A9942A1FD61F0063E794 /* DefinitionSuggestion.swift */,
+				BF2AE4F02A265D6E0082EABB /* SuggestionShower.swift */,
 			);
 			path = suggestions;
 			sourceTree = "<group>";
@@ -793,6 +796,7 @@
 				BFAB9038292E99A400854C71 /* TextViewBridgeDelegate.swift in Sources */,
 				BF570A6B2A1924F60097DEFA /* Modifier.swift in Sources */,
 				BF916177294E2C8600C8B967 /* Protocols.swift in Sources */,
+				BF2AE4F12A265D6E0082EABB /* SuggestionShower.swift in Sources */,
 				BFC6891C29BD11E5001E51C1 /* ASTEllipsis.swift in Sources */,
 				BFA81AD42A1F7A7200017316 /* TypeSuggestion.swift in Sources */,
 				BFA81AC82A1F746700017316 /* ThisSuggestion.swift in Sources */,
@@ -840,7 +844,7 @@
 				BFC5140929F01F5C00382D64 /* AbstractType.swift in Sources */,
 				BF577EAD291BDF1900E7A897 /* Constants.swift in Sources */,
 				BF92225329E5DC38001085B9 /* ASTReturn.swift in Sources */,
-				BF2DDF612A0AA9CE0069E194 /* SuggestionShower.swift in Sources */,
+				BF2DDF612A0AA9CE0069E194 /* SuggestionShowerOld.swift in Sources */,
 				BFFD268E29A69C29002998E8 /* ASTInheritance.swift in Sources */,
 				BF551CB929AE8029004D1CFE /* ASTClass.swift in Sources */,
 			);

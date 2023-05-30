@@ -18,6 +18,24 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-protocol SuggestionShower {
-    func toggleSuggestions()
+/// This protocol defines how the user can be showered with suggestions.
+protocol SuggestionShowerOld: AnyObject {
+    /// Called when the suggestions should be updated.
+    func updateSuggestions()
+    
+    /// Called when the suggestion context has been computed.
+    ///
+    /// - Parameters:
+    ///   - type: The type of suggestions to be shown.
+    ///   - expected: The expected return type.
+    func updateSuggestionContext(type: SuggestionType, expected: TypeProto)
+    
+    /// Called when the shower of suggestions should start.
+    func beginSuggestions()
+    
+    /// Called when suggestions for super sends should be shown.
+    func beginSuperSuggestions()
+    
+    /// Called when the shower should be turned off.
+    func endSuggestions()
 }
