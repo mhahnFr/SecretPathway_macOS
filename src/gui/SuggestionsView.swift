@@ -22,6 +22,16 @@ import SwiftUI
 
 struct SuggestionsView: View {
     @ObservedObject var delegate: SuggestionsDelegate
+    private let backgroundColor: Color
+    
+    init(delegate: SuggestionsDelegate) {
+        self.delegate = delegate
+        if #available(macOS 12.0, *) {
+            backgroundColor = Color(nsColor: .controlBackgroundColor)
+        } else {
+            backgroundColor = Color.clear
+        }
+    }
     
     var body: some View {
         if delegate.suggestions.isEmpty {
@@ -29,22 +39,21 @@ struct SuggestionsView: View {
                 .padding(.horizontal, 5)
         } else {
             VStack {
-//                ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
-                List(delegate.suggestions, id: \.hashValue) { suggestion in
-                    let selected = suggestion.hashValue == delegate.selected?.hashValue
-                    HStack {
-                        Text(suggestion.description)
-                            .foregroundColor(selected ? Color.white : nil)
-                            .padding(.horizontal, 5)
-//                            .padding(.vertical, 1)
-                        Spacer()
-                        Text(suggestion.rightSide)
-                            .padding(.horizontal, 5)
-                            .foregroundColor(.gray)
-//                            .padding(.vertical, 1)
-                    }.background(selected ? Color.blue : Color?.none)
-//                        .padding(.vertical, 1)
-                }
+                ScrollView {
+                    ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
+                        let selected = suggestion.hashValue == delegate.selected?.hashValue
+                        HStack {
+                            Text(suggestion.description)
+                                .foregroundColor(selected ? Color.white : nil)
+                                .padding(.horizontal, 5)
+                            Spacer()
+                            Text(suggestion.rightSide)
+                                .padding(.horizontal, 5)
+                                .foregroundColor(.gray)
+                        }.background(selected ? Color.blue : Color?.none)
+                            .padding(.vertical, 1)
+                    }
+                }.background(backgroundColor)
                 Text("Insert using <ENTER> or replace using <TAB>")
                     .padding(.horizontal, 5)
                     .foregroundColor(.gray)

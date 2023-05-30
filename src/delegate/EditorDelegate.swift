@@ -81,6 +81,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var visitor = SuggestionVisitor()
     private var interpreterTimer: Timer?
     private var editedRange: (Int, Int)?
+    private let box = NSBox()
     private var suggestionDelegate = SuggestionsDelegate(suggestions: [])
     private var suggestionWindow = NSWindow(contentRect: NSMakeRect(0, 0, 100, 100),
                                             styleMask:   [.fullSizeContentView, .borderless],
@@ -112,16 +113,16 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         self.suggestionWindow.isOpaque                                           = false
         self.suggestionWindow.backgroundColor                                    = .clear
         
-        let box = NSBox()
-        box.titlePosition = .noTitle
-        box.boxType       = .custom
-        box.cornerRadius  = 5
-        box.fillColor     = .windowBackgroundColor
-        box.borderColor   = .controlColor
-        box.contentView   = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
+        self.box.titlePosition       = .noTitle
+        self.box.boxType             = .custom
+        self.box.cornerRadius        = 5
+        self.box.fillColor           = .windowBackgroundColor
+        self.box.borderColor         = .controlColor
+        self.box.autoresizesSubviews = true
+        self.box.contentView         = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
         
         
-        self.suggestionWindow.contentView = box
+        self.suggestionWindow.contentView = self.box
     }
     
     /// Attempts to restore the theme used for the editor.
@@ -294,8 +295,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             suggestionWindow.orderOut(self)
         } else {
             let frame = view.firstRect(forCharacterRange: view.selectedRange(), actualRange: nil)
-            suggestionWindow.setContentSize(NSSize(width: 250, height: 250))
-            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x, y: frame.origin.y - frame.height - 1 - suggestionWindow.frame.height))
+            suggestionWindow.setContentSize(NSSize(width: 300, height: 250))
+            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x,
+                                                    y: frame.origin.y - frame.height - 1 - suggestionWindow.frame.height))
             suggestionWindow.orderFront(self)
         }
     }
