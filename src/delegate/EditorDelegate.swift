@@ -276,6 +276,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             startTimer()
             suggestionWindow.orderOut(self)
         } else {
+            let frame = view.firstRect(forCharacterRange: view.selectedRange(), actualRange: nil)
+            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x, y: frame.origin.y - frame.height - 1))
             suggestionWindow.orderFront(self)
         }
     }
