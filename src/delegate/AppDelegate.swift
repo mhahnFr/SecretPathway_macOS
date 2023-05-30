@@ -92,6 +92,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         openNewConnection()
     }
     
+    @IBAction func showSuggestionsAction(_ sender: NSMenuItem) {
+        (NSApp.keyWindow?.delegate as? SuggestionShower)?.toggleSuggestions()
+    }
+    
     /// Prompts the user for the connection details and opens a new connection
     /// using the user provided information.
     ///

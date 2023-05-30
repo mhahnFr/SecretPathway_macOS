@@ -23,7 +23,7 @@ import Network
 import SwiftUI
 
 /// This class controls a view that acts as  user interface for a MUD connection.
-class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, ConnectionSender, TextViewBridgeDelegate {
+class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, ConnectionListener, ConnectionSender, TextViewBridgeDelegate, SuggestionShower {
     /// The default style to be used for user entered text.
     static let inputStyle  = SPStyle(foreground: .gray)
     /// The default style to be used for the prompt text.
@@ -520,6 +520,10 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
 
     internal func send(data: Data) {
         connection.send(data: data)
+    }
+    
+    internal func toggleSuggestions() {
+        editorDelegate?.toggleSuggestions()
     }
     
     /// Closes the connection controlled by this delegate.

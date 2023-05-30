@@ -24,7 +24,7 @@ import SwiftUI
 /// This class acts as a delegate for the EditorView.
 ///
 /// It features the LPC syntax highlighting.
-class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject {
+class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject, SuggestionShower {
     /// Indicates whether the syntax highlighting is enabled.
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
@@ -103,7 +103,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         
         super.init()
         
-        self.suggestionWindow.setFrameAutosaveName("Suggestions")
         self.suggestionWindow.isReleasedWhenClosed = false
         self.suggestionWindow.contentView = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
     }
@@ -269,6 +268,14 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                 endSuggestions    = false
             }
             self.delta = 0
+        }
+    }
+    
+    internal func toggleSuggestions() {
+        if suggestionWindow.isVisible {
+            suggestionWindow.orderOut(self)
+        } else {
+            suggestionWindow.orderFront(self)
         }
     }
     
