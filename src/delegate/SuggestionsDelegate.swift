@@ -21,7 +21,7 @@
 import Foundation
 
 class SuggestionsDelegate: ObservableObject {
-    @Published private(set) var suggestions = [any Suggestion]()
+    @Published var suggestions = [any Suggestion]()
     @Published private(set) var selected: (any Suggestion)?
     
     init(suggestions: [any Suggestion]) {

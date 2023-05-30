@@ -83,7 +83,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var editedRange: (Int, Int)?
     private var suggestionDelegate = SuggestionsDelegate(suggestions: [])
     private var suggestionWindow = NSWindow(contentRect: NSMakeRect(0, 0, 100, 100),
-                                            styleMask:   [],
+                                            styleMask:   [.fullSizeContentView, .borderless],
                                             backing:     .buffered,
                                             defer:       false)
 
@@ -103,8 +103,25 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         
         super.init()
         
-        self.suggestionWindow.isReleasedWhenClosed = false
-        self.suggestionWindow.contentView = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
+        self.suggestionWindow.isReleasedWhenClosed                               = false
+        self.suggestionWindow.titlebarAppearsTransparent                         = true
+        self.suggestionWindow.titleVisibility                                    = .hidden
+        self.suggestionWindow.standardWindowButton(.closeButton)?.isHidden       = true
+        self.suggestionWindow.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        self.suggestionWindow.standardWindowButton(.zoomButton)?.isHidden        = true
+        self.suggestionWindow.isOpaque                                           = false
+        self.suggestionWindow.backgroundColor                                    = .clear
+        
+        let box = NSBox()
+        box.titlePosition = .noTitle
+        box.boxType       = .custom
+        box.cornerRadius  = 5
+        box.fillColor     = .windowBackgroundColor
+        box.borderColor   = .controlColor
+        box.contentView   = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
+        
+        
+        self.suggestionWindow.contentView = box
     }
     
     /// Attempts to restore the theme used for the editor.
@@ -277,7 +294,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             suggestionWindow.orderOut(self)
         } else {
             let frame = view.firstRect(forCharacterRange: view.selectedRange(), actualRange: nil)
-            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x, y: frame.origin.y - frame.height - 1))
+            suggestionWindow.setContentSize(NSSize(width: 250, height: 250))
+            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x, y: frame.origin.y - frame.height - 1 - suggestionWindow.frame.height))
             suggestionWindow.orderFront(self)
         }
     }
@@ -314,7 +332,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     }
     
     private func suggestionsUpdate() {
-        // TODO: Implement
+        updateSuggestionsImpl(type: nil, returnType: nil)
     }
     
     private func stopSuggestions() {
@@ -324,7 +342,17 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     }
     
     private func updateSuggestionContext(type: SuggestionType, returnType: TypeProto?) {
-        // TODO: Implement
+        updateSuggestionsImpl(type: type, returnType: returnType)
+    }
+    
+    private func updateSuggestionsImpl(type: SuggestionType?, returnType: TypeProto?) {
+        let caretPosition = view.selectedRange().location
+        
+        if type == nil && returnType == nil { computeSuggestionContext(position: caretPosition, begin: false) }
+        
+        // TODO: context switches, sorting
+        let suggestions = context.createSuggestions(at: caretPosition, with: type ?? .any)
+        suggestionDelegate.suggestions = suggestions
     }
     
     private func visit(position: Int) {
