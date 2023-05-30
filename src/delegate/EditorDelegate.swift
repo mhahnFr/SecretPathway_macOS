@@ -163,6 +163,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             else if beginDotSuggestions   { startDotSuggestions()                 }
             else if endSuggestions        { stopSuggestions()                     }
             highlight(range: editedRange ?? (0, 0))
+        } else {
+            resetHighlight()
         }
     }
     
