@@ -727,11 +727,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
         
         textStorage.endEditing()
-        // TODO: if !suggestionWindow.isShowing {}
         interpreterTimer?.invalidate()
-        interpreterTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
-            self.interpretCode()
-            self.interpreterTimer = nil
-        })
+        if !suggestionWindow.isVisible {
+            interpreterTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+                self.interpretCode()
+                self.interpreterTimer = nil
+            })
+        }
     }
 }
