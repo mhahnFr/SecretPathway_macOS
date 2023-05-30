@@ -273,6 +273,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     
     internal func toggleSuggestions() {
         if suggestionWindow.isVisible {
+            startTimer()
             suggestionWindow.orderOut(self)
         } else {
             suggestionWindow.orderFront(self)
@@ -297,7 +298,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     }
     
     private func startSuggestions() {
-        // TODO: Implement
+        if !suggestionWindow.isVisible {
+            toggleSuggestions()
+        }
     }
     
     private func startSuperSuggestions() {
@@ -313,7 +316,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     }
     
     private func stopSuggestions() {
-        // TODO: Implement
+        if suggestionWindow.isVisible {
+            toggleSuggestions()
+        }
     }
     
     private func updateSuggestionContext(type: SuggestionType, returnType: TypeProto?) {
@@ -692,6 +697,13 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
     }
     
+    private func startTimer() {
+        interpreterTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+            self.interpretCode()
+            self.interpreterTimer = nil
+        })
+    }
+    
     /// Performs the highlighting of the text.
     private func highlight(range: (editPosition: Int, delta: Int) = (0, 0)) {
         textStorage.beginEditing()
@@ -729,10 +741,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         textStorage.endEditing()
         interpreterTimer?.invalidate()
         if !suggestionWindow.isVisible {
-            interpreterTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
-                self.interpretCode()
-                self.interpreterTimer = nil
-            })
+            startTimer()
         }
     }
 }
