@@ -582,8 +582,21 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         setStatus(text: "\(file!) saved.")
     }
     
-    /// Closes the editor.
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        closeImpl()
+    }
+    
     func close() -> Bool {
+        if window?.delegate === self {
+            window?.performClose(self)
+            return window == nil || !window!.isVisible
+        } else {
+            return closeImpl()
+        }
+    }
+    
+    /// Closes the editor.
+    private func closeImpl() -> Bool {
         if let window,
            window.isDocumentEdited {
             let alert = NSAlert()
@@ -599,7 +612,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             switch alert.runModal() {
             case .alertFirstButtonReturn:
                 saveText()
-                return close()
+                return closeImpl()
                                            
             case .alertSecondButtonReturn:
                 window.isDocumentEdited = false

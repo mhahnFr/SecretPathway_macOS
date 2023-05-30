@@ -238,12 +238,12 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
             settings.editorWidth   = Int(bounds.width)
             settings.editorHeight  = Int(bounds.height)
             
-            window.performClose(delegate)
-            self.editors.remove(at: self.editors.firstIndex(of: delegate)! )
+            self.editors.remove(at: self.editors.firstIndex(of: delegate)!)
         }
         window.contentView = NSHostingView(rootView: content)
         window.title       = "\(Constants.APP_NAME): Editor" + (name == nil ? "" : " - '\(name!)'")
         window.delegate    = delegate
+        window.isReleasedWhenClosed = false
         
         editors.append(delegate)
         
