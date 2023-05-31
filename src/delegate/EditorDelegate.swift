@@ -203,10 +203,17 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             self.editedRange = tmp
         }
         
-        if editedRange.length == 0 { /* TODO: Handle deletions */ }
+        let underlying = textStorage.string
+        if editedRange.length == 0 {
+            if isInWord(underlying, editedRange.location) {
+                updateSuggestionsImpl(type: nil, returnType: nil)
+            } else {
+                stopSuggestions()
+            }
+            return
+        }
         
         let str = textStorage.attributedSubstring(from: editedRange).string
-        let underlying = textStorage.string
         
         if let ignore,
            editedRange.location == ignore.0,
