@@ -375,7 +375,24 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         
         // TODO: context switches
         var suggestions = context.createSuggestions(at: caretPosition, with: type ?? .any)
-        // TODO: Sort by expected type
+        if let returnType {
+            suggestions.sort {
+                if let left = $0 as? DefinitionSuggestion {
+                    let ll = returnType.isAssignable(from: left.type)
+                    let rr: Bool
+                    if let right = $1 as? FunctionDefinition {
+                        rr = returnType.isAssignable(from: right.returnType)
+                    } else {
+                        rr = false
+                    }
+                    if ll == rr { return false }
+                    return ll
+                } else if let right = $1 as? DefinitionSuggestion {
+                    return returnType.isAssignable(from: right.type)
+                }
+                return false
+            }
+        }
         let text = textStorage.string
         let toReturn: Int
         if isInWord(text, caretPosition) {
