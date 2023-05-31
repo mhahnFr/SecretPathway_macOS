@@ -1,7 +1,7 @@
 /*
  * SecretPathway_macOS - A MUD client, for macOS.
  *
- * Copyright (C) 2022 - 2023  mhahnFr
+ * Copyright (C) 2023  mhahnFr
  *
  * This file is part of the SecretPathway_macOS. This program is free
  * software: you can redistribute it and/or modify it under the terms
@@ -20,19 +20,12 @@
 
 import AppKit
 
-/// This class protocol defines the necessary functionality that needs to
-/// be provided.
-protocol TextViewBridgeDelegate: AnyObject {
-    /// Called when the SwiftUI updates the bridged text view.
-    ///
-    /// - Parameter textView: The underlying text view that should be updated.
-    func updateTextView(_ textView: NSTextView)
+class KeyHookTextView: NSTextView {
+    weak var keyHookDelegate: KeyHookDelegate?
     
-    /// Called when the SwiftUI initializes the bridged text view.
-    ///
-    /// The given text view is already created and can be customized by this
-    /// method.
-    ///
-    /// - Parameter textView: The underlying text view that should be initialized.
-    func initTextView(_ textView: KeyHookTextView)
+    override func keyDown(with event: NSEvent) {
+        if keyHookDelegate?.keyDown(with: event) ?? true {
+            super.keyDown(with: event)
+        }
+    }
 }

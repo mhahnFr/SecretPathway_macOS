@@ -138,7 +138,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     
     internal func updateTextView(_ textView: NSTextView) {}
     
-    internal func initTextView(_ textView: NSTextView) {
+    internal func initTextView(_ textView: KeyHookTextView) {
         textView.font        = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor   = .textColor
         textView.delegate    = self

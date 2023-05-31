@@ -43,6 +43,8 @@
 		BF5C0F4029E745E9007F49BA /* ASTMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F3F29E745E9007F49BA /* ASTMapping.swift */; };
 		BF5C0F4229E7473D007F49BA /* ASTIf.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C0F4129E7473D007F49BA /* ASTIf.swift */; };
 		BF69AEB52A0ED37E00B961FC /* ASTFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF69AEB42A0ED37E00B961FC /* ASTFloat.swift */; };
+		BF69D2DF2A27A0A0005B41F4 /* KeyHookTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF69D2DE2A27A0A0005B41F4 /* KeyHookTextView.swift */; };
+		BF69D2E12A27A141005B41F4 /* KeyHookDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF69D2E02A27A141005B41F4 /* KeyHookDelegate.swift */; };
 		BF6AF3542965C95F00DF333D /* EditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3532965C95F00DF333D /* EditorView.swift */; };
 		BF6AF3562965CD6900DF333D /* EditorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6AF3552965CD6900DF333D /* EditorDelegate.swift */; };
 		BF7D3C3929F97E3C008B42AC /* InterpreterArrayType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */; };
@@ -184,6 +186,8 @@
 		BF5C0F3F29E745E9007F49BA /* ASTMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTMapping.swift; sourceTree = "<group>"; };
 		BF5C0F4129E7473D007F49BA /* ASTIf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTIf.swift; sourceTree = "<group>"; };
 		BF69AEB42A0ED37E00B961FC /* ASTFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASTFloat.swift; sourceTree = "<group>"; };
+		BF69D2DE2A27A0A0005B41F4 /* KeyHookTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHookTextView.swift; sourceTree = "<group>"; };
+		BF69D2E02A27A141005B41F4 /* KeyHookDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyHookDelegate.swift; sourceTree = "<group>"; };
 		BF6AF3532965C95F00DF333D /* EditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorView.swift; sourceTree = "<group>"; };
 		BF6AF3552965CD6900DF333D /* EditorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorDelegate.swift; sourceTree = "<group>"; };
 		BF7D3C3829F97E3C008B42AC /* InterpreterArrayType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterArrayType.swift; sourceTree = "<group>"; };
@@ -402,7 +406,9 @@
 			isa = PBXGroup;
 			children = (
 				BF94661429294DB00005B2EA /* NSTextViewBridge.swift */,
+				BF69D2E02A27A141005B41F4 /* KeyHookDelegate.swift */,
 				BFAB9037292E99A400854C71 /* TextViewBridgeDelegate.swift */,
+				BF69D2DE2A27A0A0005B41F4 /* KeyHookTextView.swift */,
 			);
 			path = bridge;
 			sourceTree = "<group>";
@@ -742,6 +748,7 @@
 				BFA81AD22A1F7A2500017316 /* ReturnSuggestion.swift in Sources */,
 				BFA81ACA2A1F747200017316 /* TrySuggestion.swift in Sources */,
 				BFFD268C29A69C18002998E8 /* ASTInclude.swift in Sources */,
+				BF69D2DF2A27A0A0005B41F4 /* KeyHookTextView.swift in Sources */,
 				BF3572642964A206002661B5 /* ANSIPlugin.swift in Sources */,
 				BF2DAAD72965DC910063F91C /* Tokenizer.swift in Sources */,
 				BFC5140B29F01FA600382D64 /* FunctionReferenceType.swift in Sources */,
@@ -779,6 +786,7 @@
 				BF8BDAD329D4B04400763C81 /* ASTFunctionCall.swift in Sources */,
 				BF91617D294E400E00C8B967 /* SPPPlugin.swift in Sources */,
 				BF0609682A1E7DB300E48C96 /* SuggestionsDelegate.swift in Sources */,
+				BF69D2E12A27A141005B41F4 /* KeyHookDelegate.swift in Sources */,
 				BFDCA77F29AD26C9005B8AA9 /* ASTCase.swift in Sources */,
 				BFD9B0CF2923DE7500E59D00 /* ConnectionListener.swift in Sources */,
 				BFA5CF34290D7E4300010BD6 /* Connection.swift in Sources */,

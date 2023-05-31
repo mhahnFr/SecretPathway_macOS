@@ -159,7 +159,7 @@ class ConnectionDelegate: NSObject, NSWindowDelegate, ObservableObject, Connecti
         return String(data: filteredData, encoding: .ascii)!
     }
     
-    internal func initTextView(_ textView: NSTextView) {
+    internal func initTextView(_ textView: KeyHookTextView) {
         textView.isEditable = false
         textView.font       = NSFont.monospacedSystemFont(ofSize: Settings.shared.fontSize, weight: .regular)
         textView.textColor  = .textColor

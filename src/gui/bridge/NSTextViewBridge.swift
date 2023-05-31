@@ -33,12 +33,12 @@ struct NSTextViewBridge: NSViewRepresentable {
     weak var delegate: TextViewBridgeDelegate?
     
     func makeNSView(context: Self.Context) -> NSViewType {
-        let toReturn = NSTextView.scrollableTextView()
-        let textView = toReturn.documentView as! NSTextView
+        let toReturn = KeyHookTextView.scrollableTextView()
+        let textView = toReturn.documentView as! KeyHookTextView
         
         textView.layoutManager?.allowsNonContiguousLayout = false
-        textView.isHorizontallyResizable = true
-        textView.isVerticallyResizable   = true
+        textView.isHorizontallyResizable                  = true
+        textView.isVerticallyResizable                    = true
 
         delegate?.initTextView(textView)
         
