@@ -463,10 +463,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     ///   - offset: The position to be checked.
     /// - Returns: Whether the position is inside of a word.
     private func isInWord(_ string: String, _ offset: Int) -> Bool {
-        guard offset < string.count && offset >= 0 else { return true }
-        
-        return (offset > 0            && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
-            (offset < string.count && offset >= 0 && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset)]))
+        (offset > 0 && offset - 1 < string.count && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
+        (offset < string.count && offset >= 0 && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset)]))
     }
     
     /// Returns the indentation level prior to the given position.
