@@ -27,4 +27,12 @@ class SuggestionsDelegate: ObservableObject {
     init(suggestions: [any Suggestion]) {
         self.suggestions = suggestions
     }
+    
+    func selectNext() {
+        // TODO: Implement
+    }
+    
+    func selectPrevious() {
+        // TODO: Implement
+    }
 }

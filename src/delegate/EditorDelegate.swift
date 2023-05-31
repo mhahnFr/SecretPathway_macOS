@@ -24,7 +24,7 @@ import SwiftUI
 /// This class acts as a delegate for the EditorView.
 ///
 /// It features the LPC syntax highlighting.
-class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject, SuggestionShower {
+class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, NSTextViewDelegate, NSWindowDelegate, ObservableObject, SuggestionShower, KeyHookDelegate {
     /// Indicates whether the syntax highlighting is enabled.
     @Published var syntaxHighlighting = Settings.shared.editorSyntaxHighlighting {
         didSet { toggleHighlighting() }
@@ -145,6 +145,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         textView.allowsUndo  = true
         textView.usesFindBar = true
         
+        textView.keyHookDelegate                      = self
         textView.isAutomaticQuoteSubstitutionEnabled  = false
         textView.isAutomaticDataDetectionEnabled      = false
         textView.isAutomaticLinkDetectionEnabled      = false
@@ -313,6 +314,49 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                                                     y: frame.origin.y - frame.height - box.frame.height))
             suggestionWindow.orderFront(self)
         }
+    }
+    
+    internal func keyDown(with event: NSEvent) -> Bool {
+        guard suggestionWindow.isVisible else { return true }
+
+        switch event.keyCode {
+        // RETURN, ENTER
+        case 36, 76:
+            insertSuggestion()
+            return false
+            
+        // TAB
+        case 48:
+            insertSuggestion(replacing: true)
+            return false
+            
+        // ESC
+        case 53:
+            toggleSuggestions()
+            return false
+            
+        // DOWN
+        case 125:
+            suggestionDelegate.selectNext()
+            return false
+            
+        // UP
+        case 126:
+            suggestionDelegate.selectPrevious()
+            return false
+            
+        // LEFT, RIGHT
+        case 123, 124:
+            toggleSuggestions()
+            fallthrough
+            
+        default:
+            return true
+        }
+    }
+    
+    private func insertSuggestion(replacing: Bool = false) {
+        // TODO: Implement
     }
     
     private func computeSuggestionContext(position: Int, begin: Bool) {
