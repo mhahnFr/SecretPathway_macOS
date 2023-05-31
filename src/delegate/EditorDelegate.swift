@@ -306,9 +306,10 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             startTimer()
             suggestionWindow.orderOut(self)
         } else {
-            let frame = view.firstRect(forCharacterRange: view.selectedRange(), actualRange: nil)
-            suggestionWindow.setContentSize(NSSize(width: 300, height: 250))
-            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x,
+            let frame = view.firstRect(forCharacterRange: NSMakeRange(updateSuggestionsImpl(type: nil, returnType: nil), 0),
+                                       actualRange:       nil)
+            suggestionWindow.setContentSize(NSSize(width: 300, height: 250)) // TODO: Sizing
+            suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x - 5,
                                                     y: frame.origin.y - frame.height - box.frame.height))
             suggestionWindow.orderFront(self)
         }
@@ -359,14 +360,44 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         updateSuggestionsImpl(type: type, returnType: returnType)
     }
     
-    private func updateSuggestionsImpl(type: SuggestionType?, returnType: TypeProto?) {
+    private func getWordBegin(_ text: String, _ position: Int) -> Int {
+        var begin = position - 1
+        while begin > 0 && !Tokenizer.isSpecial(text[text.index(text.startIndex, offsetBy: begin)]) { begin -= 1 }
+        return begin
+    }
+    
+    @discardableResult
+    private func updateSuggestionsImpl(type: SuggestionType?, returnType: TypeProto?) -> Int {
         let caretPosition = view.selectedRange().location
         
         if type == nil && returnType == nil { computeSuggestionContext(position: caretPosition, begin: false) }
         
-        // TODO: context switches, sorting
-        let suggestions = context.createSuggestions(at: caretPosition, with: type ?? .any)
+        // TODO: context switches
+        var suggestions = context.createSuggestions(at: caretPosition, with: type ?? .any)
+        // TODO: Sort by expected type
+        let text = textStorage.string
+        let toReturn: Int
+        if isInWord(text, caretPosition) {
+            let begin = getWordBegin(text, caretPosition)
+            toReturn  = begin
+            let wordBegin = text[text.index(text.startIndex, offsetBy: begin) ..< text.index(text.startIndex, offsetBy: caretPosition)]
+            suggestions.removeAll(where: { $0.suggestion.isEmpty || !$0.description.contains(wordBegin) })
+            suggestions.sort {
+                var aa = $0.description.hasPrefix(wordBegin)
+                var bb = $1.description.hasPrefix(wordBegin)
+                
+                if !aa && !bb {
+                    aa = $0.description.contains(wordBegin)
+                    bb = $0.description.contains(wordBegin)
+                }
+                if aa == bb { return false }
+                return aa
+            }
+        } else {
+            toReturn = caretPosition
+        }
         suggestionDelegate.suggestions = suggestions
+        return toReturn
     }
     
     private func visit(position: Int) {
@@ -431,7 +462,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     ///   - offset: The position to be checked.
     /// - Returns: Whether the position is inside of a word.
     private func isInWord(_ string: String, _ offset: Int) -> Bool {
-        (offset > 0            && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
+        guard offset < string.count && offset >= 0 else { return true }
+        
+        return (offset > 0            && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset - 1)])) ||
             (offset < string.count && offset >= 0 && !Tokenizer.isSpecial(string[string.index(string.startIndex, offsetBy: offset)]))
     }
     
