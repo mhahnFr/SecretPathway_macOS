@@ -217,6 +217,11 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         } else {
             self.ignore = nil
         }
+        beginSuggestions      = false
+        beginDotSuggestions   = false
+        beginSuperSuggestions = false
+        updateSuggestions     = false
+        endSuggestions        = true
         
         switch str {
         case "\t":
@@ -297,7 +302,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             let frame = view.firstRect(forCharacterRange: view.selectedRange(), actualRange: nil)
             suggestionWindow.setContentSize(NSSize(width: 300, height: 250))
             suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x,
-                                                    y: frame.origin.y - frame.height - 1 - suggestionWindow.frame.height))
+                                                    y: frame.origin.y - frame.height - box.frame.height))
             suggestionWindow.orderFront(self)
         }
     }
@@ -725,6 +730,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                 }
                 self.textStorage.endEditing()
                 self.updateStatus()
+                self.updateSuggestionsImpl(type: nil, returnType: nil)
             }
         }
     }
@@ -772,8 +778,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         
         textStorage.endEditing()
         interpreterTimer?.invalidate()
-        if !suggestionWindow.isVisible {
-            startTimer()
-        }
+        startTimer()
     }
 }
