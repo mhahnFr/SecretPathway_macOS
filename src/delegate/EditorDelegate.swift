@@ -363,6 +363,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private func getWordBegin(_ text: String, _ position: Int) -> Int {
         var begin = position - 1
         while begin > 0 && !Tokenizer.isSpecial(text[text.index(text.startIndex, offsetBy: begin)]) { begin -= 1 }
+        if begin < 0 || Tokenizer.isSpecial(text[text.index(text.startIndex, offsetBy: begin)]) { begin += 1 }
         return begin
     }
     
