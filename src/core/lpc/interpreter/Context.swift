@@ -290,11 +290,10 @@ class Context: Instruction {
     /// - Parameter position: The position to be checked.
     /// - Returns: Whether the position is at global scope.
     func isGlobalScope(at position: Int) -> Bool {
-        // FIXME: Always true
         for (pos, instruction) in instructions {
             if pos < position,
                instruction.end > position {
-                return instruction is Context
+                return !(instruction is Context)
             }
         }
         return true
