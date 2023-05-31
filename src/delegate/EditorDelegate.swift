@@ -312,6 +312,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
             suggestionWindow.setContentSize(NSSize(width: 300, height: 250)) // TODO: Sizing
             suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x - 5,
                                                     y: frame.origin.y - frame.height - box.frame.height))
+            suggestionDelegate.windowWillShow()
             suggestionWindow.orderFront(self)
         }
     }

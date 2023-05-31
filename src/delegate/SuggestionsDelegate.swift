@@ -24,20 +24,54 @@ class SuggestionsDelegate: ObservableObject {
     @Published private(set) var suggestions = [any Suggestion]()
     @Published private(set) var selected: (any Suggestion)?
     
-    init(suggestions: [any Suggestion]) {
+    private var index = 0
+    
+    init(suggestions: [any Suggestion] = []) {
         self.suggestions = suggestions
     }
     
     func selectNext() {
-        // TODO: Implement
+        guard !suggestions.isEmpty else { return }
+        
+        let newIndex: Int
+        if index + 1 < suggestions.count {
+            newIndex = index + 1
+        } else {
+            newIndex = 0
+        }
+        select(index: newIndex)
     }
     
     func selectPrevious() {
-        // TODO: Implement
+        guard !suggestions.isEmpty else { return }
+        
+        let newIndex: Int
+        if index - 1 < 0 {
+            newIndex = suggestions.count - 1
+        } else {
+            newIndex = index - 1
+        }
+        select(index: newIndex)
     }
     
     func updateSuggestions(with suggestions: [any Suggestion]) {
         // TODO: Make efficient
         self.suggestions = suggestions
+        if suggestions.isEmpty {
+            selected = nil
+        }
+    }
+    
+    private func select(index: Int) {
+        self.index = index
+        selected = suggestions[index]
+        
+        // TODO: Scrolling
+    }
+    
+    func windowWillShow() {
+        if !suggestions.isEmpty {
+            select(index: 0)
+        }
     }
 }
