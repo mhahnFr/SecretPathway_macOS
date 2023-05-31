@@ -458,7 +458,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         } else {
             toReturn = caretPosition
         }
-        suggestionDelegate.suggestions = suggestions
+        suggestionDelegate.updateSuggestions(with: suggestions)
         return toReturn
     }
     

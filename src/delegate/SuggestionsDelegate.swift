@@ -21,7 +21,7 @@
 import Foundation
 
 class SuggestionsDelegate: ObservableObject {
-    @Published var suggestions = [any Suggestion]()
+    @Published private(set) var suggestions = [any Suggestion]()
     @Published private(set) var selected: (any Suggestion)?
     
     init(suggestions: [any Suggestion]) {
@@ -34,5 +34,10 @@ class SuggestionsDelegate: ObservableObject {
     
     func selectPrevious() {
         // TODO: Implement
+    }
+    
+    func updateSuggestions(with suggestions: [any Suggestion]) {
+        // TODO: Make efficient
+        self.suggestions = suggestions
     }
 }
