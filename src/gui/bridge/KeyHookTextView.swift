@@ -20,7 +20,9 @@
 
 import AppKit
 
+/// This subclass of NSTextView adds the possibility to react to key presses.
 class KeyHookTextView: NSTextView {
+    /// The KeyHookDelegate which is called on key press.
     weak var keyHookDelegate: KeyHookDelegate?
     
     override func keyDown(with event: NSEvent) {
