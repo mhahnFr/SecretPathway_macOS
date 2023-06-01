@@ -20,6 +20,13 @@
 
 import AppKit
 
+/// This protocol defines the interface for the delegate of the KeyHookTextView.
 protocol KeyHookDelegate: AnyObject {
+    /// Called when the `keyPressed(with:)` is called.
+    ///
+    /// Implementors return whether to continue processing the key press.
+    ///
+    /// - Parameter event: The event the text view got.
+    /// - Returns: Whether to pass the event to the native implementation.
     func keyDown(with event: NSEvent) -> Bool
 }
