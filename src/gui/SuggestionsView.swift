@@ -39,21 +39,56 @@ struct SuggestionsView: View {
                 .padding(.horizontal, 5)
         } else {
             VStack {
-                ScrollView {
-                    ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
-                        let selected = suggestion.hashValue == delegate.selected?.hashValue
-                        HStack {
-                            Text(suggestion.description)
-                                .foregroundColor(selected ? Color.white : nil)
-                                .padding(.horizontal, 5)
-                            Spacer()
-                            Text(suggestion.rightSide)
-                                .padding(.horizontal, 5)
-                                .foregroundColor(.gray)
-                        }.background(selected ? Color.blue : Color?.none)
-                            .padding(.vertical, 1)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
+                            let selected = suggestion.hashValue == delegate.sh
+                            if #available(macOS 12.0, *) {
+                                VStack {
+                                    Spacer().frame(maxHeight: 5).fixedSize()
+                                    HStack {
+                                        Text(suggestion.description)
+                                            .foregroundColor(selected ? Color.white : nil)
+                                            .padding(.horizontal, 5)
+                                        Spacer()
+                                        Text(suggestion.rightSide)
+                                            .padding(.horizontal, 5)
+                                            .foregroundColor(.gray)
+                                    }
+                                    Spacer().frame(maxHeight: 5).fixedSize()
+                                }
+                                .background(selected ? Color.blue : Color?.none)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(backgroundColor, lineWidth: 4)
+                                }
+                                .id(AnyHashable(suggestion))
+                            } else {
+                                VStack {
+                                    Spacer().frame(maxHeight: 5).fixedSize()
+                                    HStack {
+                                        Text(suggestion.description)
+                                            .foregroundColor(selected ? Color.white : nil)
+                                            .padding(.horizontal, 5)
+                                        Spacer()
+                                        Text(suggestion.rightSide)
+                                            .padding(.horizontal, 5)
+                                            .foregroundColor(.gray)
+                                    }
+                                    Spacer().frame(maxHeight: 5).fixedSize()
+                                }
+                                .background(selected ? Color.blue : Color?.none)
+                                .id(AnyHashable(suggestion))
+                            }
+                        }
                     }
-                }.background(backgroundColor)
+                    .background(backgroundColor)
+                    .onReceive(delegate.$selected) {
+                        if let selected = $0 {
+                            proxy.scrollTo(AnyHashable(selected))
+                        }
+                    }
+                }
                 Text("Insert using <ENTER> or replace using <TAB>")
                     .padding(.horizontal, 5)
                     .foregroundColor(.gray)

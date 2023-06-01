@@ -22,7 +22,16 @@ import Foundation
 
 class SuggestionsDelegate: ObservableObject {
     @Published private(set) var suggestions = [any Suggestion]()
-    @Published private(set) var selected: (any Suggestion)?
+    @Published private(set) var selected: (any Suggestion)? {
+        willSet {
+            if let newValue {
+                sh = newValue.hashValue
+            } else {
+                sh = 0
+            }
+        }
+    }
+    private(set) var sh = 0
     
     private var index = 0
     
@@ -65,8 +74,6 @@ class SuggestionsDelegate: ObservableObject {
     private func select(index: Int) {
         self.index = index
         selected = suggestions[index]
-        
-        // TODO: Scrolling
     }
     
     func windowWillShow() {
