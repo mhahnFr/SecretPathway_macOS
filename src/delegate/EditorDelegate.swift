@@ -67,10 +67,15 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var delta = 0
     /// The string that should be ignored on insertion.
     private var ignore: (Int, String)?
+    /// Indicates whether to begin suggestions.
     private var beginSuggestions = false
+    /// Indicates whether to begin dot call or arrow suggestions.
     private var beginDotSuggestions = false
+    /// Indicates whether to begin super call suggestions.
     private var beginSuperSuggestions = false
+    /// Indicates whether to update the sugestions.
     private var updateSuggestions = false
+    /// Indicates whether to end the suggestions.
     private var endSuggestions = true
     /// The tokens lastly recognized in the text.
     private var tokens = [Token]()
@@ -78,11 +83,16 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var ast = [ASTExpression]()
     /// The lastly generated interpretation context.
     private var context = Context()
+    /// The suggestion visitor.
     private var visitor = SuggestionVisitor()
+    /// A timer delaying the text interpretation.
     private var interpreterTimer: Timer?
+    /// The lastly edited range.
     private var editedRange: (Int, Int)?
     private let box = NSBox()
+    /// The suggestions delegate.
     private var suggestionDelegate = SuggestionsDelegate(suggestions: [])
+    /// The suggestion window.
     private var suggestionWindow = NSWindow(contentRect: NSMakeRect(0, 0, 100, 100),
                                             styleMask:   [.fullSizeContentView, .borderless],
                                             backing:     .buffered,
@@ -356,6 +366,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
     }
     
+    /// Returns the end of the word the given offset is in.
+    ///
+    /// - Parameters:
+    ///   - string: The text.
+    ///   - offset: The position.
+    /// - Returns: The end position of the word.
     private func getWordEnd(_ string: String, _ offset: Int) -> Int {
         let nextText = string[string.index(string.startIndex, offsetBy: offset)...]
         
@@ -372,6 +388,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return offset + i
     }
     
+    /// Returns word the given offset is in.
+    ///
+    /// - Parameters:
+    ///   - string: The text.
+    ///   - offset: The position.
+    /// - Returns: The word the position is in.
     private func getWord(_ string: String, _ offset: Int) -> String {
         guard isInWord(string, offset) else { return "" }
         
@@ -419,6 +441,11 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         stopSuggestions()
     }
     
+    /// Computes the suggestion context in the background.
+    ///
+    /// - Parameters:
+    ///   - position: The position in the text.
+    ///   - begin: Whether to begin with the suggestions.
     private func computeSuggestionContext(position: Int, begin: Bool) {
         Task {
             visit(position: position)
@@ -436,6 +463,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
     }
     
+    /// Starts the suggestions if they are not already shown.
     private func startSuggestions() {
         if !suggestionWindow.isVisible {
             toggleSuggestions()
@@ -450,20 +478,33 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         // TODO: Implement
     }
     
+    /// Updates the suggestions.
     private func suggestionsUpdate() {
         updateSuggestionsImpl(type: nil, returnType: nil)
     }
     
+    /// Stops the suggestions if they are not already stopped.
     private func stopSuggestions() {
         if suggestionWindow.isVisible {
             toggleSuggestions()
         }
     }
     
+    /// Updates the suggestion context.
+    ///
+    /// - Parameters:
+    ///   - type: The new suggestion type.
+    ///   - returnType: The new expected return type.
     private func updateSuggestionContext(type: SuggestionType, returnType: TypeProto?) {
         updateSuggestionsImpl(type: type, returnType: returnType)
     }
     
+    /// Returns the beginning position of the word in the text the position is in.
+    ///
+    /// - Parameters:
+    ///   - text: The text.
+    ///   - position: The position.
+    /// - Returns: The beginning position of the word.
     private func getWordBegin(_ text: String, _ position: Int) -> Int {
         var begin = position - 1
         while begin > 0 && !Tokenizer.isSpecial(text[text.index(text.startIndex, offsetBy: begin)]) { begin -= 1 }
