@@ -18,13 +18,24 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This structure implements a suggestion AST visitor.
 struct SuggestionVisitor {
+    /// The suggestion type to be used for the lastly visited position.
     private(set) var suggestionType = SuggestionType.any
+    /// The expected return type of the lastly visited position.
     private(set) var expectedType: TypeProto?
     
+    /// The last visited position.
     private var position = -1
+    /// The last visited expression.
     private var lastVisited: ASTExpression?
     
+    /// Visits the given AST node at the given position, using the given context.
+    ///
+    /// - Parameters:
+    ///   - node: The node to be visitied.
+    ///   - position: The position to be visitied.
+    ///   - context: The context used to fetch the context information as needed.
     mutating func visit(node: ASTExpression, position: Int, context: Context) {
         guard self.position    !=  position,
               self.lastVisited !== node
@@ -36,6 +47,13 @@ struct SuggestionVisitor {
         suggestionType   = visitImpl(node: node, position: position, context: context)
     }
     
+    /// Actually visits the given AST node at the given position using the given context.
+    ///
+    /// - Parameters:
+    ///   - node: The node to be visitied.
+    ///   - position: The position to be visited.
+    ///   - context: The context used.
+    /// - Returns: The interpreted suggestion type.
     mutating func visitImpl(node: ASTExpression, position: Int, context: Context) -> SuggestionType {
         switch node.type {
         case .FUNCTION_DEFINITION:
@@ -195,6 +213,14 @@ struct SuggestionVisitor {
         return .any
     }
     
+    /// Casts the given AST node to the given type.
+    ///
+    /// If the given AST node is a ASTCombination, it is unwrapped.
+    ///
+    /// - Parameters:
+    ///   - type: The type to cast the node to.
+    ///   - expression: The expression to be casted.
+    /// - Returns: The casted node or `nil` if not possible.
     private func cast<T>(_ type: T.Type, _ expression: ASTExpression) -> T? {
         if let node = expression as? T {
             return node
