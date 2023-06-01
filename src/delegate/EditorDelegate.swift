@@ -356,8 +356,67 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
     }
     
+    private func getWordEnd(_ string: String, _ offset: Int) -> Int {
+        let nextText = string[string.index(string.startIndex, offsetBy: offset)...]
+        
+        var i = 0
+        while i < nextText.count,
+              !Tokenizer.isSpecial(nextText[nextText.index(nextText.startIndex, offsetBy: i)]) {
+            i += 1
+        }
+        
+        if i < nextText.count,
+           Tokenizer.isSpecial(nextText[nextText.index(nextText.startIndex, offsetBy: i)]) {
+            i -= 1
+        }
+        return offset + i
+    }
+    
+    private func getWord(_ string: String, _ offset: Int) -> String {
+        guard isInWord(string, offset) else { return "" }
+        
+        let wordBegin = getWordBegin(string, offset)
+        return String(string[string.index(string.startIndex, offsetBy: wordBegin) ..< string.index(string.startIndex, offsetBy: getWordEnd(string, offset))])
+    }
+    
     private func insertSuggestion(replacing: Bool = false) {
-        // TODO: Implement
+        guard let suggestion = suggestionDelegate.selected else { return }
+        
+        var offset = view.selectedRange().location
+        var content = textStorage.string
+        
+        let str: String
+        if isInWord(content, offset) {
+            let word = getWord(content, offset)
+            if replacing || (!suggestion.suggestion.hasPrefix(word) && suggestion.suggestion.contains(word)) {
+                let wordBegin = getWordBegin(content, offset)
+                let wordEnd   = getWordEnd(content, offset)
+                offset = wordBegin
+                view.replaceCharacters(in: NSMakeRange(wordBegin, wordEnd - wordBegin + (wordEnd < content.count ? 1 : 0)), with: "")
+                str = suggestion.suggestion
+            } else {
+                str = String(suggestion.suggestion[suggestion.suggestion.index(suggestion.suggestion.startIndex, offsetBy: offset - getWordBegin(content, offset))...])
+            }
+        } else {
+            str = suggestion.suggestion
+        }
+//        let indent = getPreviousIndent(content, offset)
+        
+        view.insertText(str, replacementRange: NSMakeRange(offset, 0))
+        highlight()
+//        content = textStorage.string
+//        let toMove: Int
+//        if suggestion.relativeCursorPosition >= 0 {
+//            // TODO: a
+//            toMove = 0
+//        } else {
+//            toMove = 0
+//        }
+//        if toMove != 0 {
+//            view.setSelectedRange(NSMakeRange(offset + toMove, 0))
+//        }
+        
+        stopSuggestions()
     }
     
     private func computeSuggestionContext(position: Int, begin: Bool) {
