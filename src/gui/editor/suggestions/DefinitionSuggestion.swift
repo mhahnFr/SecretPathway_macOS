@@ -36,6 +36,11 @@ struct DefinitionSuggestion: Suggestion {
         self.rightSide   = type.string
     }
     
+    /// Constructs this suggestion from the given other.
+    ///
+    /// - Parameters:
+    ///   - other: The suggestion to be copied.
+    ///   - isSuper: Indicates whether the suggestion should be considered a super call.
     init(_ other: DefinitionSuggestion, isSuper: Bool) {
         self.type        = other.type
         self.suggestion  = "\(isSuper ? "::" : "")\(other.suggestion)"
