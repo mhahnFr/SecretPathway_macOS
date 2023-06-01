@@ -20,8 +20,11 @@
 
 import Foundation
 
+/// This class represents the delegate for the suggestions window.
 class SuggestionsDelegate: ObservableObject {
+    /// The available suggestions.
     @Published private(set) var suggestions = [any Suggestion]()
+    /// The currently selected suggestion.
     @Published private(set) var selected: (any Suggestion)? {
         willSet {
             if let newValue {
@@ -31,14 +34,22 @@ class SuggestionsDelegate: ObservableObject {
             }
         }
     }
+    /// The hash value of the selected suggestion.
+    ///
+    /// Set before the selected suggestions is updated.
     private(set) var sh = 0
     
+    /// The index of the currently selected suggestion.
     private var index = 0
     
+    /// Initializes this delegate using the given sugestions.
+    ///
+    /// - Parameter suggestions: The suggestions initially available.
     init(suggestions: [any Suggestion] = []) {
         self.suggestions = suggestions
     }
     
+    /// Selects the next logical suggestion.
     func selectNext() {
         guard !suggestions.isEmpty else { return }
         
@@ -51,6 +62,7 @@ class SuggestionsDelegate: ObservableObject {
         select(index: newIndex)
     }
     
+    /// Selects the previous logical suggestion.
     func selectPrevious() {
         guard !suggestions.isEmpty else { return }
         
@@ -63,6 +75,9 @@ class SuggestionsDelegate: ObservableObject {
         select(index: newIndex)
     }
     
+    /// Updates the available suggestions.
+    ///
+    /// - Parameter suggestions: The available suggestions.
     func updateSuggestions(with suggestions: [any Suggestion]) {
         // TODO: Make efficient
         self.suggestions = suggestions
@@ -71,11 +86,17 @@ class SuggestionsDelegate: ObservableObject {
         }
     }
     
+    /// Selects the suggestion at the given index.
+    ///
+    /// Does not check for index bounds.
+    ///
+    /// - Parameter index: The new index.
     private func select(index: Int) {
         self.index = index
         selected = suggestions[index]
     }
     
+    /// This function should be called before the actual suggestions window will show.
     func windowWillShow() {
         if !suggestions.isEmpty {
             select(index: 0)
