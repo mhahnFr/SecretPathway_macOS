@@ -401,6 +401,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return String(string[string.index(string.startIndex, offsetBy: wordBegin) ..< string.index(string.startIndex, offsetBy: getWordEnd(string, offset))])
     }
     
+    /// Inserts the currently selected suggestion.
+    ///
+    /// - Parameter replacing: Whether to replace the word currently edited.
     private func insertSuggestion(replacing: Bool = false) {
         guard let suggestion = suggestionDelegate.selected else { return }
         
@@ -470,10 +473,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
     }
     
+    /// Starts the super send suggestions.
     private func startSuperSuggestions() {
         // TODO: Implement
     }
     
+    /// Starts the dot and arrow call suggestions.
     private func startDotSuggestions() {
         // TODO: Implement
     }
@@ -512,6 +517,12 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return begin
     }
     
+    /// Updates the available suggestions.
+    ///
+    /// - Parameters:
+    ///   - type: The type of suggestions to show.
+    ///   - returnType: The expected return type.
+    /// - Returns: The position for which the suggestions are created.
     @discardableResult
     private func updateSuggestionsImpl(type: SuggestionType?, returnType: TypeProto?) -> Int {
         let caretPosition = view.selectedRange().location
@@ -563,6 +574,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         return toReturn
     }
     
+    /// Visits the AST at the given position.
+    ///
+    /// - Parameter position: The position to be visited.
     private func visit(position: Int) {
         for node in ast {
             if position >= node.begin && position <= node.end {
@@ -838,6 +852,9 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         closeImpl()
     }
     
+    /// Closes this editor.
+    ///
+    /// - Returns: Whether the user actually wishes to close this editor.
     func close() -> Bool {
         if window?.delegate === self {
             window?.performClose(self)
@@ -848,6 +865,8 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     }
     
     /// Closes the editor.
+    ///
+    /// - Returns: Whether the user wants to close this editor instance.
     private func closeImpl() -> Bool {
         if let window,
            window.isDocumentEdited {
@@ -903,6 +922,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         textStorage.setAttributes(SPStyle().native, range: NSMakeRange(0, textStorage.length))
     }
     
+    /// Interprets the text in a background task.
     private func interpretCode() {
         Task {
             let interpreter = Interpreter(loader: loader, referrer: file)
@@ -936,6 +956,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         }
     }
     
+    /// Starts the interpretation timer.
     private func startTimer() {
         interpreterTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
             self.interpretCode()
