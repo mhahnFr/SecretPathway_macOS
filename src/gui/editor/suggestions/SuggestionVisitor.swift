@@ -202,6 +202,27 @@ struct SuggestionVisitor {
                 return visitImpl(node: op.rhs, position: position, context: context)
             }
             
+        case .AST_CLASS:
+            let c = node as! ASTClass
+            
+            if position < c.name.begin {
+                return .typeModifier
+            } else if position >= c.name.begin,
+                      position <= c.name.end {
+                return .literal
+            } else if let inheritance = c.inheritance,
+                      position >= inheritance.begin,
+                      position <= inheritance.end {
+                return .literal
+            }
+            for node in c.statements {
+                if position >= node.begin,
+                   position <= node.end {
+                    guard let classContext = context.classes[cast(ASTName.self, c.name)?.name ?? "<unknown>"] else { return .any }
+                    return visitImpl(node: node, position: position, context: classContext)
+                }
+            }
+            
         default:
             for subNode in node.subNodes {
                 if position >= subNode.begin,
