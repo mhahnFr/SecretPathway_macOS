@@ -89,7 +89,6 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
     private var interpreterTimer: Timer?
     /// The lastly edited range.
     private var editedRange: (Int, Int)?
-    private let box = NSBox()
     /// The suggestions delegate.
     private var suggestionDelegate = SuggestionsDelegate(suggestions: [])
     /// The suggestion window.
@@ -123,16 +122,18 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
         self.suggestionWindow.isOpaque                                           = false
         self.suggestionWindow.backgroundColor                                    = .clear
         
-        self.box.titlePosition       = .noTitle
-        self.box.boxType             = .custom
-        self.box.cornerRadius        = 5
-        self.box.fillColor           = .windowBackgroundColor
-        self.box.borderColor         = .controlColor
-        self.box.autoresizesSubviews = true
-        self.box.contentView         = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
+        let box = NSBox()
+        
+        box.boxType             = .custom
+        box.titlePosition       = .noTitle
+        box.cornerRadius        = 5
+        box.fillColor           = .windowBackgroundColor
+        box.borderColor         = .controlColor
+        box.autoresizesSubviews = true
+        box.contentView         = NSHostingView(rootView: SuggestionsView(delegate: suggestionDelegate))
         
         
-        self.suggestionWindow.contentView = self.box
+        self.suggestionWindow.contentView = box
     }
     
     /// Attempts to restore the theme used for the editor.
@@ -321,7 +322,7 @@ class EditorDelegate: NSObject, TextViewBridgeDelegate, NSTextStorageDelegate, N
                                        actualRange:       nil)
             suggestionWindow.setContentSize(NSSize(width: 300, height: 250)) // TODO: Sizing
             suggestionWindow.setFrameOrigin(NSPoint(x: frame.origin.x - 5,
-                                                    y: frame.origin.y - frame.height - box.frame.height))
+                                                    y: frame.origin.y - frame.height - suggestionWindow.frame.height))
             suggestionDelegate.windowWillShow()
             suggestionWindow.orderFront(self)
         }
