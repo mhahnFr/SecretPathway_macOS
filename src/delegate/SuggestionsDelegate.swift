@@ -82,7 +82,10 @@ class SuggestionsDelegate: ObservableObject {
         // TODO: Make efficient
         self.suggestions = suggestions
         if suggestions.isEmpty {
+            index    = 0
             selected = nil
+        } else if let selected {
+            select(index: suggestions.firstIndex { $0.hashValue == selected.hashValue } ?? 0)
         }
     }
     
