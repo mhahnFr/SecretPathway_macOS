@@ -41,6 +41,7 @@ class SuggestionsDelegate: ObservableObject {
     
     /// The index of the currently selected suggestion.
     private var index = 0
+    private var changed = false
     
     /// Initializes this delegate using the given sugestions.
     ///
@@ -52,6 +53,8 @@ class SuggestionsDelegate: ObservableObject {
     /// Selects the next logical suggestion.
     func selectNext() {
         guard !suggestions.isEmpty else { return }
+        
+        changed = true
         
         let newIndex: Int
         if index + 1 < suggestions.count {
@@ -65,6 +68,8 @@ class SuggestionsDelegate: ObservableObject {
     /// Selects the previous logical suggestion.
     func selectPrevious() {
         guard !suggestions.isEmpty else { return }
+        
+        changed = true
         
         let newIndex: Int
         if index - 1 < 0 {
@@ -96,11 +101,12 @@ class SuggestionsDelegate: ObservableObject {
     /// - Parameter index: The new index.
     private func select(index: Int) {
         self.index = index
-        selected = suggestions[index]
+        selected   = suggestions[index]
     }
     
     /// This function should be called before the actual suggestions window will show.
     func windowWillShow() {
+        changed = false
         if !suggestions.isEmpty {
             select(index: 0)
         }
