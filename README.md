@@ -2,7 +2,7 @@
 The SecretPathway is a [MUD] client. This repository contains the **macOS** version,
 which is written in Swift.
 
-_macOS 11.0 or newer is required to build and run this app._
+_macOS 12.0 or newer is required to build and run this app._
 
 ### Final notes
 The cross-platform version can be found [here](https://www.github.com/mhahnFr/SecretPathway).
