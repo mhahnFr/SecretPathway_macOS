@@ -42,31 +42,22 @@ struct ConnectionView: View {
                         Text(prompt)
                     }
                     if delegate.showPasswordField {
-                        if #available(macOS 12.0, *) {
-                            SecureField("Enter something...", text: $enteredText)
-                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
-                                .onSubmit {
-                                    sendMessage()
-                                }
-                        } else {
-                            SecureField("Enter something...", text: $enteredText)
-                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
-                        }
+                        SecureField("Enter something...", text: $enteredText)
+                            .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
+                            .onSubmit {
+                                sendMessage()
+                            }
                     } else {
-                        if #available(macOS 12.0, *) {
-                            TextField("Enter something...", text: $enteredText)
-                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
-                                .onSubmit {
-                                    sendMessage()
-                                }
-                        } else {
-                            TextField("Enter something...", text: $enteredText)
-                                .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
-                        }
+                        TextField("Enter something...", text: $enteredText)
+                            .font(.system(size: CGFloat(settings.fontSize), design: .monospaced))
+                            .onSubmit {
+                                sendMessage()
+                            }
                     }
                     Button("Send") {
                         sendMessage()
-                    }.keyboardShortcut(.defaultAction)
+                    }
+                    .keyboardShortcut(.defaultAction)
                 }
             }
             .frame(minWidth: 300, idealWidth: 750, minHeight: 200, idealHeight: 500)

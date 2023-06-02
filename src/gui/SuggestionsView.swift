@@ -22,16 +22,6 @@ import SwiftUI
 
 struct SuggestionsView: View {
     @ObservedObject var delegate: SuggestionsDelegate
-    private let backgroundColor: Color
-    
-    init(delegate: SuggestionsDelegate) {
-        self.delegate = delegate
-        if #available(macOS 12.0, *) {
-            backgroundColor = Color(nsColor: .controlBackgroundColor)
-        } else {
-            backgroundColor = Color.clear
-        }
-    }
     
     var body: some View {
         if delegate.suggestions.isEmpty {
@@ -43,46 +33,32 @@ struct SuggestionsView: View {
                     ScrollView {
                         ForEach(delegate.suggestions, id: \.hashValue) { suggestion in
                             let selected = suggestion.hashValue == delegate.sh
-                            if #available(macOS 12.0, *) {
-                                VStack {
-                                    Spacer().frame(maxHeight: 5).fixedSize()
-                                    HStack {
-                                        Text(suggestion.description)
-                                            .foregroundColor(selected ? Color.white : nil)
-                                            .padding(.horizontal, 5)
-                                        Spacer()
-                                        Text(suggestion.rightSide)
-                                            .padding(.horizontal, 5)
-                                            .foregroundColor(.gray)
-                                    }
-                                    Spacer().frame(maxHeight: 5).fixedSize()
+                            VStack {
+                                Spacer()
+                                    .frame(maxHeight: 5)
+                                    .fixedSize()
+                                HStack {
+                                    Text(suggestion.description)
+                                        .foregroundColor(selected ? Color.white : nil)
+                                        .padding(.horizontal, 5)
+                                    Spacer()
+                                    Text(suggestion.rightSide)
+                                        .padding(.horizontal, 5)
+                                        .foregroundColor(.gray)
                                 }
-                                .background(selected ? Color.blue : Color?.none)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 5)
-                                        .stroke(backgroundColor, lineWidth: 4)
-                                }
-                                .id(AnyHashable(suggestion))
-                            } else {
-                                VStack {
-                                    Spacer().frame(maxHeight: 5).fixedSize()
-                                    HStack {
-                                        Text(suggestion.description)
-                                            .foregroundColor(selected ? Color.white : nil)
-                                            .padding(.horizontal, 5)
-                                        Spacer()
-                                        Text(suggestion.rightSide)
-                                            .padding(.horizontal, 5)
-                                            .foregroundColor(.gray)
-                                    }
-                                    Spacer().frame(maxHeight: 5).fixedSize()
-                                }
-                                .background(selected ? Color.blue : Color?.none)
-                                .id(AnyHashable(suggestion))
+                                Spacer()
+                                    .frame(maxHeight: 5)
+                                    .fixedSize()
                             }
+                            .background(selected ? Color.blue : Color?.none)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color(nsColor: .controlBackgroundColor), lineWidth: 4)
+                            }
+                            .id(AnyHashable(suggestion))
                         }
                     }
-                    .background(backgroundColor)
+                    .background(Color(nsColor: .controlBackgroundColor))
                     .onReceive(delegate.$selected) {
                         if let selected = $0 {
                             proxy.scrollTo(AnyHashable(selected))

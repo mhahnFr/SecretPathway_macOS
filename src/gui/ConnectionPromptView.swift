@@ -26,40 +26,35 @@ struct ConnectionPromptView: View {
     var body: some View {
         VStack {
             if let userInfo = delegate.userInfo {
-                Text(userInfo).foregroundColor(.red)
+                Text(userInfo)
+                    .foregroundColor(.red)
                 Spacer()
             }
             VStack(alignment: .leading) {
                 Text("Enter the hostname or the IP address:")
-                if #available(macOS 12.0, *) {
-                    TextField("hostname or IP address, ex: localhost", text: $delegate.hostname).onSubmit {
-                        delegate.accept()
-                    }
-                } else {
-                    TextField("hostname or IP address, ex: localhost", text: $delegate.hostname)
-                }
+                TextField("hostname or IP address, ex: localhost", text: $delegate.hostname)
+                    .onSubmit { delegate.accept() }
             }
             VStack(alignment: .leading) {
                 Text("Enter the port number:")
-                if #available(macOS 12.0, *) {
-                    TextField("port number, ex: 4242", text: $delegate.port).onSubmit {
-                        delegate.accept()
-                    }
-                } else {
-                    TextField("port number, ex: 4242", text: $delegate.port)
-                }
+                TextField("port number, ex: 4242", text: $delegate.port)
+                    .onSubmit { delegate.accept() }
             }
-            Toggle("Use TLS", isOn: $delegate.secure).frame(maxWidth: .infinity, alignment: .leading)
+            Toggle("Use TLS", isOn: $delegate.secure)
+                .frame(maxWidth: .infinity, alignment: .leading)
             HStack {
                 Spacer()
                 Button("Cancel") {
                     delegate.dismiss()
-                }.keyboardShortcut(.cancelAction)
+                }
+                .keyboardShortcut(.cancelAction)
                 Button("OK") {
                     delegate.accept()
-                }.keyboardShortcut(.defaultAction)
+                }
+                .keyboardShortcut(.defaultAction)
             }
-        }.padding(5)
+        }
+        .padding(5)
     }
 }
 
