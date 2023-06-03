@@ -18,7 +18,9 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents a virtual path.
 class VPath {
+    /// The full name of this path.
     var fullName: String {
         var buffer = ""
         if let parent {
@@ -30,10 +32,16 @@ class VPath {
         return buffer
     }
     
+    /// The parent folder of this path.
     private let parent: VPath?
+    /// The name of this folder.
     private let name: String
+    /// Indicates whether this path is absolute.
     private let absolute: Bool
     
+    /// Constructs a path from the given path string.
+    ///
+    /// - Parameter from: The path string.
     init(from: String) {
         var tmp = VPath("", absolute: true)
         from.split(whereSeparator: { $0 == "/" }).forEach {
@@ -50,12 +58,22 @@ class VPath {
         self.absolute = from.first == "/"
     }
     
+    /// Constructs this instance using the given arguments.
+    ///
+    /// - Parameters:
+    ///   - name: The name of this folder.
+    ///   - absolute: Indicates whether this path is absolute.
+    ///   - parent: The parent folder.
     init(_ name: String, absolute: Bool = false, parent: VPath? = nil) {
         self.parent   = parent
         self.name     = name
         self.absolute = absolute
     }
     
+    /// Creates and returns a path that is relative to the given path string.
+    ///
+    /// - Parameter from: The path string.
+    /// - Returns: The relative path.
     func relative(_ from: String) -> VPath {
         guard from.first != "/" else { return VPath(from: from) }
         
