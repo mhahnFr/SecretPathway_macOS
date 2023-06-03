@@ -461,6 +461,10 @@ class Context: Instruction {
         return getIdentifiers(name: name, pos: position, includePrivate: true, includeProtected: true)
     }
     
+    /// Returns the context associated with the given class name description.
+    ///
+    /// - Parameter name: The class name (`foo::bar::baz)`
+    /// - Returns: The associated context or `nil` if no such class is found.
     private func getClassBy(name: String) -> Context? {
         guard let index = name.firstIndex(of: ":") else { return name.isEmpty ? self : classes[name] }
         
@@ -470,6 +474,10 @@ class Context: Instruction {
         return classes[String(name[..<index])]?.getClassBy(name: String(name[colonEnd...]))
     }
     
+    /// Digs out the class using the given class name.
+    ///
+    /// - Parameter name: The fully qualified class name (`/some/file.lpc::foo::bar::baz`).
+    /// - Returns: The context associated with the given class or `nil` if no such class exists.
     func digOutClass(name: String) -> Context? {
         let start: Int
         if let n = fileGlobal.fileName {
