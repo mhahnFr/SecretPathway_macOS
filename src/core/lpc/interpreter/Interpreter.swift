@@ -565,12 +565,9 @@ class Interpreter: ASTVisitor {
     ///   - rhs: The scope chain on the right-hand-side.
     /// - Returns: The appopriate type representation.
     private func visitScopeChain(lhsType: TypeProto, rhs: ASTScopeChain) async -> TypeProto {
-        guard let type     = lhsType as? BasicType,
-              let typeFile = (type.typeFile as? ASTStrings),
-              let context  = await maybeCreateContext(for: typeFile)
-        else { return InterpreterType.unknown }
+        guard let context = await maybeCreateContext(for: lhsType) else { return InterpreterType.unknown }
         
-        var nameString = typeFile.value
+        var nameString = context.fileName ?? "<unknown>"
         var error      = false
         var tmp        = context
         for name in rhs.names {
@@ -773,25 +770,15 @@ class Interpreter: ASTVisitor {
                 if let funcCall = await cast(type: ASTFunctionCall.self, rhs),
                    let name     = await cast(type: ASTName.self, funcCall.name),
                    let nameStr  = name.name {
-                    if operation.lhs is ASTThis {
-                        await assertInheritance(for: current.fileGlobal)
-                        visitName(context: current.fileGlobal, name: name, asFunction: true)
-                        currentType = await visitFunctionCall(function: funcCall,
-                                                              ids:      current.fileGlobal.getIdentifiers(name:             nameStr,
-                                                                                                          pos:              Int.max,
-                                                                                                          includePrivate:   true,
-                                                                                                          includeProtected: true))
-                                      ?? InterpreterType.unknown
-                    } else if let type     = lhsType as? BasicType,
-                              let file     = type.typeFile as? ASTStrings,
-                              let context  = await maybeCreateContext(for: file) {
+                    if let context = await maybeCreateContext(for: lhsType) {
                         await assertInheritance(for: context)
                         visitName(context: context, name: name, asFunction: true)
+                        let isThis = lhsType is ThisType
                         currentType = await visitFunctionCall(function: funcCall,
                                                               ids:      context.getIdentifiers(name:             nameStr,
                                                                                                pos:              Int.max,
-                                                                                               includePrivate:   false,
-                                                                                               includeProtected: false))
+                                                                                               includePrivate:   isThis,
+                                                                                               includeProtected: isThis))
                                       ?? InterpreterType.unknown
                     } else if let leftString = operation.lhs as? ASTStrings,
                               let context    = await maybeCreateContext(for: leftString) {
