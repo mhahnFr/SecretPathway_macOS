@@ -41,6 +41,7 @@ class SuggestionsDelegate: ObservableObject {
     
     /// The index of the currently selected suggestion.
     private var index = 0
+    /// Indicates whether the selection has been changed by the user.
     private var changed = false
     
     /// Initializes this delegate using the given sugestions.
