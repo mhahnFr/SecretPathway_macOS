@@ -548,6 +548,10 @@ class Interpreter: ASTVisitor {
         return mods
     }
     
+    /// Creates a context that is associated with the given type.
+    ///
+    /// - Parameter type: The type to be resolved.
+    /// - Returns: The context derived from the given type or `nil` if impossible.
     private func maybeCreateContext(for type: TypeProto) async -> Context? {
         if let t = type as? ThisType {
             if let name = (t.typeFile as? ASTStrings)?.value {
@@ -591,15 +595,7 @@ class Interpreter: ASTVisitor {
             }
         }
         
-        // TODO: Create ThisClassContext
         return ThisType(file: nameString)
-//        return BasicType(begin:           0,
-//                         representedType: .OBJECT,
-//                         end:             0,
-//                         typeFile:        ASTStrings(strings: [ASTString(token: Token(begin:   0,
-//                                                                                      type:    .STRING,
-//                                                                                      payload: nameString,
-//                                                                                      end:     0))]))
     }
     
     internal func visit(_ expression: ASTExpression) async {
