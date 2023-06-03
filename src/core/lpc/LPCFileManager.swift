@@ -46,32 +46,10 @@ class LPCFileManager {
         let index = name.firstIndex(of: ":")
         let actualName = String(name[..<(index ?? name.endIndex)])
         if let context = cachedContexts[actualName] {
-            if index != nil,
-               let context {
-                // Dig out class context
-                var tmp = context
-                let names = name[name.index(index!, offsetBy: 2)...].components(separatedBy: "::")
-                for name in names {
-                    guard let classContext = tmp.classes[name] else { return nil }
-                    tmp = classContext
-                }
-                return tmp
-            }
-            return context
+            return context?.digOutClass(name: name)
         }
         let context = await loadAndParseIntern(file: actualName, referrer: referrer)
-        if index != nil,
-           let context {
-            // Dig out class context
-            var tmp = context
-            let names = name[name.index(index!, offsetBy: 2)...].components(separatedBy: "::")
-            for name in names {
-                guard let classContext = tmp.classes[name] else { return nil }
-                tmp = classContext
-            }
-            return tmp
-        }
-        return context
+        return context?.digOutClass(name: name)
     }
     
     /// Loads and parses the content of the file whose name is given.

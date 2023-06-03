@@ -550,6 +550,7 @@ class Interpreter: ASTVisitor {
     
     private func maybeCreateContext(for type: TypeProto) async -> Context? {
         if let t = type as? ThisType {
+            // TODO: Dig out class context
             return current.fileGlobal
         } else if let t = type as? BasicType,
                   let tFile = t.typeFile as? ASTStrings {
@@ -588,6 +589,7 @@ class Interpreter: ASTVisitor {
             }
         }
         
+        // TODO: Create ThisClassContext
         return BasicType(begin:           0,
                          representedType: .OBJECT,
                          end:             0,

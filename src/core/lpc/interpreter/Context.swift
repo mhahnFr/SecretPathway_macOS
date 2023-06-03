@@ -460,4 +460,22 @@ class Context: Instruction {
         }
         return getIdentifiers(name: name, pos: position, includePrivate: true, includeProtected: true)
     }
+    
+    private func getClassBy(name: String) -> Context? {
+        guard let index = name.firstIndex(of: ":") else { return name.isEmpty ? self : classes[name] }
+        
+        let colonEnd = name.index(index, offsetBy: 2)
+        guard colonEnd < name.endIndex else { return nil }
+        
+        return classes[String(name[..<index])]?.getClassBy(name: String(name[colonEnd...]))
+    }
+    
+    func digOutClass(name: String) -> Context? {
+        guard let index = name.firstIndex(of: ":") else { return self }
+        
+        let colonEnd = name.index(index, offsetBy: 2)
+        guard colonEnd < name.endIndex else { return nil }
+        
+        return getClassBy(name: String(name[colonEnd...]))
+    }
 }
