@@ -548,6 +548,16 @@ class Interpreter: ASTVisitor {
         return mods
     }
     
+    private func maybeCreateContext(for type: TypeProto) async -> Context? {
+        if let t = type as? ThisType {
+            return current.fileGlobal
+        } else if let t = type as? BasicType,
+                  let tFile = t.typeFile as? ASTStrings {
+            return await maybeCreateContext(for: tFile)
+        }
+        return nil
+    }
+    
     /// Visits the given scope chain relative to the given type.
     ///
     /// - Parameters:
@@ -1023,13 +1033,13 @@ class Interpreter: ASTVisitor {
             
         case .AST_STRING,
              .STRINGS:       currentType = InterpreterType.string
-        case .AST_THIS:      currentType = InterpreterType(type: .OBJECT, file: current.fileGlobal.fileName)
         case .AST_INTEGER:   currentType = InterpreterType.int
         case .AST_FLOAT:     currentType = InterpreterType.float
         case .AST_NIL:       currentType = InterpreterOrType.nilType
         case .AST_SYMBOL:    currentType = InterpreterType.symbol
         case .AST_BOOL:      currentType = InterpreterType.bool
         case .AST_CHARACTER: currentType = InterpreterType.char
+        case .AST_THIS:      currentType = ThisType(type: .OBJECT, file: current.fileGlobal.fileName)
             
         default: currentType = InterpreterType.void
         }

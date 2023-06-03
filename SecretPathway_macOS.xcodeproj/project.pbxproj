@@ -19,6 +19,7 @@
 		BF0D297F29F1B4CB00AB4E87 /* InterpreterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D297E29F1B4CB00AB4E87 /* InterpreterType.swift */; };
 		BF0D298329F1C10B00AB4E87 /* MessagedHighlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0D298229F1C10B00AB4E87 /* MessagedHighlight.swift */; };
 		BF1129802854EBDC00EACD21 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF11297F2854EBDC00EACD21 /* Settings.swift */; };
+		BF1231442A2B97E200D46386 /* ThisType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1231432A2B97E200D46386 /* ThisType.swift */; };
 		BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */; };
 		BF2AE4F12A265D6E0082EABB /* SuggestionShower.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2AE4F02A265D6E0082EABB /* SuggestionShower.swift */; };
 		BF2DAAD32965DC7B0063F91C /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF2DAAD22965DC7B0063F91C /* Token.swift */; };
@@ -162,6 +163,7 @@
 		BF0D297E29F1B4CB00AB4E87 /* InterpreterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterType.swift; sourceTree = "<group>"; };
 		BF0D298229F1C10B00AB4E87 /* MessagedHighlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagedHighlight.swift; sourceTree = "<group>"; };
 		BF11297F2854EBDC00EACD21 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		BF1231432A2B97E200D46386 /* ThisType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThisType.swift; sourceTree = "<group>"; };
 		BF2285F5294CC0680079EC8D /* TelnetPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelnetPlugin.swift; sourceTree = "<group>"; };
 		BF2AE4F02A265D6E0082EABB /* SuggestionShower.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionShower.swift; sourceTree = "<group>"; };
 		BF2DAAD22965DC7B0063F91C /* Token.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
@@ -459,6 +461,7 @@
 				BF91EDDC2A02AA69008DA953 /* InterpreterFuncRefType.swift */,
 				BFC46CDB2A0FC2E200C1DC94 /* InterpreterOrType.swift */,
 				BF570A6A2A1924F60097DEFA /* Modifier.swift */,
+				BF1231432A2B97E200D46386 /* ThisType.swift */,
 			);
 			path = interpreter;
 			sourceTree = "<group>";
@@ -731,6 +734,7 @@
 				BF2DAAD92965DE170063F91C /* StringStream.swift in Sources */,
 				BFE2926629DB31AA00185467 /* ASTOperation.swift in Sources */,
 				BF8340ED2A1BCCFD00AD0BE0 /* VPath.swift in Sources */,
+				BF1231442A2B97E200D46386 /* ThisType.swift in Sources */,
 				BF2285F6294CC0680079EC8D /* TelnetPlugin.swift in Sources */,
 				BFA81AC42A1F744B00017316 /* NewSuggestion.swift in Sources */,
 				BFE44D0929EB0975001C86FB /* ASTNew.swift in Sources */,
