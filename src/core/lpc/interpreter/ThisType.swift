@@ -21,7 +21,7 @@
 class ThisType: InterpreterType {
     static let this = ThisType(type: .OBJECT)
     
-    override init(type: TokenType?, file name: String? = nil) {
+    private override init(type: TokenType?, file name: String? = nil) {
         super.init(type: type, file: name)
     }
     

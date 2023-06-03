@@ -471,11 +471,22 @@ class Context: Instruction {
     }
     
     func digOutClass(name: String) -> Context? {
-        guard let index = name.firstIndex(of: ":") else { return self }
+        let start: Int
+        if let n = fileGlobal.fileName {
+            if !name.hasPrefix(n) {
+                return nil
+            }
+            start = n.count
+        } else {
+            start = 0
+        }
+        let tmpName = start > 0 ? String(name[name.index(name.startIndex, offsetBy: start)...]) : name
         
-        let colonEnd = name.index(index, offsetBy: 2)
-        guard colonEnd < name.endIndex else { return nil }
+        guard let index = tmpName.firstIndex(of: ":") else { return self }
         
-        return getClassBy(name: String(name[colonEnd...]))
+        let colonEnd = tmpName.index(index, offsetBy: 2)
+        guard colonEnd < tmpName.endIndex else { return nil }
+        
+        return getClassBy(name: String(tmpName[colonEnd...]))
     }
 }

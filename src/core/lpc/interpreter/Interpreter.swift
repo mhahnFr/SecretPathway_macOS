@@ -550,7 +550,9 @@ class Interpreter: ASTVisitor {
     
     private func maybeCreateContext(for type: TypeProto) async -> Context? {
         if let t = type as? ThisType {
-            // TODO: Dig out class context
+            if let name = (t.typeFile as? ASTStrings)?.value {
+                return current.fileGlobal.digOutClass(name: name)
+            }
             return current.fileGlobal
         } else if let t = type as? BasicType,
                   let tFile = t.typeFile as? ASTStrings {
@@ -590,13 +592,14 @@ class Interpreter: ASTVisitor {
         }
         
         // TODO: Create ThisClassContext
-        return BasicType(begin:           0,
-                         representedType: .OBJECT,
-                         end:             0,
-                         typeFile:        ASTStrings(strings: [ASTString(token: Token(begin:   0,
-                                                                                      type:    .STRING,
-                                                                                      payload: nameString,
-                                                                                      end:     0))]))
+        return ThisType(file: nameString)
+//        return BasicType(begin:           0,
+//                         representedType: .OBJECT,
+//                         end:             0,
+//                         typeFile:        ASTStrings(strings: [ASTString(token: Token(begin:   0,
+//                                                                                      type:    .STRING,
+//                                                                                      payload: nameString,
+//                                                                                      end:     0))]))
     }
     
     internal func visit(_ expression: ASTExpression) async {
@@ -1028,7 +1031,7 @@ class Interpreter: ASTVisitor {
         case .AST_SYMBOL:    currentType = InterpreterType.symbol
         case .AST_BOOL:      currentType = InterpreterType.bool
         case .AST_CHARACTER: currentType = InterpreterType.char
-        case .AST_THIS:      currentType = ThisType(type: .OBJECT, file: current.fileGlobal.fileName)
+        case .AST_THIS:      currentType = ThisType(file: current.fileGlobal.fileName)
             
         default: currentType = InterpreterType.void
         }
