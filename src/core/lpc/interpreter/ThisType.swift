@@ -18,13 +18,18 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This class represents a type poiting to the current context.
 class ThisType: InterpreterType {
+    /// A general `this` type.
     static let this = ThisType(type: .OBJECT)
     
     private override init(type: TokenType?, file name: String? = nil) {
         super.init(type: type, file: name)
     }
     
+    /// Initializes this `this` type using the optional file name.
+    ///
+    /// - Parameter name: The file name representation of the current context.
     convenience init(file name: String? = nil) {
         self.init(type: .OBJECT, file: name)
     }
