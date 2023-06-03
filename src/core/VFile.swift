@@ -18,13 +18,22 @@
  * this program, see the file LICENSE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/// This structure represents a virtual file.
 struct VFile {
+    /// The full name of this file.
     var fullName: String {
         "\(folder.fullName)/\(name)"
     }
+    /// The virtual path this file is located in.
     let folder: VPath
+    /// The name of the file.
     let name: String
     
+    /// Constructs a virtual file.
+    ///
+    /// - Parameters:
+    ///   - from: The path representing a file.
+    ///   - relation: The relation path.
     init?(from: String, relation: VPath = VPath("", absolute: true)) {
         guard let index = from.lastIndex(of: "/") else { return nil }
         
@@ -39,6 +48,11 @@ struct VFile {
                   name:   String(from[from.index(after: index)...]))
     }
     
+    /// Constructs this file using the name and the virtual path.
+    ///
+    /// - Parameters:
+    ///   - folder: The virtual path.
+    ///   - name: The name of this file.
     init(folder: VPath, name: String) {
         self.folder = folder
         self.name   = name
